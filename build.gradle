@@ -1,7 +1,10 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2025.1.1"
     id 'com.diffplug.spotless' version '6.20.0'
+    id "com.peterabeles.gversion" version "1.10"
 }
 
 java {
@@ -108,6 +111,17 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+    srcDir       = "src/main/java/"
+    classPackage = "frc.robot"
+    className    = "BuildConstants"
+    dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+    timeZone     = "America/New_York"
+    indent       = "  "
+}
+
+
 spotless {
     java {
         target fileTree('.') {
@@ -148,5 +162,27 @@ spotless {
         trimTrailingWhitespace()
         indentWithSpaces(2)
         endWithNewline()
+    }
+}
+
+compileJava.dependsOn 'spotlessApply'
+
+
+task (commitOnDeploy, dependsOn: "spotlessApply") {
+    description = 'Commits when deployed.'
+    doLast {
+        if (true) {
+            def date = new Date()
+            def sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
+            grgit.add(patterns: [
+                'src/',
+                'vendordeps/',
+                'build.gradle',
+                'logs',
+                'gradle',
+                '.wpilib'
+            ])
+            grgit.commit(message: "Automated commit at " + sdf.format(date), all: true)
+        }
     }
 }
