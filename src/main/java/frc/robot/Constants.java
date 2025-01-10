@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
@@ -36,5 +37,14 @@ public final class Constants {
   public static class OperatorConstants {
     // Joystick deadband.
     public static final double DEADBAND = 0.1;
+  }
+
+  public static class IntakeConstants {
+    public static final int INTAKE_MOTOR = 19;
+    public static final Current MOTOR_CURRENT_LIMIT = Amp.of(0);
+    public static final double OUTTAKE_SPEED = 0;
+    public static final double INTAKE_SPEED = 0;
+    public static final double INTAKE_REST_SPEED = 0;
+    public static final double OUTTAKE_REST_SPEED = 0;
   }
 }
