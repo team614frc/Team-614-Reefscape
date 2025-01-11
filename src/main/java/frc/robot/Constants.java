@@ -33,6 +33,12 @@ public final class Constants {
     public static final Time WHEEL_LOCK_TIME = Seconds.of(10);
   }
 
+  public static final class ElevatorConstants {
+    public static final int LEFT_ELEVATOR_MOTOR = 21;
+    public static final int RIGHT_ELEVATOR_MOTOR = 22;
+    public static final int ELEVATOR_CURRENT_LIMIT = 40;
+  }
+
   public static class OperatorConstants {
     // Joystick deadband.
     public static final double DEADBAND = 0.1;
