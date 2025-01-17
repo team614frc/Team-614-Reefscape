@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -32,6 +34,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  private final IntakeSubsystem intake = new IntakeSubsystem();
 
   SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
@@ -60,6 +63,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    NamedCommands.registerCommand("Intake", intake.intakeGamepiece());
+    NamedCommands.registerCommand("Puke", intake.pukeGamepiece());
     // Configure the trigger bindings
     configureBindings();
 
@@ -97,6 +102,8 @@ public class RobotContainer {
     codriverXbox.y().onTrue(Commands.none());
     codriverXbox.start().onTrue(Commands.none());
     codriverXbox.back().onTrue(Commands.none());
+    driverXbox.leftTrigger().whileTrue(intake.intakeGamepiece());
+    driverXbox.rightTrigger().whileTrue(intake.pukeGamepiece());
     codriverXbox.leftBumper().onTrue(Commands.none());
     codriverXbox.rightBumper().onTrue(Commands.none());
 

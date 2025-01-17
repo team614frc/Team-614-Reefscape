@@ -38,7 +38,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.set(speed);
   }
 
-  public Command intakeBasic() {
+  public Command intakeGamepiece() {
     return Commands.runEnd(
         () -> {
           set(Constants.IntakeConstants.INTAKE_SPEED);
@@ -48,7 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
-  public Command outtakeBasic() {
+  public Command pukeGamepiece() {
     return Commands.runEnd(
         () -> {
           set(Constants.IntakeConstants.OUTTAKE_SPEED);
