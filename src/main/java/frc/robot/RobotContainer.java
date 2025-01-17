@@ -58,6 +58,54 @@ public class RobotContainer {
   Command driveFieldOrientedAngularVelocitySim =
       drivebase.driveFieldOriented(driveAngularVelocitySim);
 
+  Command driveReef(boolean isleft) {
+    return Commands.runOnce(
+        () -> {
+          String chosenpath;
+          if (LimelightHelpers.getTV(null)) // checks to see if there is valid apriltag to target
+          {
+            switch ((int)
+                LimelightHelpers.getFiducialID(
+                    null)) { // chooses path based on which april tag id is detected and value of
+                // isleft
+              case 6 -> chosenpath = (isleft) ? "Right6Path" : "Right6Path";
+
+              case 7 -> chosenpath = (isleft) ? "Right7Path" : "Right7Path";
+
+              case 8 -> chosenpath = (isleft) ? "Left6Path" : "Right6Path";
+
+              case 9 -> chosenpath = (isleft) ? "Left8Path" : "Right8Path";
+
+              case 10 -> chosenpath = (isleft) ? "Left10Path" : "Right10Path";
+
+              case 11 -> chosenpath = (isleft) ? "Left11Path" : "Right11Path";
+
+              case 17 -> chosenpath = (isleft) ? "Left17Path" : "Right17Path";
+
+              case 18 -> chosenpath = (isleft) ? "Left18Path" : "Right18Path";
+
+              case 19 -> chosenpath = (isleft) ? "Left19Path" : "Right19Path";
+
+              case 20 -> chosenpath = (isleft) ? "Left20Path" : "Rightt20Path";
+
+              case 21 -> chosenpath = (isleft) ? "Left21Path" : "Right21Path";
+
+              case 22 -> chosenpath = (isleft) ? "Left22Path" : "Right22Path";
+              default -> {}
+            }
+            /* PathPlannerPath path = PathPlannerPath.fromPathFile(chosenpath);
+                          PathConstraints constraints = new PathConstraints(3.0, 4.0,
+                          Units.degreesToRadians(540), Units.degreesToRadians(720));
+
+            // Since AutoBuilder is configured, we can use it to build pathfinding commands
+            Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
+                    path,
+                    constraints); */
+          }
+        },
+        drivebase);
+  }
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
