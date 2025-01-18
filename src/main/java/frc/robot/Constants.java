@@ -37,4 +37,14 @@ public final class Constants {
     // Joystick deadband.
     public static final double DEADBAND = 0.1;
   }
+  
+  public static class EndEffectorConstants {
+
+    public static final int MOTOR_CURRENT_LIMIT = 40;
+    public static final double OUTTAKE_SPEED = 1;
+    public static final double INTAKE_SPEED = -1;
+    public static final double INTAKE_REST_SPEED = 0;
+    public static final double OUTTAKE_REST_SPEED = 0;
+    public static final int EndEffector_Motor = 25;
+  }
 }
