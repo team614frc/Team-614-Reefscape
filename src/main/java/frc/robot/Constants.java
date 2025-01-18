@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
@@ -31,6 +32,13 @@ public final class Constants {
   public static final class DrivebaseConstants {
     // Hold time on motor brakes when disabled.
     public static final Time WHEEL_LOCK_TIME = Seconds.of(10);
+  }
+
+  public static final class ClimberConstants {
+    // Hold time on motor brakes when disabled.
+    public static final int LEFT_CLIMBER_MOTOR = 21;
+    public static final int RIGHT_CLIMBER_MOTOR = 22;
+    public static final Current MOTOR_CURRENT_LIMIT = Amp.of(0);
   }
 
   public static class OperatorConstants {
