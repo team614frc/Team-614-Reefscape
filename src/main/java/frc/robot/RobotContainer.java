@@ -4,19 +4,13 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.SwerveSubsystem;
-import java.io.File;
-import swervelib.SwerveInputStream;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.Setpoint;
+
+// import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,15 +19,17 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
   final CommandXboxController codriverXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase =
-      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  //  private final SwerveSubsystem drivebase =
+  // new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
-  SwerveInputStream driveAngularVelocity =
+  private final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
+
+  /* SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
               drivebase.getSwerveDrive(),
               () -> -driverXbox.getLeftY(),
@@ -56,7 +52,7 @@ public class RobotContainer {
           .allianceRelativeControl(true);
 
   Command driveFieldOrientedAngularVelocitySim =
-      drivebase.driveFieldOriented(driveAngularVelocitySim);
+      drivebase.driveFieldOriented(driveAngularVelocitySim); */
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -64,12 +60,12 @@ public class RobotContainer {
     configureBindings();
 
     // Build an auto chooser. This will use Commands.none() as the default option.
-    autoChooser = AutoBuilder.buildAutoChooser();
+    // autoChooser = AutoBuilder.buildAutoChooser();
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -82,11 +78,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.a().onTrue(Commands.none());
-    driverXbox.x().onTrue(Commands.none());
+    driverXbox.a().onTrue(m_ElevatorSubsystem.setSetpointCommand(Setpoint.kLevel2));
+    driverXbox.x().onTrue(m_ElevatorSubsystem.setSetpointCommand(Setpoint.kLevel3));
+    driverXbox.y().onTrue(m_ElevatorSubsystem.setSetpointCommand(Setpoint.kLevel4));
     driverXbox.b().onTrue(Commands.none());
-    driverXbox.y().onTrue(Commands.none());
-    driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
+    // driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
     driverXbox.leftBumper().onTrue(Commands.none());
     driverXbox.rightBumper().onTrue(Commands.none());
@@ -100,10 +96,10 @@ public class RobotContainer {
     codriverXbox.leftBumper().onTrue(Commands.none());
     codriverXbox.rightBumper().onTrue(Commands.none());
 
-    drivebase.setDefaultCommand(
-        !RobotBase.isSimulation()
-            ? driveFieldOrientedAnglularVelocity
-            : driveFieldOrientedAngularVelocitySim);
+    /* drivebase.setDefaultCommand(
+    !RobotBase.isSimulation()
+        ? driveFieldOrientedAnglularVelocity
+        : driveFieldOrientedAngularVelocitySim); */
   }
 
   /**
@@ -111,15 +107,15 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
-  }
+  // public Command getAutonomousCommand() {
+
+  // }
 
   public void setDriveMode() {
     configureBindings();
   }
 
-  public void setMotorBrake(boolean brake) {
+  /* public void setMotorBrake(boolean brake) {
     drivebase.setMotorBrake(brake);
-  }
+  } */
 }
