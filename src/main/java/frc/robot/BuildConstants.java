@@ -11,7 +11,7 @@ public final class BuildConstants {
   public static final String GIT_BRANCH = "lance/limelight";
   public static final String BUILD_DATE = "2025-01-24 10:31:19 EST";
   public static final long BUILD_UNIX_TIME = 1737732679965L;
-  public static final int DIRTY = 1;
+  public static final int DIRTY = 0;
 
   private BuildConstants() {}
 }
