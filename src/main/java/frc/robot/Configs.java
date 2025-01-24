@@ -27,7 +27,10 @@ public final class Configs {
               Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT); // .voltageCompensation(12);
 
       leftArmConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40); // .voltageCompensation(12);
-      rightArmConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40); // .voltageCompensation(12);
+      rightArmConfig
+          .idleMode(IdleMode.kCoast)
+          .smartCurrentLimit(40)
+          .inverted(true); // .voltageCompensation(12);
 
       /*
        * Configure the reverse limit switch for the elevator. By enabling the limit switch, this
@@ -43,8 +46,8 @@ public final class Configs {
           .outputRange(-1, 1)
           .maxMotion
           // Set MAXMotion parameters for position control
-          .maxVelocity(2000)
-          .maxAcceleration(10000)
+          .maxVelocity(5250)
+          .maxAcceleration(7500)
           .allowedClosedLoopError(0.25);
 
       rightArmConfig
@@ -56,8 +59,8 @@ public final class Configs {
           .outputRange(-1, 1)
           .maxMotion
           // Set MAXMotion parameters for position control
-          .maxVelocity(2000)
-          .maxAcceleration(10000)
+          .maxVelocity(5250)
+          .maxAcceleration(7500)
           .allowedClosedLoopError(0.25);
 
       leftElevatorConfig
@@ -78,8 +81,8 @@ public final class Configs {
           .outputRange(-1, 1)
           .maxMotion
           // Set MAXMotion parameters for position control
-          .maxVelocity(4200)
-          .maxAcceleration(6000)
+          .maxVelocity(5000)
+          .maxAcceleration(75000)
           .allowedClosedLoopError(0.5);
 
       rightElevatorConfig
@@ -91,8 +94,8 @@ public final class Configs {
           .outputRange(-1, 1)
           .maxMotion
           // Set MAXMotion parameters for position control
-          .maxVelocity(4200)
-          .maxAcceleration(6000)
+          .maxVelocity(5000)
+          .maxAcceleration(75000)
           .allowedClosedLoopError(0.5);
     }
   }

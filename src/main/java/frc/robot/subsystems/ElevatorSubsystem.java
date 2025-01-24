@@ -137,7 +137,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     rightElevatorMotor.configure(
-        Configs.ElevatorSubsystem.leftElevatorConfig,
+        Configs.ElevatorSubsystem.rightElevatorConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 

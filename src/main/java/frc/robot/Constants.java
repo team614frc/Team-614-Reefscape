@@ -42,7 +42,7 @@ public final class Constants {
     public static final int ELEVATOR_FEEDER_SETPOINT = 0;
     public static final int ELEVATOR_LEVEL1_SETPOINT = 0;
     public static final int ELEVATOR_LEVEL2_SETPOINT = -15;
-    public static final int ELEVATOR_LEVEL3_SETPOINT = -30;
+    public static final int ELEVATOR_LEVEL3_SETPOINT = -34;
     public static final int ELEVATOR_LEVEL4_SETPOINT = 0;
   }
 
@@ -51,13 +51,13 @@ public final class Constants {
     public static final int RIGHT_ARM_MOTOR = 2;
     ;
     public static final int ARM_CURRENT_LIMIT = 40;
-    public static final double ARM_P_VALUE = 0.0005;
-    public static final double ARM_D_VALUE = 0.003;
+    public static final double ARM_P_VALUE = 0.005;
+    public static final double ARM_D_VALUE = 0.005;
     public static final int ARM_FEEDER_SETPOINT = 0;
     public static final int ARM_LEVEL1_SETPOINT = 0;
-    public static final int ARM_LEVEL2_SETPOINT = 20;
-    public static final int ARM_LEVEL3_SETPOINT = 30;
-    public static final int ARM_LEVEL4_SETPOINT = 40;
+    public static final int ARM_LEVEL2_SETPOINT = 10;
+    public static final int ARM_LEVEL3_SETPOINT = 23;
+    public static final int ARM_LEVEL4_SETPOINT = 0;
   }
 
   public static final class SimulationRobotConstants {
