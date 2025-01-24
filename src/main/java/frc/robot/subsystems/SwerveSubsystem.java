@@ -15,6 +15,8 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,7 +26,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
@@ -32,6 +37,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import limelight.structures.AngularVelocity3d;
+import limelight.structures.Orientation3d;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -46,6 +53,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   /** Swerve drive object. */
   private final SwerveDrive swerveDrive;
+
+  private final LimelightSubsystem limelight = new LimelightSubsystem();
+  public static final AprilTagFieldLayout fieldLayout =
+      AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -382,6 +393,12 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.drive(velocity);
   }
 
+  public Orientation3d getOrientation3d() {
+    return new Orientation3d(
+        swerveDrive.getGyroRotation3d(),
+        new AngularVelocity3d(swerveDrive.getGyro().getYawAngularVelocity(), null, null));
+  }
+
   /**
    * Get the swerve drive kinematics object.
    *
@@ -571,6 +588,35 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public Rotation2d getPitch() {
     return swerveDrive.getPitch();
+  }
+
+  public void addVisionReading(Pose2d pose2d) {
+    swerveDrive.addVisionMeasurement(pose2d, Timer.getFPGATimestamp());
+  }
+
+  @Override
+  public void periodic() {
+    limelight.updateSettings(getOrientation3d());
+    if (limelight.hasTarget()) {
+      addVisionReading(limelight.getPosition());
+    }
+    SmartDashboard.putNumber("Robot Location X-Coordinate", swerveDrive.getPose().getX());
+    SmartDashboard.putNumber("Robot Location Y-Coordinate", swerveDrive.getPose().getY());
+  }
+
+  Command driveReef(boolean isleft) {
+    return Commands.runOnce(
+        () -> {
+          Pose2d chosenpath;
+          if (limelight.hasTarget()) // checks to see if there is valid apriltag to target
+          {
+            driveToPose(
+                fieldLayout
+                    .getTagPose(limelight.getID())
+                    .get()
+                    .toPose2d()); // drives to april tag position
+          }
+        });
   }
 
   /**
