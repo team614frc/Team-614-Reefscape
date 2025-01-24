@@ -608,7 +608,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveReef(boolean isLeft) {
     return Commands.runOnce(
         () -> {
-          Pose2d chosenpath;
+          Pose2d path;
           Rotation2d alignmentrotation;
           if (limelight
               .hasTarget()) // checks to see if there is valid apriltag to target, may need to add
