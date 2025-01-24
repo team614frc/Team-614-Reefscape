@@ -25,6 +25,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
 import java.io.File;
 import java.util.Arrays;
 import java.util.function.DoubleSupplier;
@@ -55,9 +57,6 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveDrive swerveDrive;
 
   private final LimelightSubsystem limelight = new LimelightSubsystem();
-  public static final AprilTagFieldLayout fieldLayout =
-      AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -281,7 +280,10 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public Command sysIdDriveMotorCommand() {
     return SwerveDriveTest.generateSysIdCommand(
-        SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, 12), 3.0, 5.0, 3.0);
+        SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, 12, false),
+        3.0,
+        5.0,
+        3.0);
   }
 
   /**
@@ -596,28 +598,54 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    limelight.updateSettings(getOrientation3d());
-    if (limelight.hasTarget()) {
-      addVisionReading(limelight.getPosition());
-    }
-    SmartDashboard.putNumber("Robot Location X-Coordinate", swerveDrive.getPose().getX());
-    SmartDashboard.putNumber("Robot Location Y-Coordinate", swerveDrive.getPose().getY());
+    try {
+      limelight.updateSettings(getOrientation3d());
+      if (limelight.hasTarget()) {
+        addVisionReading(limelight.getPosition());
+      }
+    } catch (Exception e) {
+    };
   }
 
-  Command driveReef(boolean isleft) {
+  public Command driveReef(boolean isleft) {
     return Commands.runOnce(
         () -> {
           Pose2d chosenpath;
-          if (limelight.hasTarget()) // checks to see if there is valid apriltag to target
+          Rotation2d alignmentrotation;
+          if (limelight
+              .hasTarget()) // checks to see if there is valid apriltag to target, may need to add
+          // check for if robot has gamepiece
           {
-            driveToPose(
-                fieldLayout
-                    .getTagPose(limelight.getID())
-                    .get()
-                    .toPose2d()); // drives to april tag position
+            switch(limelight.getID()) {
+              case 17 -> {
+                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+                driveToPose(chosenpath);
+              }
+              case 18 -> { 
+                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+                driveToPose(chosenpath);
+              }
+              case 19 -> { 
+                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+                driveToPose(chosenpath);
+              }
+              case 20 -> {
+                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+                driveToPose(chosenpath);
+              }
+              case 21 -> { 
+                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+                driveToPose(chosenpath);
+              }
+              case 22 -> { 
+                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+                driveToPose(chosenpath);
+              }
+              default -> {
+              }
+            }
           }
-        });
-  }
+  }); }
 
   /**
    * Gets the swerve drive object.
