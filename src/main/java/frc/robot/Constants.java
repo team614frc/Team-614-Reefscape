@@ -67,5 +67,13 @@ public final class Constants {
     public static final Pose2d ID22REEFRIGHTBRANCH =
         new Pose2d(4, 2.8, Rotation2d.fromDegrees(120));
     public static final Pose2d ID22REEFLEFTBRANCH = new Pose2d(3, 3.7, Rotation2d.fromDegrees(120));
+  public static class EndEffectorConstants {
+
+    public static final int MOTOR_CURRENT_LIMIT = 40;
+    public static final double OUTTAKE_SPEED = 1;
+    public static final double INTAKE_SPEED = -1;
+    public static final double INTAKE_REST_SPEED = 0;
+    public static final double OUTTAKE_REST_SPEED = 0;
+    public static final int EndEffector_Motor = 25;
   }
 }
