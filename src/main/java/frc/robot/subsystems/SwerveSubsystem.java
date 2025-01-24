@@ -608,57 +608,51 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveReef(boolean isLeft) {
     return Commands.runOnce(
         () -> {
-          Pose2d path;
-          Rotation2d rotation;
+          Pose2d path = new Pose2d(0,0, new Rotation2d());
           if (limelight
               .hasTarget()) // checks to see if there is valid apriltag to target, may need to add
           // check for if robot has gamepiece
           {
             switch (limelight.getID()) {
               case 17 -> {
-                chosenpath =
-                    (isleft)
+                path =
+                    (isLeft)
                         ? VisionConstants.ID17REEFLEFTBRANCH
                         : VisionConstants.ID17REEFRIGHTBRANCH;
-                driveToPose(chosenpath);
               }
               case 18 -> {
-                chosenpath =
-                    (isleft)
-                        ? VisionConstants.ID17REEFLEFTBRANCH
-                        : VisionConstants.ID17REEFRIGHTBRANCH;
-                driveToPose(chosenpath);
+                path =
+                    (isLeft)
+                        ? VisionConstants.ID18REEFLEFTBRANCH
+                        : VisionConstants.ID18REEFRIGHTBRANCH;
               }
               case 19 -> {
-                chosenpath =
-                    (isleft)
-                        ? VisionConstants.ID17REEFLEFTBRANCH
-                        : VisionConstants.ID17REEFRIGHTBRANCH;
-                driveToPose(chosenpath);
+                path =
+                    (isLeft)
+                        ? VisionConstants.ID19REEFLEFTBRANCH
+                        : VisionConstants.ID19REEFRIGHTBRANCH;
               }
               case 20 -> {
-                chosenpath =
-                    (isleft)
-                        ? VisionConstants.ID17REEFLEFTBRANCH
-                        : VisionConstants.ID17REEFRIGHTBRANCH;
-                driveToPose(chosenpath);
+                path =
+                    (isLeft)
+                        ? VisionConstants.ID20REEFLEFTBRANCH
+                        : VisionConstants.ID20REEFRIGHTTBRANCH;
               }
               case 21 -> {
-                chosenpath =
-                    (isleft)
-                        ? VisionConstants.ID17REEFLEFTBRANCH
-                        : VisionConstants.ID17REEFRIGHTBRANCH;
-                driveToPose(chosenpath);
+                path =
+                    (isLeft)
+                        ? VisionConstants.ID21REEFLEFTBRANCH
+                        : VisionConstants.ID21REEFRIGHTTBRANCH;
               }
               case 22 -> {
-                chosenpath =
-                    (isleft)
-                        ? VisionConstants.ID17REEFLEFTBRANCH
-                        : VisionConstants.ID17REEFRIGHTBRANCH;
-                driveToPose(chosenpath);
+                path =
+                    (isLeft)
+                        ? VisionConstants.ID22REEFLEFTBRANCH
+                        : VisionConstants.ID22REEFRIGHTBRANCH;
               }
               default -> {}
             }
+            driveToPose(path);
           }
         });
   }
