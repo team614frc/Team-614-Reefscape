@@ -15,8 +15,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,10 +23,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -57,6 +53,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveDrive swerveDrive;
 
   private final LimelightSubsystem limelight = new LimelightSubsystem();
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -398,7 +395,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Orientation3d getOrientation3d() {
     return new Orientation3d(
         swerveDrive.getGyroRotation3d(),
-        new AngularVelocity3d(swerveDrive.getGyro().getYawAngularVelocity(), null, null));
+        new AngularVelocity3d(null, null, swerveDrive.getGyro().getYawAngularVelocity()));
   }
 
   /**
@@ -604,7 +601,8 @@ public class SwerveSubsystem extends SubsystemBase {
         addVisionReading(limelight.getPosition());
       }
     } catch (Exception e) {
-    };
+    }
+    ;
   }
 
   public Command driveReef(boolean isleft) {
@@ -616,36 +614,54 @@ public class SwerveSubsystem extends SubsystemBase {
               .hasTarget()) // checks to see if there is valid apriltag to target, may need to add
           // check for if robot has gamepiece
           {
-            switch(limelight.getID()) {
+            switch (limelight.getID()) {
               case 17 -> {
-                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+                chosenpath =
+                    (isleft)
+                        ? VisionConstants.ID17REEFLEFTBRANCH
+                        : VisionConstants.ID17REEFRIGHTBRANCH;
                 driveToPose(chosenpath);
               }
-              case 18 -> { 
-                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+              case 18 -> {
+                chosenpath =
+                    (isleft)
+                        ? VisionConstants.ID17REEFLEFTBRANCH
+                        : VisionConstants.ID17REEFRIGHTBRANCH;
                 driveToPose(chosenpath);
               }
-              case 19 -> { 
-                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+              case 19 -> {
+                chosenpath =
+                    (isleft)
+                        ? VisionConstants.ID17REEFLEFTBRANCH
+                        : VisionConstants.ID17REEFRIGHTBRANCH;
                 driveToPose(chosenpath);
               }
               case 20 -> {
-                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+                chosenpath =
+                    (isleft)
+                        ? VisionConstants.ID17REEFLEFTBRANCH
+                        : VisionConstants.ID17REEFRIGHTBRANCH;
                 driveToPose(chosenpath);
               }
-              case 21 -> { 
-                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+              case 21 -> {
+                chosenpath =
+                    (isleft)
+                        ? VisionConstants.ID17REEFLEFTBRANCH
+                        : VisionConstants.ID17REEFRIGHTBRANCH;
                 driveToPose(chosenpath);
               }
-              case 22 -> { 
-                chosenpath = (isleft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+              case 22 -> {
+                chosenpath =
+                    (isleft)
+                        ? VisionConstants.ID17REEFLEFTBRANCH
+                        : VisionConstants.ID17REEFRIGHTBRANCH;
                 driveToPose(chosenpath);
               }
-              default -> {
-              }
+              default -> {}
             }
           }
-  }); }
+        });
+  }
 
   /**
    * Gets the swerve drive object.
