@@ -605,7 +605,7 @@ public class SwerveSubsystem extends SubsystemBase {
     
   }
 
-  public Command driveReef(boolean isleft) {
+  public Command driveReef(boolean isLeft) {
     return Commands.runOnce(
         () -> {
           Pose2d chosenpath;
