@@ -602,7 +602,7 @@ public class SwerveSubsystem extends SubsystemBase {
       }
     } catch (Exception e) {
     }
-    ;
+    
   }
 
   public Command driveReef(boolean isleft) {
