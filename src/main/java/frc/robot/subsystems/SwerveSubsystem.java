@@ -609,7 +609,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return Commands.runOnce(
         () -> {
           Pose2d path;
-          Rotation2d alignmentrotation;
+          Rotation2d rotation;
           if (limelight
               .hasTarget()) // checks to see if there is valid apriltag to target, may need to add
           // check for if robot has gamepiece
