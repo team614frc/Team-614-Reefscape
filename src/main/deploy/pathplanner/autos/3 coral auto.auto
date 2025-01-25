@@ -25,25 +25,13 @@
         {
           "type": "path",
           "data": {
+            "pathName": "3 coral path"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "3 coral path 2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "3 coral path 1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4 coral path"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4 coral path 2"
           }
         }
       ]
