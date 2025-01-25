@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
@@ -41,6 +42,7 @@ public final class Constants {
   }
 
   public static class VisionConstants {
+    public static final Pose3d cameraOffset = Pose3d.kZero;
     public static final Pose2d ID17REEFRIGHTBRANCH =
         new Pose2d(3.3, 4.2, Rotation2d.fromDegrees(60));
     public static final Pose2d ID17REEFLEFTBRANCH =

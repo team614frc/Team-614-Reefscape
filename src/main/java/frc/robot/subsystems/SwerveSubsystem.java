@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
@@ -33,8 +34,10 @@ import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import limelight.estimator.PoseEstimate;
 import limelight.structures.AngularVelocity3d;
 import limelight.structures.Orientation3d;
 import swervelib.SwerveController;
@@ -52,7 +55,7 @@ public class SwerveSubsystem extends SubsystemBase {
   /** Swerve drive object. */
   private final SwerveDrive swerveDrive;
 
-  private final LimelightSubsystem limelight = new LimelightSubsystem();
+  private final LimelightSubsystem limelight;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -92,6 +95,7 @@ public class SwerveSubsystem extends SubsystemBase {
         .pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder
     // and push the offsets onto it. Throws warning if not possible
     setupPathPlanner();
+    limelight = new LimelightSubsystem();
   }
 
   /**
@@ -108,6 +112,7 @@ public class SwerveSubsystem extends SubsystemBase {
             controllerCfg,
             Constants.MAX_SPEED.in(MetersPerSecond),
             new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
+    limelight = new LimelightSubsystem();
   }
 
   @Override
@@ -395,7 +400,10 @@ public class SwerveSubsystem extends SubsystemBase {
   public Orientation3d getOrientation3d() {
     return new Orientation3d(
         swerveDrive.getGyroRotation3d(),
-        new AngularVelocity3d(null, null, swerveDrive.getGyro().getYawAngularVelocity()));
+        new AngularVelocity3d(
+            DegreesPerSecond.of(0),
+            DegreesPerSecond.of(0),
+            swerveDrive.getGyro().getYawAngularVelocity()));
   }
 
   /**
@@ -597,18 +605,30 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     try {
       limelight.updateSettings(getOrientation3d());
-      if (limelight.hasTarget()) {
-        addVisionReading(limelight.getPosition());
-      }
+      updatePosition(limelight.getVisionEstimate());
     } catch (Exception e) {
     }
-    
+  }
+
+  public void updatePosition(Optional<PoseEstimate> visionEstimate) {
+    visionEstimate.ifPresent(
+        (PoseEstimate poseEstimate) -> {
+          // If the average tag distance is less than 4 meters,
+          // there are more than 0 tags in view,
+          // and the average ambiguity between tags is less than 30% then we update the pose
+          // estimation.
+          if (poseEstimate.avgTagDist < 4
+              && poseEstimate.tagCount > 0
+              && poseEstimate.getMinTagAmbiguity() < 0.3) {
+            addVisionReading(poseEstimate.pose.toPose2d());
+          }
+        });
   }
 
   public Command driveReef(boolean isLeft) {
     return Commands.runOnce(
         () -> {
-          Pose2d path = new Pose2d(0,0, new Rotation2d());
+          Pose2d path = new Pose2d(0, 0, new Rotation2d());
           if (limelight
               .hasTarget()) // checks to see if there is valid apriltag to target, may need to add
           // check for if robot has gamepiece
