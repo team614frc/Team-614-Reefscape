@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1 coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 coral path"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 coral path 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3 Coral path"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3 Coral path 2"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

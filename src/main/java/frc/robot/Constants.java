@@ -6,8 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -48,53 +46,5 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final int EndEffector_Motor = 25;
-  }
-
-  public static class ReefAlignConstants {
-
-    //BLUE Alliance Reef
-  public static final Rotation2d ID_17_ANGLE = Rotation2d.fromDegrees(60);
-   public static final Rotation2d ID_18_ANGLE = Rotation2d.fromDegrees(120);
-   public static final Rotation2d ID_19_ANGLE = Rotation2d.fromDegrees(180);
-   public static final Rotation2d ID_20_ANGLE = Rotation2d.fromDegrees(240);
-   public static final Rotation2d ID_21_ANGLE = Rotation2d.fromDegrees(300);
-   public static final Rotation2d ID_22_ANGLE = Rotation2d.fromDegrees(360);
-
-   public static final Translation2d ID_17_LEFT_TRANSLATION = new Translation2d(5, 10);
-   public static final Translation2d ID_18_LEFT_TRANSLATION = new Translation2d(6, 4);
-   public static final Translation2d ID_19_LEFT_TRANSLATION = new Translation2d(7, 2);
-   public static final Translation2d ID_20_LEFT_TRANSLATION = new Translation2d(5, 11);
-   public static final Translation2d ID_21_LEFT_TRANSLATION = new Translation2d(7, 12);
-   public static final Translation2d ID_22_LEFT_TRANSLATION = new Translation2d(14, 15);
-
-   public static final Translation2d ID_17_RIGHT_TRANSLATION = new Translation2d(5, 10);
-   public static final Translation2d ID_18_RIGHT_TRANSLATION = new Translation2d(6, 4);
-   public static final Translation2d ID_19_RIGHT_TRANSLATION = new Translation2d(7, 2);
-   public static final Translation2d ID_20_RIGHT_TRANSLATION = new Translation2d(5, 11);
-   public static final Translation2d ID_21_RIGHT_TRANSLATION = new Translation2d(7, 12);
-   public static final Translation2d ID_22_RIGHT_TRANSLATION = new Translation2d(14, 15);
-
-
-   //RED Alliance Reef
-  public static final Rotation2d ID_6_ANGLE = Rotation2d.fromDegrees(60);
-   public static final Rotation2d ID_7_ANGLE = Rotation2d.fromDegrees(120);
-   public static final Rotation2d ID_8_ANGLE = Rotation2d.fromDegrees(180);
-   public static final Rotation2d ID_9_ANGLE = Rotation2d.fromDegrees(240);
-   public static final Rotation2d ID_10_ANGLE = Rotation2d.fromDegrees(300);
-   public static final Rotation2d ID_11_ANGLE = Rotation2d.fromDegrees(360);
-
-   public static final Translation2d ID_6_LEFT_TRANSLATION = new Translation2d(5, 10);
-   public static final Translation2d ID_7_LEFT_TRANSLATION = new Translation2d(6, 4);
-   public static final Translation2d ID_8_LEFT_TRANSLATION = new Translation2d(7, 2);
-   public static final Translation2d ID_9_LEFT_TRANSLATION = new Translation2d(5, 11);
-   public static final Translation2d ID_10_LEFT_TRANSLATION = new Translation2d(7, 12);
-   public static final Translation2d ID_11_LEFT_TRANSLATION = new Translation2d(14, 15);
-
-   public static final Translation2d ID_6_RIGHT_TRANSLATION = new Translation2d(5, 10);
-   public static final Translation2d ID_7_RIGHT_TRANSLATION = new Translation2d(6, 4);
-   public static final Translation2d ID_8_RIGHT_TRANSLATION = new Translation2d(7, 2);
-   public static final Translation2d ID_9_RIGHT_TRANSLATION = new Translation2d(5, 11);
-   public static final Translation2d ID_10_RIGHT_TRANSLATION = new Translation2d(7, 12);
-   public static final Translation2d ID_11_RIGHT_TRANSLATION = new Translation2d(14, 15);
   }
 }
