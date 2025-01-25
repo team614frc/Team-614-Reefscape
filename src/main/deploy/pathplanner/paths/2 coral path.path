@@ -20,8 +20,8 @@
         "y": 0.6511015113264181
       },
       "prevControl": {
-        "x": 4.5735556256823156,
-        "y": 0.44573681427401646
+        "x": 4.822727466566594,
+        "y": 1.9094841703056762
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 53.16545920219069
   },
   "reversed": false,
-  "folder": "2 piece coral ",
+  "folder": "2 coral paths paths ",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 179.52835017345257
