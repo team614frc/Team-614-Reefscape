@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ElevatorArmSubsystem;
+import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
@@ -26,6 +28,8 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private final ElevatorArmSubsystem m_elevatorArmSubsystem = new ElevatorArmSubsystem();
+
   private final SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -86,12 +90,12 @@ public class RobotContainer {
   private void configureBindings() {
     driverXbox.a().whileTrue(EndEffector.outtakeEndEffector().alongWith());
     driverXbox.x().whileTrue(EndEffector.activateEndEffector());
-    driverXbox.b().onTrue(Commands.none());
-    driverXbox.y().onTrue(Commands.none());
+    driverXbox.b().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kFeederStation));
+    driverXbox.y().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel1));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
-    driverXbox.leftBumper().onTrue(Commands.none());
-    driverXbox.rightBumper().onTrue(Commands.none());
+    driverXbox.leftBumper().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel2));
+    driverXbox.rightBumper().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel3));
 
     codriverXbox.a().onTrue(Commands.none());
     codriverXbox.x().onTrue(Commands.none());

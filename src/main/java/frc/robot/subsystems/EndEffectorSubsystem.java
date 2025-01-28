@@ -4,23 +4,21 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Configs;
 import frc.robot.Constants;
 
 public class EndEffectorSubsystem extends SubsystemBase {
-  private final SparkFlex EndEffectorMotor =
-      new SparkFlex(Constants.EndEffectorConstants.EndEffector_Motor, MotorType.kBrushless);
-  private final SparkFlexConfig config = new SparkFlexConfig();
+  private final SparkFlex endEffectorMotor =
+      new SparkFlex(Constants.EndEffectorConstants.END_EFFECTOR_MOTOR, MotorType.kBrushless);
 
   public EndEffectorSubsystem() {
-    config.smartCurrentLimit(Constants.EndEffectorConstants.MOTOR_CURRENT_LIMIT);
-    config.idleMode(IdleMode.kCoast);
-    EndEffectorMotor.configure(
-        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    endEffectorMotor.configure(
+        Configs.EndEffectorSubsystem.endEffectorConfig,
+        ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
   }
 
   @Override
@@ -31,7 +29,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   // Set the power level for the end effector motor
   public void set(double speed) {
-    EndEffectorMotor.set(speed);
+    endEffectorMotor.set(speed);
   }
 
   // Command to activate the end effector (e.g., for gripping or releasing)
