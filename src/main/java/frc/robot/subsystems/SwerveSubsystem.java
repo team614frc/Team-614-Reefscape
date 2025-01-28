@@ -16,6 +16,9 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,6 +29,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -401,9 +405,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return new Orientation3d(
         swerveDrive.getGyroRotation3d(),
         new AngularVelocity3d(
-            DegreesPerSecond.of(0),
-            DegreesPerSecond.of(0),
-            swerveDrive.getGyro().getYawAngularVelocity()));
+            DegreesPerSecond.of(0), DegreesPerSecond.of(0), DegreesPerSecond.of(1)));
   }
 
   /**
@@ -603,11 +605,21 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    try {
-      limelight.updateSettings(getOrientation3d());
-      updatePosition(limelight.getVisionEstimate());
-    } catch (Exception e) {
-    }
+    limelight.updateSettings(getOrientation3d());
+    updatePosition(limelight.getVisionEstimate());
+    limelight
+        .getVisionEstimate()
+        .ifPresent(
+            (PoseEstimate poseEstimate) -> {
+              SmartDashboard.putNumber("Est X Coordinates", poseEstimate.pose.toPose2d().getX());
+              SmartDashboard.putNumber("Est Y Coordinates", poseEstimate.pose.toPose2d().getY());
+            });
+    SmartDashboard.putBoolean(
+        "Vision Estimate is present", limelight.getVisionEstimate().isPresent());
+    SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
+    SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
+    SmartDashboard.putNumber(
+        "Swerve yaw velocity", swerveDrive.getGyro().getYawAngularVelocity().magnitude());
   }
 
   public void updatePosition(Optional<PoseEstimate> visionEstimate) {
@@ -622,6 +634,11 @@ public class SwerveSubsystem extends SubsystemBase {
               && poseEstimate.getMinTagAmbiguity() < 0.3) {
             addVisionReading(poseEstimate.pose.toPose2d());
           }
+          SmartDashboard.putBoolean(
+              "passes test",
+              (poseEstimate.avgTagDist < 4
+                  && poseEstimate.tagCount > 0
+                  && poseEstimate.getMinTagAmbiguity() < 0.3));
         });
   }
 
@@ -634,7 +651,7 @@ public class SwerveSubsystem extends SubsystemBase {
           // check for if robot has gamepiece
           {
             switch (limelight.getID()) {
-              case 17 -> {
+              case 7 -> {
                 path =
                     (isLeft)
                         ? VisionConstants.ID17REEFLEFTBRANCH

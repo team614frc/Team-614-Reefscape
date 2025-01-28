@@ -15,7 +15,7 @@ public class LimelightSubsystem extends SubsystemBase {
   LimelightTargetData limelighttargetdata;
 
   public LimelightSubsystem() {
-    limelight = new Limelight("limelight");
+    limelight = new Limelight("limelight-april");
     limelight
         .settingsBuilder()
         .withLimelightLEDMode(LEDMode.PipelineControl)
@@ -23,10 +23,6 @@ public class LimelightSubsystem extends SubsystemBase {
         .save();
     poseEstimator = limelight.getPoseEstimator(true);
     limelighttargetdata = new LimelightTargetData(limelight);
-  }
-
-  public boolean hasTarget() {
-    return limelighttargetdata.getTargetStatus();
   }
 
   public Optional<PoseEstimate> getVisionEstimate() {
@@ -39,6 +35,10 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public void updateSettings(Orientation3d orientation3d) {
     limelight.settingsBuilder().withRobotOrientation(orientation3d).save();
+  }
+
+  public boolean hasTarget() {
+    return limelighttargetdata.getTargetStatus();
   }
 
   @Override
