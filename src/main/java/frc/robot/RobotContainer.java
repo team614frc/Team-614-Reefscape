@@ -33,7 +33,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-  private final EndEffectorSubsystem EndEffector = new EndEffectorSubsystem();
+  private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
 
   SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
@@ -84,8 +84,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.a().whileTrue(EndEffector.outtakeEndEffector().alongWith());
-    driverXbox.x().whileTrue(EndEffector.activateEndEffector());
+    driverXbox.a().whileTrue(endEffector.outtakeEndEffector());
+    driverXbox.x().whileTrue(endEffector.intakeEndEffector());
     driverXbox.b().onTrue(Commands.none());
     driverXbox.y().onTrue(Commands.none());
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
