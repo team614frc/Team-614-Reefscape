@@ -11,6 +11,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.CurrentUnit;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
@@ -72,11 +74,11 @@ public final class Constants {
   }
 
   public static class EndEffectorConstants {
-    public static final int MOTOR_CURRENT_LIMIT = 40;
+    public static final Measure<CurrentUnit> MOTOR_CURRENT_LIMIT = Amp.of(40);
     public static final double OUTTAKE_SPEED = 1;
     public static final double INTAKE_SPEED = -1;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
-    public static final int EndEffector_Motor = 25;
+    public static final int END_EFFECTOR_MOTOR = 25;
   }
 }
