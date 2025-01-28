@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -12,14 +14,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class EndEffectorSubsystem extends SubsystemBase {
-  private final SparkFlex EndEffectorMotor =
-      new SparkFlex(Constants.EndEffectorConstants.EndEffector_Motor, MotorType.kBrushless);
+  private final SparkFlex endEffectorMotor =
+      new SparkFlex(Constants.EndEffectorConstants.END_EFFECTOR_MOTOR, MotorType.kBrushless);
   private final SparkFlexConfig config = new SparkFlexConfig();
 
   public EndEffectorSubsystem() {
-    config.smartCurrentLimit(Constants.EndEffectorConstants.MOTOR_CURRENT_LIMIT);
+    config.smartCurrentLimit((int) Constants.EndEffectorConstants.MOTOR_CURRENT_LIMIT.in(Amp));
     config.idleMode(IdleMode.kCoast);
-    EndEffectorMotor.configure(
+    endEffectorMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
@@ -31,11 +33,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   // Set the power level for the end effector motor
   public void set(double speed) {
-    EndEffectorMotor.set(speed);
+    endEffectorMotor.set(speed);
   }
 
   // Command to activate the end effector (e.g., for gripping or releasing)
-  public Command activateEndEffector() {
+  public Command intake() {
     return Commands.runEnd(
         () -> {
           set(Constants.EndEffectorConstants.INTAKE_SPEED); // Example speed value
@@ -45,7 +47,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         });
   }
 
-  public Command outtakeEndEffector() {
+  public Command outtake() {
     return Commands.runEnd(
         () -> set(Constants.EndEffectorConstants.OUTTAKE_SPEED), // Outtake speed (negative value)
         () -> set(0) // Stop motor when command ends
@@ -53,7 +55,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
   }
 
   // Command to deactivate the end effector (e.g., stop gripping or releasing)
-  public Command deactivateEndEffector() {
+  public Command stop() {
     return Commands.runEnd(
         () -> {
           set(0); // Stop the motor
