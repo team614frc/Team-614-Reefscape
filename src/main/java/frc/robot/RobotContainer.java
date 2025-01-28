@@ -84,8 +84,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.a().whileTrue(endEffector.outtakeEndEffector());
-    driverXbox.x().whileTrue(endEffector.intakeEndEffector());
+    driverXbox.a().whileTrue(endEffector.outtake());
+    driverXbox.x().whileTrue(endEffector.intake());
     driverXbox.b().onTrue(Commands.none());
     driverXbox.y().onTrue(Commands.none());
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));

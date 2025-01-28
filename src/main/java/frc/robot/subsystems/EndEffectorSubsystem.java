@@ -15,7 +15,7 @@ import frc.robot.Constants;
 
 public class EndEffectorSubsystem extends SubsystemBase {
   private final SparkFlex endEffectorMotor =
-      new SparkFlex(Constants.EndEffectorConstants.End_Effector_Motor, MotorType.kBrushless);
+      new SparkFlex(Constants.EndEffectorConstants.END_EFFECTOR_MOTOR, MotorType.kBrushless);
   private final SparkFlexConfig config = new SparkFlexConfig();
 
   public EndEffectorSubsystem() {
@@ -37,7 +37,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
   }
 
   // Command to activate the end effector (e.g., for gripping or releasing)
-  public Command intakeEndEffector() {
+  public Command intake() {
     return Commands.runEnd(
         () -> {
           set(Constants.EndEffectorConstants.INTAKE_SPEED); // Example speed value
@@ -47,7 +47,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         });
   }
 
-  public Command outtakeEndEffector() {
+  public Command outtake() {
     return Commands.runEnd(
         () -> set(Constants.EndEffectorConstants.OUTTAKE_SPEED), // Outtake speed (negative value)
         () -> set(0) // Stop motor when command ends
@@ -55,7 +55,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
   }
 
   // Command to deactivate the end effector (e.g., stop gripping or releasing)
-  public Command stopEndEffector() {
+  public Command stop() {
     return Commands.runEnd(
         () -> {
           set(0); // Stop the motor
