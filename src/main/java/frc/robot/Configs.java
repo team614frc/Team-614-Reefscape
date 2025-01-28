@@ -65,7 +65,7 @@ public final class Configs {
     static {
       endEffectorConfig
           .idleMode(IdleMode.kCoast)
-          .smartCurrentLimit(Constants.EndEffectorConstants.END_EFFECRTOR_CURRENT_LIMIT);
+          .smartCurrentLimit(Constants.EndEffectorConstants.END_EFFECTOR_CURRENT_LIMIT);
     }
   }
 }

@@ -33,7 +33,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
   }
 
   // Command to activate the end effector (e.g., for gripping or releasing)
-  public Command activateEndEffector() {
+  public Command intake() {
     return Commands.runEnd(
         () -> {
           set(Constants.EndEffectorConstants.INTAKE_SPEED); // Example speed value
@@ -43,7 +43,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         });
   }
 
-  public Command outtakeEndEffector() {
+  public Command outtake() {
     return Commands.runEnd(
         () -> set(Constants.EndEffectorConstants.OUTTAKE_SPEED), // Outtake speed (negative value)
         () -> set(0) // Stop motor when command ends
@@ -51,7 +51,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
   }
 
   // Command to deactivate the end effector (e.g., stop gripping or releasing)
-  public Command deactivateEndEffector() {
+  public Command stop() {
     return Commands.runEnd(
         () -> {
           set(0); // Stop the motor

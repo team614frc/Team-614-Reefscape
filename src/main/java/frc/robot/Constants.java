@@ -58,7 +58,7 @@ public final class Constants {
   }
 
   public static class EndEffectorConstants {
-    public static final int END_EFFECRTOR_CURRENT_LIMIT = 40;
+    public static final int END_EFFECTOR_CURRENT_LIMIT = 40;
     public static final double OUTTAKE_SPEED = 1;
     public static final double INTAKE_SPEED = -1;
     public static final double INTAKE_REST_SPEED = 0;
