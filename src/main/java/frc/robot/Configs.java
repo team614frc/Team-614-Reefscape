@@ -97,18 +97,6 @@ public final class Configs {
           .idleMode(IdleMode.kCoast)
           .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
 
-      /* intakePivotConfig
-      .closedLoop
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      // PID Values for position control
-      .p(Constants.ElevatorConstants.ELEVATOR_P_VALUE)
-      .d(Constants.ElevatorConstants.ELEVATOR_D_VALUE)
-      .outputRange(-1, 1)
-      .maxMotion
-      // Set MAXMotion parameters for position control
-      .maxVelocity(5000)
-      .maxAcceleration(7500)
-      .allowedClosedLoopError(0.5); */
     }
   }
 }
