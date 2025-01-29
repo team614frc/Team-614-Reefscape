@@ -1,7 +1,11 @@
 {
     "fileName": "URCL.json",
     "name": "URCL",
+<<<<<<< HEAD
     "version": "2025.0.0",
+=======
+    "version": "2025.0.1",
+>>>>>>> xavier/elevator
     "frcYear": "2025",
     "uuid": "84246d17-a797-4d1e-bd9f-c59cd8d2477c",
     "mavenUrls": [
@@ -12,14 +16,22 @@
         {
             "groupId": "org.littletonrobotics.urcl",
             "artifactId": "URCL-java",
+<<<<<<< HEAD
             "version": "2025.0.0"
+=======
+            "version": "2025.0.1"
+>>>>>>> xavier/elevator
         }
     ],
     "jniDependencies": [
         {
             "groupId": "org.littletonrobotics.urcl",
             "artifactId": "URCL-driver",
+<<<<<<< HEAD
             "version": "2025.0.0",
+=======
+            "version": "2025.0.1",
+>>>>>>> xavier/elevator
             "skipInvalidPlatforms": true,
             "isJar": false,
             "validPlatforms": [
@@ -34,7 +46,11 @@
         {
             "groupId": "org.littletonrobotics.urcl",
             "artifactId": "URCL-cpp",
+<<<<<<< HEAD
             "version": "2025.0.0",
+=======
+            "version": "2025.0.1",
+>>>>>>> xavier/elevator
             "libName": "URCL",
             "headerClassifier": "headers",
             "sharedLibrary": false,
@@ -49,7 +65,11 @@
         {
             "groupId": "org.littletonrobotics.urcl",
             "artifactId": "URCL-driver",
+<<<<<<< HEAD
             "version": "2025.0.0",
+=======
+            "version": "2025.0.1",
+>>>>>>> xavier/elevator
             "libName": "URCLDriver",
             "headerClassifier": "headers",
             "sharedLibrary": false,

@@ -1,7 +1,11 @@
 {
     "fileName": "REVLib-2025.0.0.json",
     "name": "REVLib",
+<<<<<<< HEAD:vendordeps/REVLib-2025.0.0.json
     "version": "2025.0.0",
+=======
+    "version": "2025.0.2",
+>>>>>>> xavier/elevator:vendordeps/REVLib.json
     "frcYear": "2025",
     "uuid": "3f48eb8c-50fe-43a6-9cb7-44c86353c4cb",
     "mavenUrls": [
@@ -12,19 +16,26 @@
         {
             "groupId": "com.revrobotics.frc",
             "artifactId": "REVLib-java",
+<<<<<<< HEAD:vendordeps/REVLib-2025.0.0.json
             "version": "2025.0.0"
+=======
+            "version": "2025.0.2"
+>>>>>>> xavier/elevator:vendordeps/REVLib.json
         }
     ],
     "jniDependencies": [
         {
             "groupId": "com.revrobotics.frc",
             "artifactId": "REVLib-driver",
+<<<<<<< HEAD:vendordeps/REVLib-2025.0.0.json
             "version": "2025.0.0",
+=======
+            "version": "2025.0.2",
+>>>>>>> xavier/elevator:vendordeps/REVLib.json
             "skipInvalidPlatforms": true,
             "isJar": false,
             "validPlatforms": [
                 "windowsx86-64",
-                "windowsx86",
                 "linuxarm64",
                 "linuxx86-64",
                 "linuxathena",
@@ -37,14 +48,17 @@
         {
             "groupId": "com.revrobotics.frc",
             "artifactId": "REVLib-cpp",
+<<<<<<< HEAD:vendordeps/REVLib-2025.0.0.json
             "version": "2025.0.0",
+=======
+            "version": "2025.0.2",
+>>>>>>> xavier/elevator:vendordeps/REVLib.json
             "libName": "REVLib",
             "headerClassifier": "headers",
             "sharedLibrary": false,
             "skipInvalidPlatforms": true,
             "binaryPlatforms": [
                 "windowsx86-64",
-                "windowsx86",
                 "linuxarm64",
                 "linuxx86-64",
                 "linuxathena",
@@ -55,14 +69,17 @@
         {
             "groupId": "com.revrobotics.frc",
             "artifactId": "REVLib-driver",
+<<<<<<< HEAD:vendordeps/REVLib-2025.0.0.json
             "version": "2025.0.0",
+=======
+            "version": "2025.0.2",
+>>>>>>> xavier/elevator:vendordeps/REVLib.json
             "libName": "REVLibDriver",
             "headerClassifier": "headers",
             "sharedLibrary": false,
             "skipInvalidPlatforms": true,
             "binaryPlatforms": [
                 "windowsx86-64",
-                "windowsx86",
                 "linuxarm64",
                 "linuxx86-64",
                 "linuxathena",

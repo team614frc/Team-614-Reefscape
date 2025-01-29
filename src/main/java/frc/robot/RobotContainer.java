@@ -14,6 +14,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ElevatorArmSubsystem;
+import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
+import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -25,6 +29,9 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private final ElevatorArmSubsystem m_elevatorArmSubsystem = new ElevatorArmSubsystem();
+  private final IntakePivotSubsystem m_IntakePivotSubsystem = new IntakePivotSubsystem();
+
   private final SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -32,6 +39,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
 
   SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
@@ -82,14 +90,16 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.a().onTrue(Commands.none());
-    driverXbox.x().onTrue(Commands.none());
+    driverXbox.a().whileTrue(endEffector.outtake());
+    driverXbox.x().whileTrue(endEffector.intake());
     driverXbox.b().onTrue(Commands.none());
     driverXbox.y().onTrue(Commands.none());
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
-    driverXbox.leftBumper().onTrue(Commands.none());
-    driverXbox.rightBumper().onTrue(Commands.none());
+    driverXbox.leftBumper().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel2));
+    driverXbox.rightBumper().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel3));
+    driverXbox.leftTrigger().onTrue(m_IntakePivotSubsystem.pivotUp());
+    driverXbox.rightTrigger().onTrue(m_IntakePivotSubsystem.pivotDown());
 
     codriverXbox.a().onTrue(Commands.none());
     codriverXbox.x().onTrue(Commands.none());
@@ -99,6 +109,8 @@ public class RobotContainer {
     codriverXbox.back().onTrue(Commands.none());
     codriverXbox.leftBumper().onTrue(Commands.none());
     codriverXbox.rightBumper().onTrue(Commands.none());
+    codriverXbox.leftTrigger().onTrue(Commands.none());
+    codriverXbox.rightTrigger().onTrue(Commands.none());
 
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation()
