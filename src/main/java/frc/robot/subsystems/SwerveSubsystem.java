@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
@@ -15,8 +16,11 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -24,14 +28,22 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import limelight.estimator.PoseEstimate;
+import limelight.structures.AngularVelocity3d;
+import limelight.structures.Orientation3d;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -46,6 +58,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   /** Swerve drive object. */
   private final SwerveDrive swerveDrive;
+
+  private final AprilTagFieldLayout aprilTagFieldLayout =
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+  private final LimelightSubsystem limelight;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -85,6 +101,7 @@ public class SwerveSubsystem extends SubsystemBase {
         .pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder
     // and push the offsets onto it. Throws warning if not possible
     setupPathPlanner();
+    limelight = new LimelightSubsystem();
   }
 
   /**
@@ -101,6 +118,7 @@ public class SwerveSubsystem extends SubsystemBase {
             controllerCfg,
             Constants.MAX_SPEED.in(MetersPerSecond),
             new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
+    limelight = new LimelightSubsystem();
   }
 
   @Override
@@ -270,7 +288,10 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public Command sysIdDriveMotorCommand() {
     return SwerveDriveTest.generateSysIdCommand(
-        SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, 12), 3.0, 5.0, 3.0);
+        SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, 12, false),
+        3.0,
+        5.0,
+        3.0);
   }
 
   /**
@@ -380,6 +401,13 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void drive(ChassisSpeeds velocity) {
     swerveDrive.drive(velocity);
+  }
+
+  public Orientation3d getOrientation3d() {
+    return new Orientation3d(
+        swerveDrive.getGyroRotation3d(),
+        new AngularVelocity3d(
+            DegreesPerSecond.of(5), DegreesPerSecond.of(5), DegreesPerSecond.of(5)));
   }
 
   /**
@@ -571,6 +599,77 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public Rotation2d getPitch() {
     return swerveDrive.getPitch();
+  }
+
+  public void addVisionReading(Pose2d pose2d) {
+    swerveDrive.addVisionMeasurement(pose2d, Timer.getFPGATimestamp());
+  }
+
+  @Override
+  public void periodic() {
+    limelight.updateSettings(getOrientation3d());
+    updatePosition(limelight.getVisionEstimate());
+    SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
+    SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
+  }
+
+  public void updatePosition(Optional<PoseEstimate> visionEstimate) {
+    visionEstimate.ifPresent(
+        (PoseEstimate poseEstimate) -> {
+          // If the average tag distance is less than 4 meters,
+          // there are more than 0 tags in view,
+          // and the average ambiguity between tags is less than 30% then we update the pose
+          // estimation.
+          if (poseEstimate.avgTagDist < 4
+              && poseEstimate.tagCount > 0
+              && poseEstimate.getMinTagAmbiguity() < 0.3) {
+            addVisionReading(poseEstimate.pose.toPose2d());
+          }
+          SmartDashboard.putNumber("Est X Coordinate", poseEstimate.pose.toPose2d().getX());
+          SmartDashboard.putNumber("Est Y Coordinate", poseEstimate.pose.toPose2d().getY());
+          SmartDashboard.putBoolean(
+              "passes test",
+              (poseEstimate.avgTagDist < 4
+                  && poseEstimate.tagCount > 0
+                  && poseEstimate.getMinTagAmbiguity() < 0.3));
+        });
+  }
+
+  public void updatePositionTest() {}
+
+  public Command driveReef(boolean isLeft) {
+    Pose2d path = new Pose2d(0, 0, new Rotation2d());
+    if (limelight.hasTarget()) {
+      switch (limelight.getID()) {
+        case 7 -> {
+          path =
+              (isLeft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+        }
+        case 18 -> {
+          path =
+              (isLeft) ? VisionConstants.ID18REEFLEFTBRANCH : VisionConstants.ID18REEFRIGHTBRANCH;
+        }
+        case 19 -> {
+          path =
+              (isLeft) ? VisionConstants.ID19REEFLEFTBRANCH : VisionConstants.ID19REEFRIGHTBRANCH;
+        }
+        case 20 -> {
+          path =
+              (isLeft) ? VisionConstants.ID20REEFLEFTBRANCH : VisionConstants.ID20REEFRIGHTTBRANCH;
+        }
+        case 21 -> {
+          path =
+              (isLeft) ? VisionConstants.ID21REEFLEFTBRANCH : VisionConstants.ID21REEFRIGHTTBRANCH;
+        }
+        case 22 -> {
+          path =
+              (isLeft) ? VisionConstants.ID22REEFLEFTBRANCH : VisionConstants.ID22REEFRIGHTBRANCH;
+        }
+        default -> {}
+      }
+      return driveToPose(path);
+    }
+    return Commands.none();
   }
 
   /**
