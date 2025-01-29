@@ -54,7 +54,7 @@ public final class Configs {
           .maxMotion
           // Set MAXMotion parameters for position control
           .maxVelocity(5000)
-          .maxAcceleration(75000)
+          .maxAcceleration(7500)
           .allowedClosedLoopError(0.5);
     }
   }
@@ -66,6 +66,44 @@ public final class Configs {
       endEffectorConfig
           .idleMode(IdleMode.kCoast)
           .smartCurrentLimit(Constants.EndEffectorConstants.END_EFFECTOR_CURRENT_LIMIT);
+    }
+  }
+
+  public static final class CanalSubsystem {
+    public static final SparkFlexConfig canalConfig = new SparkFlexConfig();
+
+    static {
+      canalConfig
+          .idleMode(IdleMode.kCoast)
+          .smartCurrentLimit(Constants.CanalConstants.CANAL_CURRENT_LIMIT);
+    }
+  }
+
+  public static final class IntakeSubsystem {
+    public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
+    public static final SparkFlexConfig intakePivotConfig = new SparkFlexConfig();
+
+    static {
+      intakeConfig
+          .idleMode(IdleMode.kCoast)
+          .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
+      
+      intakePivotConfig
+          .idleMode(IdleMode.kCoast)
+          .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
+
+      intakePivotConfig
+          .closedLoop
+          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+          // PID Values for position control
+          .p(Constants.ElevatorConstants.ELEVATOR_P_VALUE)
+          .d(Constants.ElevatorConstants.ELEVATOR_D_VALUE)
+          .outputRange(-1, 1)
+          .maxMotion
+          // Set MAXMotion parameters for position control
+          .maxVelocity(5000)
+          .maxAcceleration(7500)
+          .allowedClosedLoopError(0.5);      
     }
   }
 }

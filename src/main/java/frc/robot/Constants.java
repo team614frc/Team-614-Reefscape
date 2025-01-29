@@ -45,6 +45,25 @@ public final class Constants {
     public static final int ELEVATOR_LEVEL4_SETPOINT = 0;
   }
 
+  public static final class IntakeConstants {
+    public static final int INTAKE_MOTOR = 24;
+    public static final int INTAKE_PIVOT_MOTOR = 25;
+    public static final int INTAKE_CURRENT_LIMIT = 40;
+    public static final double OUTTAKE_SPEED = 0;
+    public static final double INTAKE_SPEED = 0;
+    public static final double INTAKE_REST_SPEED = 0;
+    public static final double OUTTAKE_REST_SPEED = 0;
+  }
+
+  public static final class CanalConstants {
+    public static final int CANAL_MOTOR = 23;
+    public static int CANAL_CURRENT_LIMIT = 40;
+    public static final double OUTTAKE_SPEED = 1;
+    public static final double INTAKE_SPEED = -1;
+    public static final double INTAKE_REST_SPEED = 0;
+    public static final double OUTTAKE_REST_SPEED = 0;
+  }
+
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
     public static final int ARM_CURRENT_LIMIT = 40;
