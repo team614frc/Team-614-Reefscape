@@ -16,9 +16,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -405,7 +402,9 @@ public class SwerveSubsystem extends SubsystemBase {
     return new Orientation3d(
         swerveDrive.getGyroRotation3d(),
         new AngularVelocity3d(
-            DegreesPerSecond.of(0), DegreesPerSecond.of(0), DegreesPerSecond.of(1)));
+            DegreesPerSecond.of(0),
+            DegreesPerSecond.of(0),
+            swerveDrive.getGyro().getYawAngularVelocity()));
   }
 
   /**
@@ -607,19 +606,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     limelight.updateSettings(getOrientation3d());
     updatePosition(limelight.getVisionEstimate());
-    limelight
-        .getVisionEstimate()
-        .ifPresent(
-            (PoseEstimate poseEstimate) -> {
-              SmartDashboard.putNumber("Est X Coordinates", poseEstimate.pose.toPose2d().getX());
-              SmartDashboard.putNumber("Est Y Coordinates", poseEstimate.pose.toPose2d().getY());
-            });
-    SmartDashboard.putBoolean(
-        "Vision Estimate is present", limelight.getVisionEstimate().isPresent());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
-    SmartDashboard.putNumber(
-        "Swerve yaw velocity", swerveDrive.getGyro().getYawAngularVelocity().magnitude());
   }
 
   public void updatePosition(Optional<PoseEstimate> visionEstimate) {
@@ -634,6 +622,8 @@ public class SwerveSubsystem extends SubsystemBase {
               && poseEstimate.getMinTagAmbiguity() < 0.3) {
             addVisionReading(poseEstimate.pose.toPose2d());
           }
+          SmartDashboard.putNumber("Est X Coordinate", poseEstimate.pose.toPose2d().getX());
+          SmartDashboard.putNumber("Est Y Coordinate", poseEstimate.pose.toPose2d().getY());
           SmartDashboard.putBoolean(
               "passes test",
               (poseEstimate.avgTagDist < 4
@@ -643,55 +633,38 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Command driveReef(boolean isLeft) {
-    return Commands.runOnce(
-        () -> {
-          Pose2d path = new Pose2d(0, 0, new Rotation2d());
-          if (limelight
-              .hasTarget()) // checks to see if there is valid apriltag to target, may need to add
-          // check for if robot has gamepiece
-          {
-            switch (limelight.getID()) {
-              case 7 -> {
-                path =
-                    (isLeft)
-                        ? VisionConstants.ID17REEFLEFTBRANCH
-                        : VisionConstants.ID17REEFRIGHTBRANCH;
-              }
-              case 18 -> {
-                path =
-                    (isLeft)
-                        ? VisionConstants.ID18REEFLEFTBRANCH
-                        : VisionConstants.ID18REEFRIGHTBRANCH;
-              }
-              case 19 -> {
-                path =
-                    (isLeft)
-                        ? VisionConstants.ID19REEFLEFTBRANCH
-                        : VisionConstants.ID19REEFRIGHTBRANCH;
-              }
-              case 20 -> {
-                path =
-                    (isLeft)
-                        ? VisionConstants.ID20REEFLEFTBRANCH
-                        : VisionConstants.ID20REEFRIGHTTBRANCH;
-              }
-              case 21 -> {
-                path =
-                    (isLeft)
-                        ? VisionConstants.ID21REEFLEFTBRANCH
-                        : VisionConstants.ID21REEFRIGHTTBRANCH;
-              }
-              case 22 -> {
-                path =
-                    (isLeft)
-                        ? VisionConstants.ID22REEFLEFTBRANCH
-                        : VisionConstants.ID22REEFRIGHTBRANCH;
-              }
-              default -> {}
-            }
-            driveToPose(path);
-          }
-        });
+    Pose2d path = new Pose2d(0, 0, new Rotation2d());
+    if (limelight.hasTarget()) {
+      switch (limelight.getID()) {
+        case 7 -> {
+          path =
+              (isLeft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+        }
+        case 18 -> {
+          path =
+              (isLeft) ? VisionConstants.ID18REEFLEFTBRANCH : VisionConstants.ID18REEFRIGHTBRANCH;
+        }
+        case 19 -> {
+          path =
+              (isLeft) ? VisionConstants.ID19REEFLEFTBRANCH : VisionConstants.ID19REEFRIGHTBRANCH;
+        }
+        case 20 -> {
+          path =
+              (isLeft) ? VisionConstants.ID20REEFLEFTBRANCH : VisionConstants.ID20REEFRIGHTTBRANCH;
+        }
+        case 21 -> {
+          path =
+              (isLeft) ? VisionConstants.ID21REEFLEFTBRANCH : VisionConstants.ID21REEFRIGHTTBRANCH;
+        }
+        case 22 -> {
+          path =
+              (isLeft) ? VisionConstants.ID22REEFLEFTBRANCH : VisionConstants.ID22REEFRIGHTBRANCH;
+        }
+        default -> {}
+      }
+      return driveToPose(path);
+    }
+    return Commands.none();
   }
 
   /**
