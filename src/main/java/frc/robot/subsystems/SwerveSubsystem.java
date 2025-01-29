@@ -16,8 +16,11 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -56,6 +59,8 @@ public class SwerveSubsystem extends SubsystemBase {
   /** Swerve drive object. */
   private final SwerveDrive swerveDrive;
 
+  private final AprilTagFieldLayout aprilTagFieldLayout =
+      AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
   private final LimelightSubsystem limelight;
 
   /**
@@ -606,8 +611,6 @@ public class SwerveSubsystem extends SubsystemBase {
     updatePosition(limelight.getVisionEstimate());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
-    SmartDashboard.putNumber("Estimated X Coordinates", limelight.getVisionEstimateTest().getX());
-    SmartDashboard.putNumber("Estimated Y Coordinates", limelight.getVisionEstimateTest().getY());
   }
 
   public void updatePosition(Optional<PoseEstimate> visionEstimate) {
