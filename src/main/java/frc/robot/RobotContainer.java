@@ -96,6 +96,8 @@ public class RobotContainer {
     driverXbox.back().onTrue(Commands.none());
     driverXbox.leftBumper().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel2));
     driverXbox.rightBumper().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel3));
+    driverXbox.leftTrigger().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel4));
+    driverXbox.rightTrigger().onTrue(Commands.none());
 
     codriverXbox.a().onTrue(Commands.none());
     codriverXbox.x().onTrue(Commands.none());
@@ -105,6 +107,8 @@ public class RobotContainer {
     codriverXbox.back().onTrue(Commands.none());
     codriverXbox.leftBumper().onTrue(Commands.none());
     codriverXbox.rightBumper().onTrue(Commands.none());
+    codriverXbox.leftTrigger().onTrue(Commands.none());
+    codriverXbox.rightTrigger().onTrue(Commands.none());
 
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation()

@@ -87,7 +87,7 @@ public final class Configs {
       intakeConfig
           .idleMode(IdleMode.kCoast)
           .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
-      
+
       intakePivotConfig
           .idleMode(IdleMode.kCoast)
           .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
@@ -103,7 +103,7 @@ public final class Configs {
           // Set MAXMotion parameters for position control
           .maxVelocity(5000)
           .maxAcceleration(7500)
-          .allowedClosedLoopError(0.5);      
+          .allowedClosedLoopError(0.5);
     }
   }
 }

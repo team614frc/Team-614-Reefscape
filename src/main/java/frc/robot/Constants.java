@@ -40,8 +40,8 @@ public final class Constants {
     public static final double ELEVATOR_D_VALUE = 0.0035;
     public static final int ELEVATOR_FEEDER_SETPOINT = 0;
     public static final int ELEVATOR_LEVEL1_SETPOINT = 0;
-    public static final int ELEVATOR_LEVEL2_SETPOINT = -15;
-    public static final int ELEVATOR_LEVEL3_SETPOINT = -34;
+    public static final int ELEVATOR_LEVEL2_SETPOINT = 15;
+    public static final int ELEVATOR_LEVEL3_SETPOINT = 34;
     public static final int ELEVATOR_LEVEL4_SETPOINT = 0;
   }
 
@@ -57,7 +57,7 @@ public final class Constants {
 
   public static final class CanalConstants {
     public static final int CANAL_MOTOR = 23;
-    public static int CANAL_CURRENT_LIMIT = 40;
+    public static final int CANAL_CURRENT_LIMIT = 40;
     public static final double OUTTAKE_SPEED = 1;
     public static final double INTAKE_SPEED = -1;
     public static final double INTAKE_REST_SPEED = 0;
@@ -71,8 +71,8 @@ public final class Constants {
     public static final double ARM_D_VALUE = 0.005;
     public static final int ARM_FEEDER_SETPOINT = 0;
     public static final int ARM_LEVEL1_SETPOINT = 0;
-    public static final int ARM_LEVEL2_SETPOINT = 10;
-    public static final int ARM_LEVEL3_SETPOINT = 23;
+    public static final int ARM_LEVEL2_SETPOINT = 5;
+    public static final int ARM_LEVEL3_SETPOINT = 20;
     public static final int ARM_LEVEL4_SETPOINT = 0;
   }
 
@@ -90,15 +90,14 @@ public final class Constants {
 
     public static final double kElevatorGearing = 12; // 12:1
     public static final double kCarriageMass = 2.72155 + 6.123497; // Kg, arm + elevator stage
-    public static final double kElevatorDrumRadius = 0.0328 / 2.0; // m
-    public static final double kMinElevatorHeightMeters = 0.922; // m
+    public static final double kElevatorDrumRadius = 0.0205232; // m
+    public static final double kMinElevatorHeightMeters = 0.45085; // m
     public static final double kMaxElevatorHeightMeters = 1.62; // m
     public static final double kArmReduction = 30; // 30:1
     public static final double kArmLength = 0.52705; // m
     public static final double kArmMass = 2.72155; // Kg
-    public static final double kMinAngleRads = Units.degreesToRadians(-90); // -50.1 deg from horiz
-    public static final double kMaxAngleRads =
-        Units.degreesToRadians(40.9 + 180); // 40.9 deg from horiz
+    public static final double kMinAngleRads = Units.degreesToRadians(-90);
+    public static final double kMaxAngleRads = Units.degreesToRadians(90); // from horiz
   }
 
   public static class OperatorConstants {

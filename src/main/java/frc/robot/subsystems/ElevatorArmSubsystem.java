@@ -48,7 +48,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   private SparkClosedLoopController armController = armMotor.getClosedLoopController();
   private RelativeEncoder armEncoder = armMotor.getEncoder();
 
-  private double elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL1_SETPOINT;
+  private double elevatorCurrentTarget = ElevatorConstants.ELEVATOR_FEEDER_SETPOINT;
   private double armCurrentTarget = ArmConstants.ARM_FEEDER_SETPOINT;
 
   // Member variables for subsystem state management
@@ -82,9 +82,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
           SimulationRobotConstants.kMinElevatorHeightMeters,
           SimulationRobotConstants.kMaxElevatorHeightMeters,
           true,
-          SimulationRobotConstants.kMinElevatorHeightMeters,
-          0.0,
-          0.0);
+          0.55);
 
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
   private SparkFlexSim armMotorSim;

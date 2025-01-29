@@ -16,7 +16,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.CanalConstants;
 
 public class CanalSubsystem extends SubsystemBase {
-  private final SparkFlex canalMotor = new SparkFlex(CanalConstants.CANAL_MOTOR, MotorType.kBrushless);
+  private final SparkFlex canalMotor =
+      new SparkFlex(CanalConstants.CANAL_MOTOR, MotorType.kBrushless);
 
   /** Creates a new CanalSubsystem. */
   public CanalSubsystem() {
@@ -36,7 +37,7 @@ public class CanalSubsystem extends SubsystemBase {
     canalMotor.set(speed);
   }
 
- public Command intakeCoralCanal() {
+  public Command intakeCoralCanal() {
     return Commands.runEnd(
         () -> {
           set(Constants.CanalConstants.INTAKE_SPEED);
