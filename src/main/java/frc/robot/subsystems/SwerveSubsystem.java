@@ -402,9 +402,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return new Orientation3d(
         swerveDrive.getGyroRotation3d(),
         new AngularVelocity3d(
-            DegreesPerSecond.of(0),
-            DegreesPerSecond.of(0),
-            swerveDrive.getGyro().getYawAngularVelocity()));
+            DegreesPerSecond.of(5), DegreesPerSecond.of(5), DegreesPerSecond.of(5)));
   }
 
   /**
@@ -608,6 +606,8 @@ public class SwerveSubsystem extends SubsystemBase {
     updatePosition(limelight.getVisionEstimate());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
+    SmartDashboard.putNumber("Estimated X Coordinates", limelight.getVisionEstimateTest().getX());
+    SmartDashboard.putNumber("Estimated Y Coordinates", limelight.getVisionEstimateTest().getY());
   }
 
   public void updatePosition(Optional<PoseEstimate> visionEstimate) {
@@ -631,6 +631,8 @@ public class SwerveSubsystem extends SubsystemBase {
                   && poseEstimate.getMinTagAmbiguity() < 0.3));
         });
   }
+
+  public void updatePositionTest() {}
 
   public Command driveReef(boolean isLeft) {
     Pose2d path = new Pose2d(0, 0, new Rotation2d());
