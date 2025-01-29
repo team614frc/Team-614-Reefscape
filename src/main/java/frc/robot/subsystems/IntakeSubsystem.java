@@ -20,7 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
     intakeMotor.configure(
-        Configs.IntakeSubsystem.intakeConfig,
+        Configs.IntakeSubsystem.INTAKE_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }

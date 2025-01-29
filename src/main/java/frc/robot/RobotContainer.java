@@ -29,8 +29,8 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final ElevatorArmSubsystem m_elevatorArmSubsystem = new ElevatorArmSubsystem();
-  private final IntakePivotSubsystem m_IntakePivotSubsystem = new IntakePivotSubsystem();
+  private final ElevatorArmSubsystem elevatorArmSubsystem = new ElevatorArmSubsystem();
+  private final IntakePivotSubsystem intakePivotSubsystem = new IntakePivotSubsystem();
 
   private final SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -96,10 +96,10 @@ public class RobotContainer {
     driverXbox.y().onTrue(Commands.none());
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
-    driverXbox.leftBumper().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel2));
-    driverXbox.rightBumper().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel3));
-    driverXbox.leftTrigger().onTrue(m_IntakePivotSubsystem.pivotUp());
-    driverXbox.rightTrigger().onTrue(m_IntakePivotSubsystem.pivotDown());
+    driverXbox.leftBumper().onTrue(elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel2));
+    driverXbox.rightBumper().onTrue(elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel3));
+    driverXbox.leftTrigger().onTrue(intakePivotSubsystem.pivotUp());
+    driverXbox.rightTrigger().onTrue(intakePivotSubsystem.pivotDown());
 
     codriverXbox.a().onTrue(Commands.none());
     codriverXbox.x().onTrue(Commands.none());

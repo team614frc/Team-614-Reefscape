@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Amp;
+
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -9,24 +11,26 @@ import frc.robot.Constants.ArmConstants;
 public final class Configs {
 
   public static final class ElevatorArmSubsystem {
-    public static final SparkFlexConfig elevatorConfig = new SparkFlexConfig();
-    public static final SparkFlexConfig armConfig = new SparkFlexConfig();
+    public static final SparkFlexConfig ELEVATOR_CONFIG = new SparkFlexConfig();
+    public static final SparkFlexConfig ARM_CONFIG = new SparkFlexConfig();
 
     static {
       // Basic settings of elevator motor
-      elevatorConfig
+      ELEVATOR_CONFIG
           .idleMode(IdleMode.kCoast)
           .smartCurrentLimit(
-              Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT); // .voltageCompensation(12);
+              (int)
+                  Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(
+                      Amp)); // .voltageCompensation(12);
 
-      armConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40); // .voltageCompensation(12);
+      ARM_CONFIG.idleMode(IdleMode.kCoast).smartCurrentLimit(40); // .voltageCompensation(12);
 
       /*
        * Configure the reverse limit switch for the elevator. By enabling the limit switch, this
        * will prevent any actuation of the elevator in the reverse direction if the limit switch is
        * pressed.
        */
-      armConfig
+      ARM_CONFIG
           .closedLoop
           .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
           // Set PID values for position control
@@ -39,12 +43,12 @@ public final class Configs {
           .maxAcceleration(7500)
           .allowedClosedLoopError(0.25);
 
-      elevatorConfig
+      ELEVATOR_CONFIG
           .limitSwitch
           .reverseLimitSwitchEnabled(true)
           .reverseLimitSwitchType(Type.kNormallyOpen);
 
-      elevatorConfig
+      ELEVATOR_CONFIG
           .closedLoop
           .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
           // PID Values for position control
@@ -60,42 +64,43 @@ public final class Configs {
   }
 
   public static final class EndEffectorSubsystem {
-    public static final SparkFlexConfig endEffectorConfig = new SparkFlexConfig();
+    public static final SparkFlexConfig END_EFFECTOR_CONFIG = new SparkFlexConfig();
 
     static {
-      endEffectorConfig
+      END_EFFECTOR_CONFIG
           .idleMode(IdleMode.kCoast)
-          .smartCurrentLimit(Constants.EndEffectorConstants.END_EFFECTOR_CURRENT_LIMIT);
+          .smartCurrentLimit(
+              (int) Constants.EndEffectorConstants.END_EFFECTOR_CURRENT_LIMIT.in(Amp));
     }
   }
 
   public static final class CanalSubsystem {
-    public static final SparkFlexConfig canalConfig = new SparkFlexConfig();
+    public static final SparkFlexConfig CANAL_CONFIG = new SparkFlexConfig();
 
     static {
-      canalConfig
+      CANAL_CONFIG
           .idleMode(IdleMode.kCoast)
           .smartCurrentLimit(Constants.CanalConstants.CANAL_CURRENT_LIMIT);
     }
   }
 
   public static final class IntakeSubsystem {
-    public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
+    public static final SparkFlexConfig INTAKE_CONFIG = new SparkFlexConfig();
 
     static {
-      intakeConfig
+      INTAKE_CONFIG
           .idleMode(IdleMode.kCoast)
-          .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
+          .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
     }
   }
 
   public static final class IntakePivotSubsystem {
-    public static final SparkFlexConfig intakePivotConfig = new SparkFlexConfig();
+    public static final SparkFlexConfig INTAKE_PIVOT_CONFIG = new SparkFlexConfig();
 
     static {
-      intakePivotConfig
+      INTAKE_PIVOT_CONFIG
           .idleMode(IdleMode.kCoast)
-          .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
+          .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_PIVOT_CURRENT_LIMIT.in(Amp));
     }
   }
 }

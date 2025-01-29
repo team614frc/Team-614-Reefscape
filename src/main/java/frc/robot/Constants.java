@@ -9,9 +9,10 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.MassUnit;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
@@ -39,7 +40,7 @@ public final class Constants {
 
   public static final class ElevatorConstants {
     public static final int ELEVATOR_MOTOR = 22;
-    public static final int ELEVATOR_CURRENT_LIMIT = 40;
+    public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(40);
     public static final double ELEVATOR_P_VALUE = 0.0015;
     public static final double ELEVATOR_D_VALUE = 0.0035;
     public static final int ELEVATOR_FEEDER_SETPOINT = 0;
@@ -52,7 +53,8 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR = 24;
     public static final int INTAKE_PIVOT_MOTOR = 26;
-    public static final int INTAKE_CURRENT_LIMIT = 40;
+    public static final Current INTAKE_CURRENT_LIMIT = Amp.of(40);
+    public static final Current INTAKE_PIVOT_CURRENT_LIMIT = Amp.of(40);
     public static final double OUTTAKE_SPEED = 0;
     public static final double INTAKE_SPEED = 0;
     public static final double INTAKE_REST_SPEED = 0;
@@ -71,7 +73,7 @@ public final class Constants {
     public static final Measure<MassUnit> PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final Measure<AngularVelocityUnit> PIVOT_MAX_VEL = DegreesPerSecond.of(10000);
+    public static final AngularVelocity PIVOT_MAX_VEL = DegreesPerSecond.of(10000);
   }
 
   public static final class CanalConstants {
@@ -96,7 +98,7 @@ public final class Constants {
   }
 
   public static class EndEffectorConstants {
-    public static final int END_EFFECTOR_CURRENT_LIMIT = 40;
+    public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(40);
     public static final double OUTTAKE_SPEED = 1;
     public static final double INTAKE_SPEED = -1;
     public static final double INTAKE_REST_SPEED = 0;
@@ -105,18 +107,18 @@ public final class Constants {
   }
 
   public static final class SimulationRobotConstants {
-    public static final double kPixelsPerMeter = 20;
+    public static final double PIXELSPERMETER = 20;
 
-    public static final double kElevatorGearing = 12; // 12:1
-    public static final double kCarriageMass = 2.72155 + 6.123497; // Kg, arm + elevator stage
-    public static final double kElevatorDrumRadius = 0.0205232; // m
-    public static final double kMinElevatorHeightMeters = 0.45085; // m
-    public static final double kMaxElevatorHeightMeters = 1.62; // m
-    public static final double kArmReduction = 30; // 30:1
-    public static final double kArmLength = 0.52705; // m
-    public static final double kArmMass = 2.72155; // Kg
-    public static final double kMinAngleRads = Units.degreesToRadians(0);
-    public static final double kMaxAngleRads = Units.degreesToRadians(360); // from horiz
+    public static final double ELEVATOR_GEARING = 12; // 12:1
+    public static final double CARRIAGE_MASS = 2.72155 + 6.123497; // Kg, arm + elevator stage
+    public static final double ELEVATOR_DRUM_RADIUS = 0.0205232; // m
+    public static final double MIN_ELEVATORHEIGHT_METERS = 0.45085; // m
+    public static final double MAX_ELEVATORHEIGHT_METERS = 1.62; // m
+    public static final double ARM_REDUCTION = 30; // 30:1
+    public static final double ARM_LENGTH = 0.52705; // m
+    public static final double ARM_MASS = 2.72155; // Kg
+    public static final double MIN_ANGLE_RADS = Units.degreesToRadians(0);
+    public static final double MAX_ANGLE_RADS = Units.degreesToRadians(360); // from horiz
   }
 
   public static class OperatorConstants {

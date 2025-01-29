@@ -76,27 +76,27 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   private final ElevatorSim m_elevatorSim =
       new ElevatorSim(
           elevatorMotorModel,
-          SimulationRobotConstants.kElevatorGearing,
-          SimulationRobotConstants.kCarriageMass,
-          SimulationRobotConstants.kElevatorDrumRadius,
-          SimulationRobotConstants.kMinElevatorHeightMeters,
-          SimulationRobotConstants.kMaxElevatorHeightMeters,
+          SimulationRobotConstants.ELEVATOR_GEARING,
+          SimulationRobotConstants.CARRIAGE_MASS,
+          SimulationRobotConstants.ELEVATOR_DRUM_RADIUS,
+          SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS,
+          SimulationRobotConstants.MAX_ELEVATORHEIGHT_METERS,
           true,
-          SimulationRobotConstants.kMinElevatorHeightMeters);
+          SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS);
 
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
   private SparkFlexSim armMotorSim;
   private final SingleJointedArmSim m_armSim =
       new SingleJointedArmSim(
           armMotorModel,
-          SimulationRobotConstants.kArmReduction,
+          SimulationRobotConstants.ARM_REDUCTION,
           SingleJointedArmSim.estimateMOI(
-              SimulationRobotConstants.kArmLength, SimulationRobotConstants.kArmMass),
-          SimulationRobotConstants.kArmLength,
-          SimulationRobotConstants.kMinAngleRads,
-          SimulationRobotConstants.kMaxAngleRads,
+              SimulationRobotConstants.ARM_LENGTH, SimulationRobotConstants.ARM_MASS),
+          SimulationRobotConstants.ARM_LENGTH,
+          SimulationRobotConstants.MIN_ANGLE_RADS,
+          SimulationRobotConstants.MAX_ANGLE_RADS,
           true,
-          SimulationRobotConstants.kMaxAngleRads);
+          SimulationRobotConstants.MIN_ANGLE_RADS);
 
   // Mechanism2d setup for subsystem
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
@@ -105,26 +105,26 @@ public class ElevatorArmSubsystem extends SubsystemBase {
       m_mech2dRoot.append(
           new MechanismLigament2d(
               "Elevator",
-              SimulationRobotConstants.kMinElevatorHeightMeters
-                  * SimulationRobotConstants.kPixelsPerMeter,
+              SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS
+                  * SimulationRobotConstants.PIXELSPERMETER,
               90));
   private final MechanismLigament2d m_armMech2d =
       m_elevatorMech2d.append(
           new MechanismLigament2d(
               "Arm",
-              SimulationRobotConstants.kArmLength * SimulationRobotConstants.kPixelsPerMeter,
-              180 - Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads) - 90));
+              SimulationRobotConstants.ARM_LENGTH * SimulationRobotConstants.PIXELSPERMETER,
+              180 - Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS) - 90));
 
   /** Creates a new ElevatorArmSubsystem. */
   public ElevatorArmSubsystem() {
 
     elevatorMotor.configure(
-        Configs.ElevatorArmSubsystem.armConfig,
+        Configs.ElevatorArmSubsystem.ARM_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
     armMotor.configure(
-        Configs.ElevatorArmSubsystem.armConfig,
+        Configs.ElevatorArmSubsystem.ARM_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
@@ -211,16 +211,16 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
     // Update mechanism2d
     m_elevatorMech2d.setLength(
-        SimulationRobotConstants.kPixelsPerMeter * SimulationRobotConstants.kMinElevatorHeightMeters
-            + SimulationRobotConstants.kPixelsPerMeter
-                * (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
-                * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI));
+        SimulationRobotConstants.PIXELSPERMETER * SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS
+            + SimulationRobotConstants.PIXELSPERMETER
+                * (elevatorEncoder.getPosition() / SimulationRobotConstants.ELEVATOR_GEARING)
+                * (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS * 2.0 * Math.PI));
     m_armMech2d.setAngle(
         180
             - ( // mirror the angles so they display in the correct direction
-            Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads)
+            Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS)
                 + Units.rotationsToDegrees(
-                    armEncoder.getPosition() / SimulationRobotConstants.kArmReduction))
+                    armEncoder.getPosition() / SimulationRobotConstants.ARM_REDUCTION))
             - 90 // subtract 90 degrees to account for the elevator
         );
   }
@@ -247,14 +247,14 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     // Iterate the elevator and arm SPARK simulations
     elevatorMotorSim.iterate(
         ((m_elevatorSim.getVelocityMetersPerSecond()
-                    / (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI))
-                * SimulationRobotConstants.kElevatorGearing)
+                    / (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS * 2.0 * Math.PI))
+                * SimulationRobotConstants.ELEVATOR_GEARING)
             * 60.0,
         RobotController.getBatteryVoltage(),
         0.02);
     armMotorSim.iterate(
         Units.radiansPerSecondToRotationsPerMinute(
-            m_armSim.getVelocityRadPerSec() * SimulationRobotConstants.kArmReduction),
+            m_armSim.getVelocityRadPerSec() * SimulationRobotConstants.ARM_REDUCTION),
         RobotController.getBatteryVoltage(),
         0.02);
     // SimBattery is updated in Robot.java

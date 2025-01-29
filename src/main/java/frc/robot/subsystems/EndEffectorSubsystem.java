@@ -16,7 +16,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   public EndEffectorSubsystem() {
     endEffectorMotor.configure(
-        Configs.EndEffectorSubsystem.endEffectorConfig,
+        Configs.EndEffectorSubsystem.END_EFFECTOR_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
