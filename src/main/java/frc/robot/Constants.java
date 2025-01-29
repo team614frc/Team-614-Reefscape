@@ -106,6 +106,12 @@ public final class Constants {
     public static final int END_EFFECTOR_MOTOR = 25;
   }
 
+  public static final class ClimberConstants {
+    // Hold time on motor brakes when disabled.
+    public static final int CLIMBER_MOTOR = 26;
+    public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(40);
+  }
+
   public static final class SimulationRobotConstants {
     public static final double PIXELSPERMETER = 20;
 
