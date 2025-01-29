@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Configs.IntakeSubsystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
@@ -29,6 +30,7 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
   private final ElevatorArmSubsystem m_elevatorArmSubsystem = new ElevatorArmSubsystem();
+  private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
 
   private final SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed

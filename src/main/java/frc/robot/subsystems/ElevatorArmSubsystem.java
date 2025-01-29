@@ -82,7 +82,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
           SimulationRobotConstants.kMinElevatorHeightMeters,
           SimulationRobotConstants.kMaxElevatorHeightMeters,
           true,
-          0.55);
+          SimulationRobotConstants.kMinElevatorHeightMeters);
 
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
   private SparkFlexSim armMotorSim;
@@ -96,9 +96,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
           SimulationRobotConstants.kMinAngleRads,
           SimulationRobotConstants.kMaxAngleRads,
           true,
-          SimulationRobotConstants.kMinAngleRads,
-          0.0,
-          0.0);
+          SimulationRobotConstants.kMaxAngleRads);
 
   // Mechanism2d setup for subsystem
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);

@@ -8,6 +8,10 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.AngularVelocityUnit;
+import edu.wpi.first.units.MassUnit;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
@@ -53,6 +57,18 @@ public final class Constants {
     public static final double INTAKE_SPEED = 0;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
+
+    public static final double PIVOT_kS = 0;
+    public static final double PIVOT_kG = 0;
+    public static final double PIVOT_kV = 0;
+    public static final double PIVOT_kA = 0;
+    public static final double GEAR_RATIO = 60;
+    public static final Measure<AngleUnit> PIVOT_MAX = Degrees.of(20);
+    public static final Measure<AngleUnit> PIVOT_MIN = Degrees.of(105);
+    public static final Measure<MassUnit> PIVOT_WEIGHT = Kilogram.of(9.55);
+    public static final double PIVOT_MOTOR_SPEED = 0.1;
+    public static final double PIVOT_REST_SPEED = 0;
+    public static final Measure<AngularVelocityUnit> PIVOT_MAX_VEL = DegreesPerSecond.of(10000);
   }
 
   public static final class CanalConstants {
@@ -72,7 +88,7 @@ public final class Constants {
     public static final int ARM_FEEDER_SETPOINT = 0;
     public static final int ARM_LEVEL1_SETPOINT = 0;
     public static final int ARM_LEVEL2_SETPOINT = 5;
-    public static final int ARM_LEVEL3_SETPOINT = 20;
+    public static final int ARM_LEVEL3_SETPOINT = 9;
     public static final int ARM_LEVEL4_SETPOINT = 0;
   }
 
@@ -96,8 +112,8 @@ public final class Constants {
     public static final double kArmReduction = 30; // 30:1
     public static final double kArmLength = 0.52705; // m
     public static final double kArmMass = 2.72155; // Kg
-    public static final double kMinAngleRads = Units.degreesToRadians(-90);
-    public static final double kMaxAngleRads = Units.degreesToRadians(90); // from horiz
+    public static final double kMinAngleRads = Units.degreesToRadians(0);
+    public static final double kMaxAngleRads = Units.degreesToRadians(360); // from horiz
   }
 
   public static class OperatorConstants {
