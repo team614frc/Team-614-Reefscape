@@ -96,7 +96,6 @@ public final class Configs {
       intakePivotConfig
           .idleMode(IdleMode.kCoast)
           .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
-
     }
   }
 }
