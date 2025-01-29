@@ -81,29 +81,34 @@ public final class Configs {
 
   public static final class IntakeSubsystem {
     public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
-    public static final SparkFlexConfig intakePivotConfig = new SparkFlexConfig();
 
     static {
       intakeConfig
           .idleMode(IdleMode.kCoast)
           .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
+    }
+  }
 
+  public static final class IntakePivotSubsystem {
+    public static final SparkFlexConfig intakePivotConfig = new SparkFlexConfig();
+
+    static {
       intakePivotConfig
           .idleMode(IdleMode.kCoast)
           .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
 
-      intakePivotConfig
-          .closedLoop
-          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-          // PID Values for position control
-          .p(Constants.ElevatorConstants.ELEVATOR_P_VALUE)
-          .d(Constants.ElevatorConstants.ELEVATOR_D_VALUE)
-          .outputRange(-1, 1)
-          .maxMotion
-          // Set MAXMotion parameters for position control
-          .maxVelocity(5000)
-          .maxAcceleration(7500)
-          .allowedClosedLoopError(0.5);
+      /* intakePivotConfig
+      .closedLoop
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      // PID Values for position control
+      .p(Constants.ElevatorConstants.ELEVATOR_P_VALUE)
+      .d(Constants.ElevatorConstants.ELEVATOR_D_VALUE)
+      .outputRange(-1, 1)
+      .maxMotion
+      // Set MAXMotion parameters for position control
+      .maxVelocity(5000)
+      .maxAcceleration(7500)
+      .allowedClosedLoopError(0.5); */
     }
   }
 }

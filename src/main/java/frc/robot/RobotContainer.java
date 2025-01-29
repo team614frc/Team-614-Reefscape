@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Configs.IntakeSubsystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -30,7 +30,7 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
   private final ElevatorArmSubsystem m_elevatorArmSubsystem = new ElevatorArmSubsystem();
-  private final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
+  private final IntakePivotSubsystem m_IntakePivotSubsystem = new IntakePivotSubsystem();
 
   private final SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -98,8 +98,8 @@ public class RobotContainer {
     driverXbox.back().onTrue(Commands.none());
     driverXbox.leftBumper().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel2));
     driverXbox.rightBumper().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel3));
-    driverXbox.leftTrigger().onTrue(m_elevatorArmSubsystem.setSetpointCommand(Setpoint.kLevel4));
-    driverXbox.rightTrigger().onTrue(Commands.none());
+    driverXbox.leftTrigger().onTrue(m_IntakePivotSubsystem.pivotUp());
+    driverXbox.rightTrigger().onTrue(m_IntakePivotSubsystem.pivotDown());
 
     codriverXbox.a().onTrue(Commands.none());
     codriverXbox.x().onTrue(Commands.none());

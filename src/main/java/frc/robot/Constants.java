@@ -51,13 +51,16 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR = 24;
-    public static final int INTAKE_PIVOT_MOTOR = 25;
+    public static final int INTAKE_PIVOT_MOTOR = 26;
     public static final int INTAKE_CURRENT_LIMIT = 40;
     public static final double OUTTAKE_SPEED = 0;
     public static final double INTAKE_SPEED = 0;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
 
+    public static final double PIVOT_kP = 0.1;
+    public static final double PIVOT_kI = 0;
+    public static final double PIVOT_kD = 0;
     public static final double PIVOT_kS = 0;
     public static final double PIVOT_kG = 0;
     public static final double PIVOT_kV = 0;
