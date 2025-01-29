@@ -104,6 +104,12 @@ public final class Constants {
     public static final int END_EFFECTOR_MOTOR = 25;
   }
 
+  public static final class ClimberConstants {
+    // Hold time on motor brakes when disabled.
+    public static final int CLIMBER_MOTOR = 26;
+    public static final int CLIMBER_CURRENT_LIMIT = 0;
+  }
+
   public static final class SimulationRobotConstants {
     public static final double kPixelsPerMeter = 20;
 
@@ -117,13 +123,6 @@ public final class Constants {
     public static final double kArmMass = 2.72155; // Kg
     public static final double kMinAngleRads = Units.degreesToRadians(0);
     public static final double kMaxAngleRads = Units.degreesToRadians(360); // from horiz
-  }
-
-  public static final class ClimberConstants {
-    // Hold time on motor brakes when disabled.
-    public static final int LEFT_CLIMBER_MOTOR = 21;
-    public static final int RIGHT_CLIMBER_MOTOR = 22;
-    public static final Current MOTOR_CURRENT_LIMIT = Amp.of(0);
   }
 
   public static class OperatorConstants {

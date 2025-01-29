@@ -273,7 +273,6 @@ public class SwerveSubsystem extends SubsystemBase {
         SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, 12), 3.0, 5.0, 3.0);
   }
   */
-
   /**
    * Command to characterize the robot angle motors using SysId
    *

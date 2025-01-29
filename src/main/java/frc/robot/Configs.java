@@ -99,4 +99,14 @@ public final class Configs {
 
     }
   }
+
+  public static final class ClimberSubsystem {
+    public static final SparkFlexConfig climberConfig = new SparkFlexConfig();
+    static {
+      climberConfig
+          .idleMode(IdleMode.kCoast)
+          .smartCurrentLimit(Constants.IntakeConstants.INTAKE_CURRENT_LIMIT);
+
+    }
+  }
 }
