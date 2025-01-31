@@ -63,7 +63,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
     double velocity = endEffectorMotor.getEncoder().getVelocity();
     double output = endEffectorMotor.get();
 
-    return (output > 0.05) && (velocity < 50); // velocty ensures the motor is running before detecting a stall
+    return (output > 0.05)
+        && (velocity < 50); // velocty ensures the motor is running before detecting a stall
   }
 
   private boolean previouslyHadGamePiece = false;
