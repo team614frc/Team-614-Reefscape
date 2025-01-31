@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -74,7 +73,7 @@ public class RobotContainer {
       drivebase.driveFieldOriented(driveAngularVelocitySim);
 
   // Main Commands
-  private Command runPivotAndIntake() {
+  private Command pivotAndIntake() {
     return Commands.startEnd(
         () -> { // When pressed
           Commands.parallel(
@@ -141,7 +140,7 @@ public class RobotContainer {
     driverXbox.back().onTrue(Commands.none());
     driverXbox.leftBumper().onTrue(elevatorArm.setSetpointCommand(Setpoint.kLevel2));
     driverXbox.rightBumper().onTrue(elevatorArm.setSetpointCommand(Setpoint.kLevel3));
-    driverXbox.leftTrigger().whileTrue(runPivotAndIntake());
+    driverXbox.leftTrigger().whileTrue(pivotAndIntake());
     driverXbox.rightTrigger().whileTrue(scoreLevelThree());
 
     codriverXbox.a().onTrue(Commands.none());
@@ -159,25 +158,6 @@ public class RobotContainer {
         !RobotBase.isSimulation()
             ? driveFieldOrientedAnglularVelocity
             : driveFieldOrientedAngularVelocitySim);
-
-    // Monitor game piece (field elements, ew) pickup for rumble effect
-    Commands.run(
-            () -> {
-              if (endEffector.justPickedUpGamePiece()) {
-                driverXbox.getHID().setRumble(RumbleType.kBothRumble, 1.0);
-                codriverXbox.getHID().setRumble(RumbleType.kBothRumble, 1.0);
-
-                // Stop rumble after 0.3 seconds
-                Commands.waitSeconds(0.3)
-                    .andThen(
-                        () -> {
-                          driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.0);
-                          codriverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.0);
-                        })
-                    .schedule();
-              }
-            })
-        .schedule();
   }
 
   /**

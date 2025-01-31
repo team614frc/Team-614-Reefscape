@@ -4,6 +4,12 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Kilogram;
+import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkLimitSwitchSim;
@@ -57,64 +63,60 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   private boolean wasResetByButton = false;
   private boolean wasResetByLimit = false;
 
-  /** Zero the arm and elevator encoders when the user button is pressed on the roboRIO. */
-  private void zeroOnUserButton() {
-    if (!wasResetByButton && RobotController.getUserButton()) {
-      // Zero the encoders only when button switches from "unpressed" to "pressed" to prevent
-      // constant zeroing while pressed
-      wasResetByButton = true;
-      elevatorEncoder.setPosition(0);
-      armEncoder.setPosition(0);
-    } else if (!RobotController.getUserButton()) {
-      wasResetByButton = false;
-    }
-  }
-
   // Simulation setup and variables
-  private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
+  private DCMotor elevatorMotorModel =
+      DCMotor.getNeoVortex(SimulationRobotConstants.SIM_MOTOR_COUNT);
 
   private SparkFlexSim elevatorMotorSim;
   private SparkLimitSwitchSim elevatorLimitSwitchSim;
-  private final ElevatorSim m_elevatorSim =
+  private final ElevatorSim elevatorSim =
       new ElevatorSim(
           elevatorMotorModel,
           SimulationRobotConstants.ELEVATOR_GEARING,
-          SimulationRobotConstants.CARRIAGE_MASS,
-          SimulationRobotConstants.ELEVATOR_DRUM_RADIUS,
-          SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS,
-          SimulationRobotConstants.MAX_ELEVATORHEIGHT_METERS,
+          SimulationRobotConstants.CARRIAGE_MASS.in(Kilogram),
+          SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter),
+          SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS.in(Meter),
+          SimulationRobotConstants.MAX_ELEVATORHEIGHT_METERS.in(Meter),
           true,
-          SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS);
+          SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS.in(Meter));
 
-  private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
+  private DCMotor armMotorModel = DCMotor.getNeoVortex(SimulationRobotConstants.SIM_MOTOR_COUNT);
   private SparkFlexSim armMotorSim;
-  private final SingleJointedArmSim m_armSim =
+  private final SingleJointedArmSim armSim =
       new SingleJointedArmSim(
           armMotorModel,
           SimulationRobotConstants.ARM_REDUCTION,
           SingleJointedArmSim.estimateMOI(
-              SimulationRobotConstants.ARM_LENGTH, SimulationRobotConstants.ARM_MASS),
-          SimulationRobotConstants.ARM_LENGTH,
+              SimulationRobotConstants.ARM_LENGTH.in(Meter),
+              SimulationRobotConstants.ARM_MASS.in(Kilogram)),
+          SimulationRobotConstants.ARM_LENGTH.in(Meter),
           SimulationRobotConstants.MIN_ANGLE_RADS,
           SimulationRobotConstants.MAX_ANGLE_RADS,
           true,
           SimulationRobotConstants.MIN_ANGLE_RADS);
 
   // Mechanism2d setup for subsystem
-  private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
-  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 25, 0);
-  private final MechanismLigament2d m_elevatorMech2d =
-      m_mech2dRoot.append(
+  private final Mechanism2d mech2d =
+      new Mechanism2d(
+          SimulationRobotConstants.MECH2D_WIDTH, SimulationRobotConstants.MECH2D_HEIGHT);
+  private final MechanismRoot2d mech2dRoot =
+      mech2d.getRoot(
+          "Elevator Root",
+          SimulationRobotConstants.ELEVATOR_MECH2D_X,
+          SimulationRobotConstants.ELEVATOR_MECH2D_Y);
+  private final MechanismLigament2d elevatorMech2d =
+      mech2dRoot.append(
           new MechanismLigament2d(
               "Elevator",
-              SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS
+              SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS.in(Meter)
                   * SimulationRobotConstants.PIXELSPERMETER,
               90));
-  private final MechanismLigament2d m_armMech2d =
-      m_elevatorMech2d.append(
+  private final MechanismLigament2d armMech2d =
+      elevatorMech2d.append(
           new MechanismLigament2d(
               "Arm",
-              SimulationRobotConstants.ARM_LENGTH * SimulationRobotConstants.PIXELSPERMETER,
+              SimulationRobotConstants.ARM_LENGTH.in(Meter)
+                  * SimulationRobotConstants.PIXELSPERMETER,
               180 - Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS) - 90));
 
   /** Creates a new ElevatorArmSubsystem. */
@@ -131,11 +133,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         PersistMode.kPersistParameters);
 
     // Display mechanism2d
-    SmartDashboard.putData("Elevator Subsystem", m_mech2d);
+    SmartDashboard.putData("Elevator Subsystem", mech2d);
 
     // Zero arm and elevator encoders on initialization
-    elevatorEncoder.setPosition(0);
-    armEncoder.setPosition(0);
+    elevatorEncoder.setPosition(ElevatorConstants.ELEVATOR_ZERO_ENCODER);
+    armEncoder.setPosition(ArmConstants.ARM_ZERO_ENCODER);
 
     // Initialize simulation values
     elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
@@ -159,8 +161,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     if (!wasResetByLimit && elevatorMotor.getReverseLimitSwitch().isPressed()) {
       // Zero the encoder only when the limit switch switches from "unpressed" to "pressed" to
       // prevent constant zeroing while pressed
-      armEncoder.setPosition(0);
-      elevatorEncoder.setPosition(0);
+      armEncoder.setPosition(ArmConstants.ARM_ZERO_ENCODER);
+      elevatorEncoder.setPosition(ElevatorConstants.ELEVATOR_ZERO_ENCODER);
       wasResetByLimit = true;
     } else if (!elevatorMotor.getReverseLimitSwitch().isPressed()) {
       wasResetByLimit = false;
@@ -174,6 +176,19 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   private boolean isElevatorAtTarget() {
     return Math.abs(getElevatorPosition() - elevatorCurrentTarget)
         < ElevatorConstants.ELEVATOR_THRESHOLD;
+  }
+
+  /** Zero the arm and elevator encoders when the user button is pressed on the roboRIO. */
+  private void zeroOnUserButton() {
+    if (!wasResetByButton && RobotController.getUserButton()) {
+      // Zero the encoders only when button switches from "unpressed" to "pressed" to prevent
+      // constant zeroing while pressed
+      wasResetByButton = true;
+      elevatorEncoder.setPosition(ElevatorConstants.ELEVATOR_ZERO_ENCODER);
+      armEncoder.setPosition(ArmConstants.ARM_ZERO_ENCODER);
+    } else if (!RobotController.getUserButton()) {
+      wasResetByButton = false;
+    }
   }
 
   /**
@@ -193,16 +208,16 @@ public class ElevatorArmSubsystem extends SubsystemBase {
                   elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
                   break;
                 case kLevel1:
-                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL1_SETPOINT;
+                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L1_SETPOINT;
                   break;
                 case kLevel2:
-                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL2_SETPOINT;
+                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L2_SETPOINT;
                   break;
                 case kLevel3:
-                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL3_SETPOINT;
+                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L3_SETPOINT;
                   break;
                 case kLevel4:
-                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL4_SETPOINT;
+                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L4_SETPOINT;
                   break;
               }
             }),
@@ -221,16 +236,16 @@ public class ElevatorArmSubsystem extends SubsystemBase {
                   armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
                   break;
                 case kLevel1:
-                  armCurrentTarget = ArmConstants.ARM_LEVEL1_SETPOINT;
+                  armCurrentTarget = ArmConstants.ARM_L1_SETPOINT;
                   break;
                 case kLevel2:
-                  armCurrentTarget = ArmConstants.ARM_LEVEL2_SETPOINT;
+                  armCurrentTarget = ArmConstants.ARM_L2_SETPOINT;
                   break;
                 case kLevel3:
-                  armCurrentTarget = ArmConstants.ARM_LEVEL3_SETPOINT;
+                  armCurrentTarget = ArmConstants.ARM_L3_SETPOINT;
                   break;
                 case kLevel4:
-                  armCurrentTarget = ArmConstants.ARM_LEVEL4_SETPOINT;
+                  armCurrentTarget = ArmConstants.ARM_L4_SETPOINT;
                   break;
               }
             }));
@@ -243,59 +258,66 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     moveToSetpoint();
     zeroElevatorOnLimitSwitch();
     // Display subsystem values
-    SmartDashboard.putNumber("Arm/Target Position", armCurrentTarget);
-    SmartDashboard.putNumber("Arm/Arm Actual Position", armEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
-    SmartDashboard.putNumber("Elevator/Elevator Actual Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Arm Target Position", armCurrentTarget);
+    SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator Target Position", elevatorCurrentTarget);
+    SmartDashboard.putNumber("Elevator Actual Position", elevatorEncoder.getPosition());
 
     // Update mechanism2d
-    m_elevatorMech2d.setLength(
-        SimulationRobotConstants.PIXELSPERMETER * SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS
+    elevatorMech2d.setLength(
+        SimulationRobotConstants.PIXELSPERMETER
+                * SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS.in(Meter)
             + SimulationRobotConstants.PIXELSPERMETER
                 * (elevatorEncoder.getPosition() / SimulationRobotConstants.ELEVATOR_GEARING)
-                * (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS * 2.0 * Math.PI));
-    m_armMech2d.setAngle(
+                * (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter)
+                    * SimulationRobotConstants.DRUM_CIRCUMFERENCE
+                    * Math.PI));
+    armMech2d.setAngle(
         180
             - ( // mirror the angles so they display in the correct direction
             Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS)
                 + Units.rotationsToDegrees(
                     armEncoder.getPosition() / SimulationRobotConstants.ARM_REDUCTION))
-            - 90 // subtract 90 degrees to account for the elevator
+            - SimulationRobotConstants.ELEVATOR_ACCOUNT.in(
+                Degrees) // subtract 90 degrees to account for the elevator
         );
   }
 
   /** Get the current drawn by each simulation physics model */
   public double getSimulationCurrentDraw() {
-    return m_elevatorSim.getCurrentDrawAmps() + m_armSim.getCurrentDrawAmps();
+    return elevatorSim.getCurrentDrawAmps() + armSim.getCurrentDrawAmps();
   }
 
   @Override
   public void simulationPeriodic() {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
-    m_elevatorSim.setInput(elevatorMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
-    m_armSim.setInput(armMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
+    elevatorSim.setInput(elevatorMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
+    armSim.setInput(armMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
 
     // Update sim limit switch
-    elevatorLimitSwitchSim.setPressed(m_elevatorSim.getPositionMeters() == 0);
+    elevatorLimitSwitchSim.setPressed(
+        elevatorSim.getPositionMeters() == SimulationRobotConstants.LIMIT_SWITCH_ZERO);
 
     // Next, we update it. The standard loop time is 20ms.
-    m_elevatorSim.update(0.020);
-    m_armSim.update(0.020);
+    elevatorSim.update(SimulationRobotConstants.SIM_STANDARD_LOOP.in(Second));
+    armSim.update(SimulationRobotConstants.SIM_UPDATE_TIME.in(Second));
 
     // Iterate the elevator and arm SPARK simulations
     elevatorMotorSim.iterate(
-        ((m_elevatorSim.getVelocityMetersPerSecond()
-                    / (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS * 2.0 * Math.PI))
+        ((elevatorSim.getVelocityMetersPerSecond()
+                    / (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter)
+                        * SimulationRobotConstants.DRUM_CIRCUMFERENCE
+                        * Math.PI))
                 * SimulationRobotConstants.ELEVATOR_GEARING)
-            * 60.0,
+            * SimulationRobotConstants.ONE_MINUTE.in(Seconds),
         RobotController.getBatteryVoltage(),
-        0.02);
+        SimulationRobotConstants.SIM_UPDATE_TIME.in(Second));
     armMotorSim.iterate(
         Units.radiansPerSecondToRotationsPerMinute(
-            m_armSim.getVelocityRadPerSec() * SimulationRobotConstants.ARM_REDUCTION),
+            armSim.getVelocityRadPerSec() * SimulationRobotConstants.ARM_REDUCTION),
         RobotController.getBatteryVoltage(),
-        0.02);
+        SimulationRobotConstants.SIM_UPDATE_TIME.in(Second));
     // SimBattery is updated in Robot.java
   }
 }

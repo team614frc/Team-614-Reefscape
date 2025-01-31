@@ -46,8 +46,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
         PersistMode.kPersistParameters);
   }
 
-  @Override
   public void periodic() {
+    super.periodic();
     double output = pidController.calculate(getMeasurement());
     useOutput(output);
   }
