@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ArmConstants;
@@ -31,7 +32,8 @@ import frc.robot.Constants.SimulationRobotConstants;
 
 public class ElevatorArmSubsystem extends SubsystemBase {
   public enum Setpoint {
-    kFeederStation,
+    kIntake,
+    kIdleSetpoint,
     kLevel1,
     kLevel2,
     kLevel3,
@@ -48,8 +50,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   private SparkClosedLoopController armController = armMotor.getClosedLoopController();
   private RelativeEncoder armEncoder = armMotor.getEncoder();
 
-  private double elevatorCurrentTarget = ElevatorConstants.ELEVATOR_FEEDER_SETPOINT;
-  private double armCurrentTarget = ArmConstants.ARM_FEEDER_SETPOINT;
+  private double elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
+  private double armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
 
   // Member variables for subsystem state management
   private boolean wasResetByButton = false;
@@ -165,36 +167,73 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     }
   }
 
+  public double getElevatorPosition() {
+    return elevatorMotor.getEncoder().getPosition(); // Replace with actual encoder method
+  }
+
+  private boolean isElevatorAtTarget() {
+    return Math.abs(getElevatorPosition() - elevatorCurrentTarget)
+        < ElevatorConstants.ELEVATOR_THRESHOLD;
+  }
+
   /**
    * Command to set the subsystem setpoint. This will set the arm and elevator to their predefined
    * positions for the given setpoint.
    */
   public Command setSetpointCommand(Setpoint setpoint) {
-    return this.runOnce(
-        () -> {
-          switch (setpoint) {
-            case kFeederStation:
-              armCurrentTarget = ArmConstants.ARM_FEEDER_SETPOINT;
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_FEEDER_SETPOINT;
-              break;
-            case kLevel1:
-              armCurrentTarget = ArmConstants.ARM_LEVEL1_SETPOINT;
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL1_SETPOINT;
-              break;
-            case kLevel2:
-              armCurrentTarget = ArmConstants.ARM_LEVEL2_SETPOINT;
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL2_SETPOINT;
-              break;
-            case kLevel3:
-              armCurrentTarget = ArmConstants.ARM_LEVEL3_SETPOINT;
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL3_SETPOINT;
-              break;
-            case kLevel4:
-              armCurrentTarget = ArmConstants.ARM_LEVEL4_SETPOINT;
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL4_SETPOINT;
-              break;
-          }
-        });
+    return Commands.sequence(
+        // Set the elevator target first
+        this.runOnce(
+            () -> {
+              switch (setpoint) {
+                case kIntake:
+                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
+                  break;
+                case kIdleSetpoint:
+                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
+                  break;
+                case kLevel1:
+                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL1_SETPOINT;
+                  break;
+                case kLevel2:
+                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL2_SETPOINT;
+                  break;
+                case kLevel3:
+                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL3_SETPOINT;
+                  break;
+                case kLevel4:
+                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_LEVEL4_SETPOINT;
+                  break;
+              }
+            }),
+
+        // Wait until the elevator reaches its target
+        Commands.waitUntil(this::isElevatorAtTarget),
+
+        // Then set the arm target
+        this.runOnce(
+            () -> {
+              switch (setpoint) {
+                case kIntake:
+                  armCurrentTarget = ArmConstants.ARM_INTAKE_SETPOINT;
+                  break;
+                case kIdleSetpoint:
+                  armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
+                  break;
+                case kLevel1:
+                  armCurrentTarget = ArmConstants.ARM_LEVEL1_SETPOINT;
+                  break;
+                case kLevel2:
+                  armCurrentTarget = ArmConstants.ARM_LEVEL2_SETPOINT;
+                  break;
+                case kLevel3:
+                  armCurrentTarget = ArmConstants.ARM_LEVEL3_SETPOINT;
+                  break;
+                case kLevel4:
+                  armCurrentTarget = ArmConstants.ARM_LEVEL4_SETPOINT;
+                  break;
+              }
+            }));
   }
 
   @Override

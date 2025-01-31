@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,6 +32,8 @@ public class CanalSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     super.periodic();
+
+    SmartDashboard.putNumber("Canal Motor Output", canalMotor.get());
   }
 
   public void set(double speed) {
@@ -38,12 +41,9 @@ public class CanalSubsystem extends SubsystemBase {
   }
 
   public Command intakeCoralCanal() {
-    return Commands.runEnd(
+    return Commands.runOnce(
         () -> {
           set(Constants.CanalConstants.INTAKE_SPEED);
-        },
-        () -> {
-          set(Constants.CanalConstants.INTAKE_REST_SPEED);
         });
   }
 
@@ -54,6 +54,13 @@ public class CanalSubsystem extends SubsystemBase {
         },
         () -> {
           set(Constants.CanalConstants.OUTTAKE_REST_SPEED);
+        });
+  }
+
+  public Command stopCoralCanal() {
+    return Commands.runOnce(
+        () -> {
+          set(0);
         });
   }
 }
