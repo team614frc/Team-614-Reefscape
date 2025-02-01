@@ -26,12 +26,13 @@ class EndEffectorTest {
 
   @AfterEach // this method will run after each test
   void shutdown() throws Exception {
+    m_simMotor.disable();
     endEffector.getMotor().close(); // destroy our end effector object
   }
 
   @Test // marks this method as a test
   void intakeTest() {
-    endEffector.intake(); // close the intake
+    endEffector.intake().execute();
     m_simMotor.setAppliedOutput(Constants.EndEffectorConstants.INTAKE_SPEED);
     assertEquals(Constants.EndEffectorConstants.INTAKE_SPEED, m_simMotor.getAppliedOutput(), DELTA);
   }
