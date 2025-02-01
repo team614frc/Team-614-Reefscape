@@ -62,7 +62,7 @@ public final class Constants {
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
     public static final int VELOCITY_COMPONENT = 0;
-    public static final int FULL_CIRCLE = 360;
+    public static final Angle FULL_CIRCLE = Degrees.of(360);
   }
 
   public static class EndEffectorConstants {
@@ -111,7 +111,7 @@ public final class Constants {
     public static final int ARM_L3_SETPOINT = 9;
     public static final int ARM_L4_SETPOINT = 0;
     public static final int ARM_ZERO_ENCODER = 0;
-    public static final AngularVelocity ARM_MAX_VELOCITY = Rotations.of(5250).per(Minute);
+    public static final AngularVelocity ARM_MAX_VELOCITY = Rotations.per(Minute).of(5250);
     public static final AngularAcceleration ARM_MAX_ACCELERATION =
         Rotations.per(Minute).per(Second).of(7500);
     public static final double ARM_MIN_RANGE = -1;
@@ -122,14 +122,14 @@ public final class Constants {
   }
 
   public static final class SimulationRobotConstants {
-    public static final double PIXELSPERMETER = 20;
+    public static final double PIXELS_PER_METER = 20;
 
     public static final double ELEVATOR_GEARING = 12; // 12:1
     public static final Mass CARRIAGE_MASS =
         Kilogram.of(2.72155 + 6.123497); // Kg, arm + elevator stage
     public static final Distance ELEVATOR_DRUM_RADIUS = Meter.of(0.0205232); // m
-    public static final Distance MIN_ELEVATORHEIGHT_METERS = Meter.of(0.45085); // m
-    public static final Distance MAX_ELEVATORHEIGHT_METERS = Meter.of(1.62); // m
+    public static final Distance MIN_ELEVATOR_HEIGHT = Meter.of(0.45085); // m
+    public static final Distance MAX_ELEVATOR_HEIGHT = Meter.of(1.62); // m
     public static final double ARM_REDUCTION = 30; // 30:1
     public static final Distance ARM_LENGTH = Meter.of(0.52705); // m
     public static final Mass ARM_MASS = Kilogram.of(2.72155); // Kg

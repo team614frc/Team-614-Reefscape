@@ -87,6 +87,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   public Angle getPosition() {
     var position = intakePivotMotor.getEncoder().getPosition();
-    return Degree.of(position / IntakeConstants.GEAR_RATIO * IntakeConstants.FULL_CIRCLE);
+    return Degree.of(
+        position / IntakeConstants.GEAR_RATIO * IntakeConstants.FULL_CIRCLE.in(Degrees));
   }
 }

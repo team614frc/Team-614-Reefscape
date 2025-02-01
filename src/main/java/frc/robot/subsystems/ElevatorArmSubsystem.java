@@ -74,10 +74,10 @@ public class ElevatorArmSubsystem extends SubsystemBase {
           SimulationRobotConstants.ELEVATOR_GEARING,
           SimulationRobotConstants.CARRIAGE_MASS.in(Kilogram),
           SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter),
-          SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS.in(Meter),
-          SimulationRobotConstants.MAX_ELEVATORHEIGHT_METERS.in(Meter),
+          SimulationRobotConstants.MIN_ELEVATOR_HEIGHT.in(Meter),
+          SimulationRobotConstants.MAX_ELEVATOR_HEIGHT.in(Meter),
           true,
-          SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS.in(Meter));
+          SimulationRobotConstants.MIN_ELEVATOR_HEIGHT.in(Meter));
 
   private DCMotor armMotorModel = DCMotor.getNeoVortex(SimulationRobotConstants.SIM_MOTOR_COUNT);
   private SparkFlexSim armMotorSim;
@@ -107,15 +107,15 @@ public class ElevatorArmSubsystem extends SubsystemBase {
       mech2dRoot.append(
           new MechanismLigament2d(
               "Elevator",
-              SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS.in(Meter)
-                  * SimulationRobotConstants.PIXELSPERMETER,
+              SimulationRobotConstants.MIN_ELEVATOR_HEIGHT.in(Meter)
+                  * SimulationRobotConstants.PIXELS_PER_METER,
               ElevatorConstants.ELEVATOR_SIM_ANGLE.in(Degrees)));
   private final MechanismLigament2d armMech2d =
       elevatorMech2d.append(
           new MechanismLigament2d(
               "Arm",
               SimulationRobotConstants.ARM_LENGTH.in(Meter)
-                  * SimulationRobotConstants.PIXELSPERMETER,
+                  * SimulationRobotConstants.PIXELS_PER_METER,
               ArmConstants.ARM_STARTING_ANGLE.in(Degrees)
                   - Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS)
                   - ArmConstants.ARM_ANGLE_COMPENSATE.in(Degrees)));
@@ -237,9 +237,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
     // Update mechanism2d
     elevatorMech2d.setLength(
-        SimulationRobotConstants.PIXELSPERMETER
-                * SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS.in(Meter)
-            + SimulationRobotConstants.PIXELSPERMETER
+        SimulationRobotConstants.PIXELS_PER_METER
+                * SimulationRobotConstants.MIN_ELEVATOR_HEIGHT.in(Meter)
+            + SimulationRobotConstants.PIXELS_PER_METER
                 * (elevatorEncoder.getPosition() / SimulationRobotConstants.ELEVATOR_GEARING)
                 * (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter)
                     * SimulationRobotConstants.DRUM_CIRCUMFERENCE.in(Meter)
