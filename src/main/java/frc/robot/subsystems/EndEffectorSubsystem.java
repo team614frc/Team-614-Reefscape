@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Amp;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -13,14 +13,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class EndEffectorSubsystem extends SubsystemBase {
+public class EndEffectorSubsystem extends SubsystemBase implements AutoCloseable {
   private final SparkFlex endEffectorMotor =
       new SparkFlex(Constants.EndEffectorConstants.END_EFFECTOR_MOTOR, MotorType.kBrushless);
   private final SparkFlexConfig config = new SparkFlexConfig();
-
-  public SparkFlex getMotor() {
-    return endEffectorMotor;
-  }
 
   public EndEffectorSubsystem() {
     config.smartCurrentLimit((int) Constants.EndEffectorConstants.MOTOR_CURRENT_LIMIT.in(Amp));
@@ -38,6 +34,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
   // Set the power level for the end effector motor
   public void set(double speed) {
     endEffectorMotor.set(speed);
+  }
+
+  public SparkFlex getMotor() {
+    return endEffectorMotor;
   }
 
   // Command to activate the end effector (e.g., for gripping or releasing)
@@ -67,5 +67,19 @@ public class EndEffectorSubsystem extends SubsystemBase {
         () -> {
           set(0); // Ensure motor stays stopped after command ends
         });
+  }
+
+  public double getSpeed() {
+    return endEffectorMotor.get();
+  }
+
+  @Override
+  public void close() throws Exception {
+    endEffectorMotor.close();
+  }
+
+  public void set() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'set'");
   }
 }
