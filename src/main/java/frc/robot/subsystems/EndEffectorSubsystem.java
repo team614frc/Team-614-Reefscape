@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -14,7 +16,7 @@ import frc.robot.Constants;
 public class EndEffectorSubsystem extends SubsystemBase {
   private final SparkFlex endEffectorMotor =
       new SparkFlex(Constants.EndEffectorConstants.END_EFFECTOR_MOTOR, MotorType.kBrushless);
-
+  
   public EndEffectorSubsystem() {
     endEffectorMotor.configure(
         Configs.EndEffectorSubsystem.END_EFFECTOR_CONFIG,
