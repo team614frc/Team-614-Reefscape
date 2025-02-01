@@ -18,6 +18,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
       new SparkFlex(Constants.EndEffectorConstants.END_EFFECTOR_MOTOR, MotorType.kBrushless);
   private final SparkFlexConfig config = new SparkFlexConfig();
 
+  public SparkFlex getMotor() {
+    return endEffectorMotor;
+  }
+
   public EndEffectorSubsystem() {
     config.smartCurrentLimit((int) Constants.EndEffectorConstants.MOTOR_CURRENT_LIMIT.in(Amp));
     config.idleMode(IdleMode.kCoast);
