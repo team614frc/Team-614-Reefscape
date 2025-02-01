@@ -13,6 +13,7 @@ import edu.wpi.first.units.MassUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
@@ -72,6 +73,62 @@ public final class Constants {
     public static final int END_EFFECTOR_MOTOR = 25;
     public static final double END_EFFECTOR_MIN_OUTPUT = 0.15;
     public static final Angle END_EFFECTOR_MIN_RPM = Rotations.of(50);
+  }
+
+  public static final class ElevatorConstants {
+    public static final int ELEVATOR_MOTOR = 22;
+    public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(40);
+    public static final double ELEVATOR_P_VALUE = 0.15;
+    public static final double ELEVATOR_D_VALUE = 0.0;
+    public static final int ELEVATOR_INTAKE_SETPOINT = 0;
+    public static final int ELEVATOR_IDLE_SETPOINT = 0;
+    public static final int ELEVATOR_L1_SETPOINT = 0;
+    public static final int ELEVATOR_L2_SETPOINT = 15;
+    public static final int ELEVATOR_L3_SETPOINT = 34;
+    public static final int ELEVATOR_L4_SETPOINT = 0;
+    public static final int ELEVATOR_THRESHOLD = 1;
+    public static final int ELEVATOR_ZERO_ENCODER = 0;
+  }
+
+  public static final class ArmConstants {
+    public static final int ARM_MOTOR = 21;
+    public static final Current ARM_CURRENT_LIMIT = Amp.of(40);
+    public static final double ARM_P_VALUE = 0.00005;
+    public static final double ARM_D_VALUE = 0.0;
+    public static final int ARM_INTAKE_SETPOINT = 0;
+    public static final int ARM_IDLE_SETPOINT = 0;
+    public static final int ARM_L1_SETPOINT = 0;
+    public static final int ARM_L2_SETPOINT = 5;
+    public static final int ARM_L3_SETPOINT = 9;
+    public static final int ARM_L4_SETPOINT = 0;
+    public static final int ARM_ZERO_ENCODER = 0;
+  }
+
+  public static final class SimulationRobotConstants {
+    public static final double PIXELSPERMETER = 20;
+
+    public static final double ELEVATOR_GEARING = 12; // 12:1
+    public static final Mass CARRIAGE_MASS =
+        Kilogram.of(2.72155 + 6.123497); // Kg, arm + elevator stage
+    public static final Distance ELEVATOR_DRUM_RADIUS = Meter.of(0.0205232); // m
+    public static final Distance MIN_ELEVATORHEIGHT_METERS = Meter.of(0.45085); // m
+    public static final Distance MAX_ELEVATORHEIGHT_METERS = Meter.of(1.62); // m
+    public static final double ARM_REDUCTION = 30; // 30:1
+    public static final Distance ARM_LENGTH = Meter.of(0.52705); // m
+    public static final Mass ARM_MASS = Kilogram.of(2.72155); // Kg
+    public static final double MIN_ANGLE_RADS = Units.degreesToRadians(270);
+    public static final double MAX_ANGLE_RADS = Units.degreesToRadians(90); // from horiz
+    public static final Time SIM_STANDARD_LOOP = Second.of(0.020);
+    public static final int MECH2D_WIDTH = 50;
+    public static final int MECH2D_HEIGHT = 50;
+    public static final int ELEVATOR_MECH2D_X = 25;
+    public static final int ELEVATOR_MECH2D_Y = 0;
+    public static final int SIM_MOTOR_COUNT = 1;
+    public static final int LIMIT_SWITCH_ZERO = 0;
+    public static final Time SIM_UPDATE_TIME = Second.of(0.02);
+    public static final Angle ELEVATOR_ACCOUNT = Degrees.of(90);
+    public static final Time ONE_MINUTE = Seconds.of(60);
+    public static final double DRUM_CIRCUMFERENCE = 2.0;
   }
 
   public static class OperatorConstants {
