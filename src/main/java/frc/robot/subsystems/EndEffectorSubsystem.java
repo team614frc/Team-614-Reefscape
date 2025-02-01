@@ -38,10 +38,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   // Command to activate the end effector (e.g., for gripping or releasing)
   public Command intake() {
-    return Commands.runOnce(
-        () -> {
-          set(Constants.EndEffectorConstants.INTAKE_SPEED); // Example speed value
-        });
+    return Commands.runEnd(
+        () -> set(Constants.EndEffectorConstants.INTAKE_SPEED), // Example speed value
+        () -> set(Constants.EndEffectorConstants.INTAKE_REST_SPEED));
   }
 
   public Command outtake() {
