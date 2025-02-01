@@ -8,9 +8,6 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.MassUnit;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
@@ -57,11 +54,13 @@ public final class Constants {
     public static final double PIVOT_kV = 0;
     public static final double PIVOT_kA = 0;
     public static final double GEAR_RATIO = 60;
-    public static final Measure<AngleUnit> PIVOT_MAX = Degrees.of(20);
-    public static final Measure<AngleUnit> PIVOT_MIN = Degrees.of(105);
-    public static final Measure<MassUnit> PIVOT_WEIGHT = Kilogram.of(9.55);
+    public static final Angle PIVOT_MAX = Degrees.of(20);
+    public static final Angle PIVOT_MIN = Degrees.of(105);
+    public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
+    public static final int VELOCITY_COMPONENT = 0;
+    public static final int FULL_CIRCLE = 360;
   }
 
   public static class EndEffectorConstants {
