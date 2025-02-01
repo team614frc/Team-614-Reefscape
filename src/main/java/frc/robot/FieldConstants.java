@@ -48,7 +48,7 @@ public class FieldConstants {
     public static final double adjustX = Units.inchesToMeters(0);
     public static final double adjustY = Units.inchesToMeters(0);
   }
-  
+
   public static class Reef {
     public static final Translation2d center =
         new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
@@ -98,10 +98,12 @@ public class FieldConstants {
               new Pose3d(
                   new Translation3d(
                       poseDirection
-                          .transformBy(new Transform2d(Offsets.adjustX, Offsets.adjustY, new Rotation2d()))
+                          .transformBy(
+                              new Transform2d(Offsets.adjustX, Offsets.adjustY, new Rotation2d()))
                           .getX(),
                       poseDirection
-                          .transformBy(new Transform2d(Offsets.adjustX, Offsets.adjustY, new Rotation2d()))
+                          .transformBy(
+                              new Transform2d(Offsets.adjustX, Offsets.adjustY, new Rotation2d()))
                           .getY(),
                       level.height),
                   new Rotation3d(
@@ -113,10 +115,12 @@ public class FieldConstants {
               new Pose3d(
                   new Translation3d(
                       poseDirection
-                          .transformBy(new Transform2d(Offsets.adjustX, -Offsets.adjustY, new Rotation2d()))
+                          .transformBy(
+                              new Transform2d(Offsets.adjustX, -Offsets.adjustY, new Rotation2d()))
                           .getX(),
                       poseDirection
-                          .transformBy(new Transform2d(Offsets.adjustX, -Offsets.adjustY, new Rotation2d()))
+                          .transformBy(
+                              new Transform2d(Offsets.adjustX, -Offsets.adjustY, new Rotation2d()))
                           .getY(),
                       level.height),
                   new Rotation3d(

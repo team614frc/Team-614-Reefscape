@@ -39,7 +39,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 import limelight.estimator.PoseEstimate;
 import limelight.structures.AngularVelocity3d;
 import limelight.structures.Orientation3d;
@@ -404,7 +403,9 @@ public class SwerveSubsystem extends SubsystemBase {
     return new Orientation3d(
         swerveDrive.getGyroRotation3d(),
         new AngularVelocity3d(
-            DegreesPerSecond.of(0), DegreesPerSecond.of(0), swerveDrive.getGyro().getYawAngularVelocity()));
+            DegreesPerSecond.of(0),
+            DegreesPerSecond.of(0),
+            swerveDrive.getGyro().getYawAngularVelocity()));
   }
 
   /**
@@ -622,8 +623,8 @@ public class SwerveSubsystem extends SubsystemBase {
               && poseEstimate.getMinTagAmbiguity() < 0.3) {
             addVisionReading(poseEstimate.pose.toPose2d());
           }
-  });
-}
+        });
+  }
 
   public void updatePositionTest() {}
 
@@ -632,49 +633,44 @@ public class SwerveSubsystem extends SubsystemBase {
     int position;
     if (limelight.hasTarget()) {
       switch (limelight.getID()) {
-        case 7 -> 
-          position = (isRight) ? 0 : 1;
-        case 18 ->
-        position = (isRight) ? 0 : 1;
+        case 7 -> position = (isRight) ? 0 : 1;
+        case 18 -> position = (isRight) ? 0 : 1;
 
-        case 6 -> 
-          position = (isRight) ? 2 : 3;
-        case 17 ->
-        position = (isRight) ? 2 : 3;
+        case 6 -> position = (isRight) ? 2 : 3;
+        case 17 -> position = (isRight) ? 2 : 3;
 
-        case 11 -> 
-          position = (isRight) ? 4 : 5;
-        case 22 ->
-        position = (isRight) ? 4 : 5;
+        case 11 -> position = (isRight) ? 4 : 5;
+        case 22 -> position = (isRight) ? 4 : 5;
 
-        case 10 ->
-          position = (isRight) ? 6 : 7;
-        case 21 ->
-        position = (isRight) ? 6 : 7;
+        case 10 -> position = (isRight) ? 6 : 7;
+        case 21 -> position = (isRight) ? 6 : 7;
 
-        case 9 -> 
-          position = (isRight) ? 8 : 9;
-        case 20 ->
-        position = (isRight) ? 8 : 9;
+        case 9 -> position = (isRight) ? 8 : 9;
+        case 20 -> position = (isRight) ? 8 : 9;
 
-        case 8 -> 
-          position = (isRight) ? 10 : 11;
-        case 19 ->
-        position = (isRight) ? 10 : 11;
+        case 8 -> position = (isRight) ? 10 : 11;
+        case 19 -> position = (isRight) ? 10 : 11;
 
         default -> {
           return Commands.none();
         }
       }
-      path = FieldConstants.Reef.branchPositions.get(position).get(FieldConstants.ReefHeight.L1).toPose2d();
+      path =
+          FieldConstants.Reef.branchPositions
+              .get(position)
+              .get(FieldConstants.ReefHeight.L1)
+              .toPose2d();
       AllianceFlipUtil.apply(path);
       return driveToPose(path);
     }
     return Commands.none();
   }
 
-  public Command driveCoralStation(boolean isRight) { //may or may not use not sure, also might have to account for robot offset
-    return (isRight) ? driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.leftCenterFace)) : driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.rightCenterFace));
+  public Command driveCoralStation(
+      boolean isRight) { // may or may not use not sure, also might have to account for robot offset
+    return (isRight)
+        ? driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.leftCenterFace))
+        : driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.rightCenterFace));
   }
 
   public Command driveProcessor() {

@@ -90,8 +90,8 @@ public class RobotContainer {
     driverXbox.y().onTrue(Commands.none());
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
-    driverXbox.leftBumper().whileTrue(Commands.deferredProxy(() -> drivebase.driveReef(true)));
-    driverXbox.rightBumper().whileTrue(Commands.deferredProxy(() -> drivebase.driveReef(false)));
+    driverXbox.leftBumper().whileTrue(Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT)));
+    driverXbox.rightBumper().whileTrue(Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT)));
 
     codriverXbox.a().onTrue(Commands.none());
     codriverXbox.x().onTrue(Commands.none());
