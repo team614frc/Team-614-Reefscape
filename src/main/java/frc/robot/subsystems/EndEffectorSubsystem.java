@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.*;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -14,7 +14,7 @@ import frc.robot.Configs;
 import frc.robot.Constants;
 import frc.robot.Constants.EndEffectorConstants;
 
-public class EndEffectorSubsystem extends SubsystemBase {
+public class EndEffectorSubsystem extends SubsystemBase implements AutoCloseable {
   private final SparkFlex endEffectorMotor =
       new SparkFlex(Constants.EndEffectorConstants.END_EFFECTOR_MOTOR, MotorType.kBrushless);
 
@@ -36,6 +36,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
   // Set the power level for the end effector motor
   public void set(double speed) {
     endEffectorMotor.set(speed);
+  }
+
+  public SparkFlex getMotor() {
+    return endEffectorMotor;
   }
 
   // Command to activate the end effector (e.g., for gripping or releasing)
@@ -69,5 +73,19 @@ public class EndEffectorSubsystem extends SubsystemBase {
             < EndEffectorConstants.END_EFFECTOR_MIN_RPM.in(
                 Rotations)); // velocty ensures the motor is running before detecting a
     // stall
+  }
+
+  public double getSpeed() {
+    return endEffectorMotor.get();
+  }
+
+  @Override
+  public void close() throws Exception {
+    endEffectorMotor.close();
+  }
+
+  public void set() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'set'");
   }
 }

@@ -70,14 +70,5 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final int END_EFFECTOR_MOTOR = 25;
-    public static final double END_EFFECTOR_MIN_OUTPUT = 0.15;
-    public static final Angle END_EFFECTOR_MIN_RPM = Rotations.of(50);
-  }
-
-  public static class OperatorConstants {
-    // Joystick deadband.
-    public static final double DEADBAND = 0.1;
-    public static final int DRIVER_PORT = 0;
-    public static final int CODRIVER_PORT = 1;
   }
 }
