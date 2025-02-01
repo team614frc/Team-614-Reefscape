@@ -35,8 +35,9 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  final CommandXboxController driverXbox = new CommandXboxController(0);
-  final CommandXboxController codriverXbox = new CommandXboxController(1);
+  final CommandXboxController driverXbox = new CommandXboxController(OperatorConstants.DRIVER_PORT);
+  final CommandXboxController codriverXbox =
+      new CommandXboxController(OperatorConstants.CODRIVER_PORT);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =

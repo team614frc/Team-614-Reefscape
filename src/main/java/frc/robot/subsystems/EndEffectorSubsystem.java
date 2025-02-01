@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
-
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -12,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants;
+import frc.robot.Constants.EndEffectorConstants;
 
 public class EndEffectorSubsystem extends SubsystemBase {
   private final SparkFlex endEffectorMotor =
@@ -64,8 +63,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
     double velocity = endEffectorMotor.getEncoder().getVelocity();
     double output = endEffectorMotor.get();
 
-    return (output > 0.05)
-        && (velocity < 50); // velocty ensures the motor is running before detecting a stall
+    return (output > EndEffectorConstants.END_EFFECTOR_MINOUTPUT)
+        && (velocity
+            < EndEffectorConstants
+                .END_EFFECTOR_MINRPM); // velocty ensures the motor is running before detecting a
+    // stall
   }
 
   private boolean previouslyHadGamePiece = false;

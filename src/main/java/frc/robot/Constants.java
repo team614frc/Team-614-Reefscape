@@ -11,7 +11,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.MassUnit;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
@@ -61,7 +60,6 @@ public final class Constants {
     public static final Measure<MassUnit> PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final AngularVelocity PIVOT_MAX_VEL = DegreesPerSecond.of(10000);
   }
 
   public static class EndEffectorConstants {
@@ -71,10 +69,14 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final int END_EFFECTOR_MOTOR = 25;
+    public static final double END_EFFECTOR_MINOUTPUT = 0.15;
+    public static final int END_EFFECTOR_MINRPM = 50;
   }
 
   public static class OperatorConstants {
     // Joystick deadband.
     public static final double DEADBAND = 0.1;
+    public static final int DRIVER_PORT = 0;
+    public static final int CODRIVER_PORT = 1;
   }
 }
