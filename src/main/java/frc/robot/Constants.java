@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.MassUnit;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
@@ -69,8 +70,8 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final int END_EFFECTOR_MOTOR = 25;
-    public static final double END_EFFECTOR_MINOUTPUT = 0.15;
-    public static final int END_EFFECTOR_MINRPM = 50;
+    public static final double END_EFFECTOR_MIN_OUTPUT = 0.15;
+    public static final Angle END_EFFECTOR_MIN_RPM = Rotations.of(50);
   }
 
   public static class OperatorConstants {

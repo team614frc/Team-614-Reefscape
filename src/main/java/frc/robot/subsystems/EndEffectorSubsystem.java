@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -62,10 +64,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
     double velocity = endEffectorMotor.getEncoder().getVelocity();
     double output = endEffectorMotor.get();
 
-    return (output > EndEffectorConstants.END_EFFECTOR_MINOUTPUT)
+    return (output > EndEffectorConstants.END_EFFECTOR_MIN_OUTPUT)
         && (velocity
-            < EndEffectorConstants
-                .END_EFFECTOR_MINRPM); // velocty ensures the motor is running before detecting a
+            < EndEffectorConstants.END_EFFECTOR_MIN_RPM.in(
+                Rotations)); // velocty ensures the motor is running before detecting a
     // stall
   }
 }
