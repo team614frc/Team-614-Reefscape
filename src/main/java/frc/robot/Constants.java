@@ -6,9 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.CurrentUnit;
@@ -41,36 +38,6 @@ public final class Constants {
   public static class OperatorConstants {
     // Joystick deadband.
     public static final double DEADBAND = 0.1;
-  }
-
-  public static class VisionConstants {
-    public static final Pose3d cameraOffset = Pose3d.kZero;
-    public static final Pose2d ID17REEFRIGHTBRANCH =
-        new Pose2d(3.3, 4.2, Rotation2d.fromDegrees(60));
-    public static final Pose2d ID17REEFLEFTBRANCH =
-        new Pose2d(3.2, 3.9, Rotation2d.fromDegrees(60));
-
-    public static final Pose2d ID18REEFRIGHTBRANCH =
-        new Pose2d(3.3, 4.2, Rotation2d.fromDegrees(0));
-    public static final Pose2d ID18REEFLEFTBRANCH = new Pose2d(3.2, 4.2, Rotation2d.fromDegrees(0));
-
-    public static final Pose2d ID19REEFRIGHTBRANCH =
-        new Pose2d(3.7, 5, Rotation2d.fromDegrees(-60));
-    public static final Pose2d ID19REEFLEFTBRANCH = new Pose2d(4, 5.1, Rotation2d.fromDegrees(-60));
-
-    public static final Pose2d ID20REEFRIGHTTBRANCH =
-        new Pose2d(5, 5.2, Rotation2d.fromDegrees(-120));
-    public static final Pose2d ID20REEFLEFTBRANCH =
-        new Pose2d(5.3, 5, Rotation2d.fromDegrees(-120));
-
-    public static final Pose2d ID21REEFRIGHTTBRANCH =
-        new Pose2d(5.8, 4.2, Rotation2d.fromDegrees(-180));
-    public static final Pose2d ID21REEFLEFTBRANCH =
-        new Pose2d(5.8, 4.2, Rotation2d.fromDegrees(-180));
-
-    public static final Pose2d ID22REEFRIGHTBRANCH =
-        new Pose2d(4, 2.8, Rotation2d.fromDegrees(120));
-    public static final Pose2d ID22REEFLEFTBRANCH = new Pose2d(3, 3.7, Rotation2d.fromDegrees(120));
   }
 
   public static class EndEffectorConstants {

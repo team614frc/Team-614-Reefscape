@@ -16,11 +16,8 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -34,13 +31,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import frc.robot.AllianceFlipUtil;
 import frc.robot.Constants;
-import frc.robot.Constants.VisionConstants;
+import frc.robot.FieldConstants;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
 import limelight.estimator.PoseEstimate;
 import limelight.structures.AngularVelocity3d;
 import limelight.structures.Orientation3d;
@@ -59,8 +58,6 @@ public class SwerveSubsystem extends SubsystemBase {
   /** Swerve drive object. */
   private final SwerveDrive swerveDrive;
 
-  private final AprilTagFieldLayout aprilTagFieldLayout =
-      AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
   private final LimelightSubsystem limelight;
 
   /**
@@ -407,7 +404,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return new Orientation3d(
         swerveDrive.getGyroRotation3d(),
         new AngularVelocity3d(
-            DegreesPerSecond.of(5), DegreesPerSecond.of(5), DegreesPerSecond.of(5)));
+            DegreesPerSecond.of(0), DegreesPerSecond.of(0), swerveDrive.getGyro().getYawAngularVelocity()));
   }
 
   /**
@@ -625,51 +622,63 @@ public class SwerveSubsystem extends SubsystemBase {
               && poseEstimate.getMinTagAmbiguity() < 0.3) {
             addVisionReading(poseEstimate.pose.toPose2d());
           }
-          SmartDashboard.putNumber("Est X Coordinate", poseEstimate.pose.toPose2d().getX());
-          SmartDashboard.putNumber("Est Y Coordinate", poseEstimate.pose.toPose2d().getY());
-          SmartDashboard.putBoolean(
-              "passes test",
-              (poseEstimate.avgTagDist < 4
-                  && poseEstimate.tagCount > 0
-                  && poseEstimate.getMinTagAmbiguity() < 0.3));
-        });
-  }
+  });
+}
 
   public void updatePositionTest() {}
 
-  public Command driveReef(boolean isLeft) {
+  public Command driveReef(boolean isRight) {
     Pose2d path = new Pose2d(0, 0, new Rotation2d());
+    int position;
     if (limelight.hasTarget()) {
       switch (limelight.getID()) {
-        case 7 -> {
-          path =
-              (isLeft) ? VisionConstants.ID17REEFLEFTBRANCH : VisionConstants.ID17REEFRIGHTBRANCH;
+        case 7 -> 
+          position = (isRight) ? 0 : 1;
+        case 18 ->
+        position = (isRight) ? 0 : 1;
+
+        case 6 -> 
+          position = (isRight) ? 2 : 3;
+        case 17 ->
+        position = (isRight) ? 2 : 3;
+
+        case 11 -> 
+          position = (isRight) ? 4 : 5;
+        case 22 ->
+        position = (isRight) ? 4 : 5;
+
+        case 10 ->
+          position = (isRight) ? 6 : 7;
+        case 21 ->
+        position = (isRight) ? 6 : 7;
+
+        case 9 -> 
+          position = (isRight) ? 8 : 9;
+        case 20 ->
+        position = (isRight) ? 8 : 9;
+
+        case 8 -> 
+          position = (isRight) ? 10 : 11;
+        case 19 ->
+        position = (isRight) ? 10 : 11;
+
+        default -> {
+          return Commands.none();
         }
-        case 18 -> {
-          path =
-              (isLeft) ? VisionConstants.ID18REEFLEFTBRANCH : VisionConstants.ID18REEFRIGHTBRANCH;
-        }
-        case 19 -> {
-          path =
-              (isLeft) ? VisionConstants.ID19REEFLEFTBRANCH : VisionConstants.ID19REEFRIGHTBRANCH;
-        }
-        case 20 -> {
-          path =
-              (isLeft) ? VisionConstants.ID20REEFLEFTBRANCH : VisionConstants.ID20REEFRIGHTTBRANCH;
-        }
-        case 21 -> {
-          path =
-              (isLeft) ? VisionConstants.ID21REEFLEFTBRANCH : VisionConstants.ID21REEFRIGHTTBRANCH;
-        }
-        case 22 -> {
-          path =
-              (isLeft) ? VisionConstants.ID22REEFLEFTBRANCH : VisionConstants.ID22REEFRIGHTBRANCH;
-        }
-        default -> {}
       }
+      path = FieldConstants.Reef.branchPositions.get(position).get(FieldConstants.ReefHeight.L1).toPose2d();
+      AllianceFlipUtil.apply(path);
       return driveToPose(path);
     }
     return Commands.none();
+  }
+
+  public Command driveCoralStation(boolean isRight) { //may or may not use not sure, also might have to account for robot offset
+    return (isRight) ? driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.leftCenterFace)) : driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.rightCenterFace));
+  }
+
+  public Command driveProcessor() {
+    return driveToPose(AllianceFlipUtil.apply(FieldConstants.Processor.centerFace));
   }
 
   /**

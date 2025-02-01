@@ -43,6 +43,12 @@ public class FieldConstants {
             Rotation2d.fromDegrees(144.011 - 90));
   }
 
+  public static class Offsets {
+    public static final Pose3d cameraOffset = Pose3d.kZero;
+    public static final double adjustX = Units.inchesToMeters(0);
+    public static final double adjustY = Units.inchesToMeters(0);
+  }
+  
   public static class Reef {
     public static final Translation2d center =
         new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
@@ -86,18 +92,16 @@ public class FieldConstants {
         Map<ReefHeight, Pose3d> fillLeft = new HashMap<>();
         for (var level : ReefHeight.values()) {
           Pose2d poseDirection = new Pose2d(center, Rotation2d.fromDegrees(180 - (60 * face)));
-          double adjustX = Units.inchesToMeters(30.738);
-          double adjustY = Units.inchesToMeters(6.469);
 
           fillRight.put(
               level,
               new Pose3d(
                   new Translation3d(
                       poseDirection
-                          .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+                          .transformBy(new Transform2d(Offsets.adjustX, Offsets.adjustY, new Rotation2d()))
                           .getX(),
                       poseDirection
-                          .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+                          .transformBy(new Transform2d(Offsets.adjustX, Offsets.adjustY, new Rotation2d()))
                           .getY(),
                       level.height),
                   new Rotation3d(
@@ -109,10 +113,10 @@ public class FieldConstants {
               new Pose3d(
                   new Translation3d(
                       poseDirection
-                          .transformBy(new Transform2d(adjustX, -adjustY, new Rotation2d()))
+                          .transformBy(new Transform2d(Offsets.adjustX, -Offsets.adjustY, new Rotation2d()))
                           .getX(),
                       poseDirection
-                          .transformBy(new Transform2d(adjustX, -adjustY, new Rotation2d()))
+                          .transformBy(new Transform2d(Offsets.adjustX, -Offsets.adjustY, new Rotation2d()))
                           .getY(),
                       level.height),
                   new Rotation3d(
