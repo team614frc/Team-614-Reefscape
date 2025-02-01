@@ -39,15 +39,14 @@ public class IntakePivotSubsystem extends SubsystemBase {
           IntakeConstants.PIVOT_kA);
 
   public IntakePivotSubsystem() {
-    super();
     intakePivotMotor.configure(
         Configs.IntakePivotSubsystem.INTAKE_PIVOT_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
 
+  @Override
   public void periodic() {
-    super.periodic();
     double output = pidController.calculate(getMeasurement());
     useOutput(output);
   }

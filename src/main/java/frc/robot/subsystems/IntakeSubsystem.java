@@ -29,8 +29,6 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    super.periodic();
-
     SmartDashboard.putNumber("Intake Speed (RPM)", intakeMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("Intake Motor Output", intakeMotor.get());
   }

@@ -39,7 +39,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
   // Command to activate the end effector (e.g., for gripping or releasing)
   public Command intake() {
     return Commands.runEnd(
-        () -> set(Constants.EndEffectorConstants.INTAKE_SPEED), // Example speed value
+        () -> set(Constants.EndEffectorConstants.INTAKE_SPEED),
         () -> set(Constants.EndEffectorConstants.INTAKE_REST_SPEED));
   }
 
@@ -51,7 +51,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
   }
 
   // Command to deactivate the end effector (e.g., stop gripping or releasing)
-  public Command stopEndEffector() {
+  public Command stop() {
     return Commands.runOnce(
         () -> {
           set(0); // Stop the motor
@@ -67,14 +67,5 @@ public class EndEffectorSubsystem extends SubsystemBase {
             < EndEffectorConstants
                 .END_EFFECTOR_MINRPM); // velocty ensures the motor is running before detecting a
     // stall
-  }
-
-  private boolean previouslyHadGamePiece = false;
-
-  public boolean justPickedUpGamePiece() {
-    boolean currentHasGamePiece = hasGamePiece();
-    boolean justPickedUp = !previouslyHadGamePiece && currentHasGamePiece;
-    previouslyHadGamePiece = currentHasGamePiece; // Update state for next check
-    return justPickedUp;
   }
 }
