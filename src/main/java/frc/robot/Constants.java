@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -87,6 +89,14 @@ public final class Constants {
     public static final int ELEVATOR_L4_SETPOINT = 0;
     public static final int ELEVATOR_THRESHOLD = 1;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
+    public static final AngularVelocity ELEVATOR_MAX_VELOCITY = Rotations.per(Minute).of(5250);
+    public static final AngularAcceleration ELEVATOR_MAX_ACCELERATION =
+        Rotations.per(Minute).per(Second).of(7500);
+    public static final double ELEVATOR_LOOP_ERROR = 0.5;
+    public static final double ELEVATOR_MIN_RANGE = -1;
+    public static final double ELEVATOR_MAX_RANGE = 1;
+    public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
+    public static final Angle ELEVATOR_STARTING_ANGLE = Degrees.of(180);
   }
 
   public static final class ArmConstants {
@@ -101,6 +111,14 @@ public final class Constants {
     public static final int ARM_L3_SETPOINT = 9;
     public static final int ARM_L4_SETPOINT = 0;
     public static final int ARM_ZERO_ENCODER = 0;
+    public static final AngularVelocity ARM_MAX_VELOCITY = Rotations.of(5250).per(Minute);
+    public static final AngularAcceleration ARM_MAX_ACCELERATION =
+        Rotations.per(Minute).per(Second).of(7500);
+    public static final double ARM_MIN_RANGE = -1;
+    public static final double ARM_MAX_RANGE = 1;
+    public static final double ARM_LOOP_ERROR = 0.25;
+    public static final Angle ARM_STARTING_ANGLE = Degrees.of(180);
+    public static final Angle ARM_ANGLE_COMPENSATE = Degrees.of(90);
   }
 
   public static final class SimulationRobotConstants {

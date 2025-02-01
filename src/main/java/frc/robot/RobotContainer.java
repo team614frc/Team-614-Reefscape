@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ElevatorArmSubsystem;
-import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -71,18 +70,6 @@ public class RobotContainer {
   Command driveFieldOrientedAngularVelocitySim =
       drivebase.driveFieldOriented(driveAngularVelocitySim);
 
-  private Command scoreLevelThree() {
-    return Commands.startEnd(
-        () -> {
-          Commands.parallel(elevatorArm.setSetpointCommand(Setpoint.kL3)).schedule();
-        },
-        () -> {
-          Commands.parallel(
-                  endEffector.stop(), elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint))
-              .schedule();
-        });
-  }
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -116,7 +103,7 @@ public class RobotContainer {
     driverXbox.leftBumper().onTrue(Commands.none());
     driverXbox.rightBumper().onTrue(Commands.none());
     driverXbox.leftTrigger().onTrue(Commands.none());
-    driverXbox.rightTrigger().whileTrue(scoreLevelThree());
+    driverXbox.rightTrigger().onTrue(Commands.none());
 
     codriverXbox.a().onTrue(Commands.none());
     codriverXbox.x().onTrue(Commands.none());

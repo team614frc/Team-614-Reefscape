@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ArmConstants;
@@ -110,14 +109,16 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               "Elevator",
               SimulationRobotConstants.MIN_ELEVATORHEIGHT_METERS.in(Meter)
                   * SimulationRobotConstants.PIXELSPERMETER,
-              90));
+              ElevatorConstants.ELEVATOR_SIM_ANGLE.in(Degrees)));
   private final MechanismLigament2d armMech2d =
       elevatorMech2d.append(
           new MechanismLigament2d(
               "Arm",
               SimulationRobotConstants.ARM_LENGTH.in(Meter)
                   * SimulationRobotConstants.PIXELSPERMETER,
-              180 - Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS) - 90));
+              ArmConstants.ARM_STARTING_ANGLE.in(Degrees)
+                  - Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS)
+                  - ArmConstants.ARM_ANGLE_COMPENSATE.in(Degrees)));
 
   /** Creates a new ElevatorArmSubsystem. */
   public ElevatorArmSubsystem() {
@@ -173,11 +174,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     return elevatorMotor.getEncoder().getPosition(); // Replace with actual encoder method
   }
 
-  private boolean isElevatorAtTarget() {
-    return Math.abs(getElevatorPosition() - elevatorCurrentTarget)
-        < ElevatorConstants.ELEVATOR_THRESHOLD;
-  }
-
   /** Zero the arm and elevator encoders when the user button is pressed on the roboRIO. */
   private void zeroOnUserButton() {
     if (!wasResetByButton && RobotController.getUserButton()) {
@@ -196,59 +192,35 @@ public class ElevatorArmSubsystem extends SubsystemBase {
    * positions for the given setpoint.
    */
   public Command setSetpointCommand(Setpoint setpoint) {
-    return Commands.sequence(
-        // Set the elevator target first
-        this.runOnce(
-            () -> {
-              switch (setpoint) {
-                case kIntake:
-                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
-                  break;
-                case kIdleSetpoint:
-                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
-                  break;
-                case kL1:
-                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L1_SETPOINT;
-                  break;
-                case kL2:
-                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L2_SETPOINT;
-                  break;
-                case kL3:
-                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L3_SETPOINT;
-                  break;
-                case kL4:
-                  elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L4_SETPOINT;
-                  break;
-              }
-            }),
-
-        // Wait until the elevator reaches its target
-        Commands.waitUntil(this::isElevatorAtTarget),
-
-        // Then set the arm target
-        this.runOnce(
-            () -> {
-              switch (setpoint) {
-                case kIntake:
-                  armCurrentTarget = ArmConstants.ARM_INTAKE_SETPOINT;
-                  break;
-                case kIdleSetpoint:
-                  armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
-                  break;
-                case kL1:
-                  armCurrentTarget = ArmConstants.ARM_L1_SETPOINT;
-                  break;
-                case kL2:
-                  armCurrentTarget = ArmConstants.ARM_L2_SETPOINT;
-                  break;
-                case kL3:
-                  armCurrentTarget = ArmConstants.ARM_L3_SETPOINT;
-                  break;
-                case kL4:
-                  armCurrentTarget = ArmConstants.ARM_L4_SETPOINT;
-                  break;
-              }
-            }));
+    return this.runOnce(
+        () -> {
+          switch (setpoint) {
+            case kIntake:
+              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
+              armCurrentTarget = ArmConstants.ARM_INTAKE_SETPOINT;
+              break;
+            case kIdleSetpoint:
+              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
+              armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
+              break;
+            case kL1:
+              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L1_SETPOINT;
+              armCurrentTarget = ArmConstants.ARM_L1_SETPOINT;
+              break;
+            case kL2:
+              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L2_SETPOINT;
+              armCurrentTarget = ArmConstants.ARM_L2_SETPOINT;
+              break;
+            case kL3:
+              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L3_SETPOINT;
+              armCurrentTarget = ArmConstants.ARM_L3_SETPOINT;
+              break;
+            case kL4:
+              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L4_SETPOINT;
+              armCurrentTarget = ArmConstants.ARM_L4_SETPOINT;
+              break;
+          }
+        });
   }
 
   @Override
@@ -273,7 +245,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
                     * SimulationRobotConstants.DRUM_CIRCUMFERENCE.in(Meter)
                     * Math.PI));
     armMech2d.setAngle(
-        180
+        ElevatorConstants.ELEVATOR_STARTING_ANGLE.in(Degrees)
             - ( // mirror the angles so they display in the correct direction
             Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS)
                 + Units.rotationsToDegrees(
