@@ -40,10 +40,10 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   public enum Setpoint {
     kIntake,
     kIdleSetpoint,
-    kLevel1,
-    kLevel2,
-    kLevel3,
-    kLevel4;
+    kL1,
+    kL2,
+    kL3,
+    kL4;
   }
 
   private SparkFlex elevatorMotor =
@@ -207,16 +207,16 @@ public class ElevatorArmSubsystem extends SubsystemBase {
                 case kIdleSetpoint:
                   elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
                   break;
-                case kLevel1:
+                case kL1:
                   elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L1_SETPOINT;
                   break;
-                case kLevel2:
+                case kL2:
                   elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L2_SETPOINT;
                   break;
-                case kLevel3:
+                case kL3:
                   elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L3_SETPOINT;
                   break;
-                case kLevel4:
+                case kL4:
                   elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L4_SETPOINT;
                   break;
               }
@@ -235,16 +235,16 @@ public class ElevatorArmSubsystem extends SubsystemBase {
                 case kIdleSetpoint:
                   armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
                   break;
-                case kLevel1:
+                case kL1:
                   armCurrentTarget = ArmConstants.ARM_L1_SETPOINT;
                   break;
-                case kLevel2:
+                case kL2:
                   armCurrentTarget = ArmConstants.ARM_L2_SETPOINT;
                   break;
-                case kLevel3:
+                case kL3:
                   armCurrentTarget = ArmConstants.ARM_L3_SETPOINT;
                   break;
-                case kLevel4:
+                case kL4:
                   armCurrentTarget = ArmConstants.ARM_L4_SETPOINT;
                   break;
               }
@@ -270,7 +270,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             + SimulationRobotConstants.PIXELSPERMETER
                 * (elevatorEncoder.getPosition() / SimulationRobotConstants.ELEVATOR_GEARING)
                 * (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter)
-                    * SimulationRobotConstants.DRUM_CIRCUMFERENCE
+                    * SimulationRobotConstants.DRUM_CIRCUMFERENCE.in(Meter)
                     * Math.PI));
     armMech2d.setAngle(
         180
@@ -307,7 +307,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     elevatorMotorSim.iterate(
         ((elevatorSim.getVelocityMetersPerSecond()
                     / (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter)
-                        * SimulationRobotConstants.DRUM_CIRCUMFERENCE
+                        * SimulationRobotConstants.DRUM_CIRCUMFERENCE.in(Meter)
                         * Math.PI))
                 * SimulationRobotConstants.ELEVATOR_GEARING)
             * SimulationRobotConstants.ONE_MINUTE.in(Seconds),

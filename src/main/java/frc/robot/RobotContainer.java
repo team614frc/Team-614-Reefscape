@@ -74,7 +74,7 @@ public class RobotContainer {
   private Command scoreLevelThree() {
     return Commands.startEnd(
         () -> {
-          Commands.parallel(elevatorArm.setSetpointCommand(Setpoint.kLevel3)).schedule();
+          Commands.parallel(elevatorArm.setSetpointCommand(Setpoint.kL3)).schedule();
         },
         () -> {
           Commands.parallel(

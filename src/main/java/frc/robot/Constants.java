@@ -127,7 +127,7 @@ public final class Constants {
     public static final Time SIM_UPDATE_TIME = Second.of(0.02);
     public static final Angle ELEVATOR_ACCOUNT = Degrees.of(90);
     public static final Time ONE_MINUTE = Seconds.of(60);
-    public static final double DRUM_CIRCUMFERENCE = 2.0;
+    public static final Distance DRUM_CIRCUMFERENCE = Meter.of(2.0);
   }
 
   public static class OperatorConstants {
