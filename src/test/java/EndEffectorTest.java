@@ -52,5 +52,4 @@ class EndEffectorTest {
     endEffector.stop().execute();
     assertEquals(0.0, endEffector.getSpeed());
   }
-  
 }
