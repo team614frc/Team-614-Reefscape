@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -31,6 +32,7 @@ public class RobotContainer {
   private final IntakeSubsystem intake = new IntakeSubsystem();
   private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
   private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
+  private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
 
   private final SendableChooser<Command> autoChooser;
 
@@ -100,8 +102,8 @@ public class RobotContainer {
     driverXbox.back().onTrue(Commands.none());
     driverXbox.leftBumper().onTrue(Commands.none());
     driverXbox.rightBumper().onTrue(Commands.none());
-    driverXbox.leftTrigger().whileTrue(Commands.none());
-    driverXbox.rightTrigger().whileTrue(Commands.none());
+    driverXbox.leftTrigger().onTrue(Commands.none());
+    driverXbox.rightTrigger().onTrue(Commands.none());
 
     codriverXbox.a().onTrue(Commands.none());
     codriverXbox.x().onTrue(Commands.none());
