@@ -74,6 +74,15 @@ public final class Constants {
     public static final Angle END_EFFECTOR_MIN_RPM = Rotations.of(50);
   }
 
+  public static final class CanalConstants {
+    public static final int CANAL_MOTOR = 23;
+    public static final Current CANAL_CURRENT_LIMIT = Amp.of(40);
+    public static final double OUTTAKE_SPEED = 1;
+    public static final double INTAKE_SPEED = -1;
+    public static final double INTAKE_REST_SPEED = 0;
+    public static final double OUTTAKE_REST_SPEED = 0;
+  }
+
   public static class OperatorConstants {
     // Joystick deadband.
     public static final double DEADBAND = 0.1;
