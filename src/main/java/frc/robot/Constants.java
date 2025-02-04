@@ -77,6 +77,15 @@ public final class Constants {
     public static final Angle END_EFFECTOR_MIN_RPM = Rotations.of(50);
   }
 
+  public static final class CanalConstants {
+    public static final int CANAL_MOTOR = 23;
+    public static final Current CANAL_CURRENT_LIMIT = Amp.of(40);
+    public static final double OUTTAKE_SPEED = 1;
+    public static final double INTAKE_SPEED = -1;
+    public static final double INTAKE_REST_SPEED = 0;
+    public static final double OUTTAKE_REST_SPEED = 0;
+  }
+
   public static final class ElevatorConstants {
     public static final int ELEVATOR_MOTOR = 22;
     public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(40);
@@ -147,6 +156,15 @@ public final class Constants {
     public static final Angle ELEVATOR_ACCOUNT = Degrees.of(90);
     public static final Time ONE_MINUTE = Seconds.of(60);
     public static final Distance DRUM_CIRCUMFERENCE = Meter.of(2.0);
+  }
+
+  public static final class ClimberConstants {
+    // Hold time on motor brakes when disabled.
+    public static final int CLIMBER_MOTOR = 27;
+    public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(40);
+    public static final double CLIMB_SPEED = 0.2;
+    public static final double REVERSE_CLIMB_SPEED = -0.2;
+    public static final double CLIMB_REST_SPEED = 0;
   }
 
   public static class OperatorConstants {
