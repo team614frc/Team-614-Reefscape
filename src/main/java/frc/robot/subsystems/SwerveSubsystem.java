@@ -641,8 +641,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveCoralStation(
       boolean isRight) { // may or may not use not sure, also might have to account for robot offset
     return (isRight)
-        ? driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.leftCenterFace))
-        : driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.rightCenterFace));
+        ? driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.rightCenterFace))
+        : driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.leftCenterFace));
   }
 
   public Command driveProcessor() {
