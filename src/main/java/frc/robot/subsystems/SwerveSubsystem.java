@@ -605,7 +605,9 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveReef(Direction direction) {
     Pose2d path = new Pose2d(0, 0, new Rotation2d());
     int position;
-    if (!limelight.hasTarget()) return Commands.none();
+    if (!limelight.hasTarget()) {
+      return Commands.none();
+    }
     switch (limelight.getID()) {
       case 7 -> position = (direction.isRight) ? 0 : 1;
       case 18 -> position = (direction.isRight) ? 0 : 1;
@@ -630,7 +632,7 @@ public class SwerveSubsystem extends SubsystemBase {
       }
     }
     path =
-        FieldConstants.Reef.branchPositions
+        FieldConstants.Reef.BRANCH_POSITIONS
             .get(position)
             .get(FieldConstants.ReefHeight.L1)
             .toPose2d();
@@ -639,14 +641,15 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Command driveCoralStation(
-      boolean isRight) { // may or may not use not sure, also might have to account for robot offset
-    return (isRight)
-        ? driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.rightCenterFace))
-        : driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.leftCenterFace));
+      Direction
+          direction) { // may or may not use not sure, also might have to account for robot offset
+    return (direction.isRight)
+        ? driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.RIGHT_CENTER_FACE))
+        : driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.LEFT_CENTER_FACE));
   }
 
   public Command driveProcessor() {
-    return driveToPose(AllianceFlipUtil.apply(FieldConstants.Processor.centerFace));
+    return driveToPose(AllianceFlipUtil.apply(FieldConstants.Processor.CENTER_FACE));
   }
 
   /**

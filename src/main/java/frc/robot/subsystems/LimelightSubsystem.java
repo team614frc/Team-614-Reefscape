@@ -10,19 +10,19 @@ import limelight.structures.*;
 import limelight.structures.LimelightSettings.LEDMode;
 
 public class LimelightSubsystem extends SubsystemBase {
-  private final Limelight limelight;
-  LimelightPoseEstimator poseEstimator;
-  LimelightTargetData limelighttargetdata;
+  private final Limelight limelight = new Limelight("limelight-april");
+
+  private LimelightPoseEstimator poseEstimator;
+  private LimelightTargetData limelightTargetData;
 
   public LimelightSubsystem() {
-    limelight = new Limelight("limelight-april");
     limelight
         .settingsBuilder()
         .withLimelightLEDMode(LEDMode.PipelineControl)
-        .withCameraOffset(FieldConstants.Offsets.cameraOffset)
+        .withCameraOffset(FieldConstants.Offsets.CAMERA_OFFSET)
         .save();
     poseEstimator = limelight.getPoseEstimator(true);
-    limelighttargetdata = new LimelightTargetData(limelight);
+    limelightTargetData = new LimelightTargetData(limelight);
   }
 
   public Optional<PoseEstimate> getVisionEstimate() {
@@ -30,7 +30,7 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   public int getID() {
-    return (int) limelighttargetdata.getAprilTagID();
+    return (int) limelightTargetData.getAprilTagID();
   }
 
   public void updateSettings(Orientation3d orientation3d) {
@@ -38,7 +38,7 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   public boolean hasTarget() {
-    return limelighttargetdata.getTargetStatus();
+    return limelightTargetData.getTargetStatus();
   }
 
   @Override
