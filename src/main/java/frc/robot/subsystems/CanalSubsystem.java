@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import au.grapplerobotics.LaserCan;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -19,6 +20,8 @@ public class CanalSubsystem extends SubsystemBase {
   private final SparkFlex canalMotor =
       new SparkFlex(CanalConstants.CANAL_MOTOR, MotorType.kBrushless);
 
+  private LaserCan laserCan;
+
   /** Creates a new CanalSubsystem. */
   public CanalSubsystem() {
     canalMotor.configure(
@@ -32,6 +35,17 @@ public class CanalSubsystem extends SubsystemBase {
     super.periodic();
 
     SmartDashboard.putNumber("Canal Motor Output", canalMotor.get());
+
+    LaserCan.Measurement measurement = laserCan.getMeasurement();
+
+    if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+      System.out.println("The target is " + measurement.distance_mm + "mm away!");
+    } else {
+      System.out.println(
+          "Oh no! The target is out of range, or we can't get a reliable measurement!");
+      // You can still use distance_mm in here, if you're ok tolerating a clamped value or an
+      // unreliable measurement.
+    }
   }
 
   public void set(double speed) {
