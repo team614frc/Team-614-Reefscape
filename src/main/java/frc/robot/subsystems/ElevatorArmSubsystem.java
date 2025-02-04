@@ -12,7 +12,6 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
-import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -58,16 +57,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   private double elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
   private double armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
 
-  // Member variables for subsystem state management
-  private boolean wasResetByButton = false;
-  private boolean wasResetByLimit = false;
-
   // Simulation setup and variables
   private DCMotor elevatorMotorModel =
       DCMotor.getNeoVortex(SimulationRobotConstants.SIM_MOTOR_COUNT);
 
   private SparkFlexSim elevatorMotorSim;
-  private SparkLimitSwitchSim elevatorLimitSwitchSim;
   private final ElevatorSim elevatorSim =
       new ElevatorSim(
           elevatorMotorModel,
@@ -142,7 +136,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
     // Initialize simulation values
     elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
-    elevatorLimitSwitchSim = new SparkLimitSwitchSim(elevatorMotor, false);
     armMotorSim = new SparkFlexSim(armMotor, armMotorModel);
   }
 
@@ -157,34 +150,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  /** Zero the elevator encoder when the limit switch is pressed. */
-  private void zeroElevatorOnLimitSwitch() {
-    if (!wasResetByLimit && elevatorMotor.getReverseLimitSwitch().isPressed()) {
-      // Zero the encoder only when the limit switch switches from "unpressed" to "pressed" to
-      // prevent constant zeroing while pressed
-      armEncoder.setPosition(ArmConstants.ARM_ZERO_ENCODER);
-      elevatorEncoder.setPosition(ElevatorConstants.ELEVATOR_ZERO_ENCODER);
-      wasResetByLimit = true;
-    } else if (!elevatorMotor.getReverseLimitSwitch().isPressed()) {
-      wasResetByLimit = false;
-    }
-  }
-
   public double getElevatorPosition() {
     return elevatorMotor.getEncoder().getPosition(); // Replace with actual encoder method
-  }
-
-  /** Zero the arm and elevator encoders when the user button is pressed on the roboRIO. */
-  private void zeroOnUserButton() {
-    if (!wasResetByButton && RobotController.getUserButton()) {
-      // Zero the encoders only when button switches from "unpressed" to "pressed" to prevent
-      // constant zeroing while pressed
-      wasResetByButton = true;
-      elevatorEncoder.setPosition(ElevatorConstants.ELEVATOR_ZERO_ENCODER);
-      armEncoder.setPosition(ArmConstants.ARM_ZERO_ENCODER);
-    } else if (!RobotController.getUserButton()) {
-      wasResetByButton = false;
-    }
   }
 
   /**
@@ -226,9 +193,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    zeroOnUserButton();
     moveToSetpoint();
-    zeroElevatorOnLimitSwitch();
     // Display subsystem values
     SmartDashboard.putNumber("Arm Target Position", armCurrentTarget);
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
@@ -266,10 +231,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     // First, we set our "inputs" (voltages)
     elevatorSim.setInput(elevatorMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
     armSim.setInput(armMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
-
-    // Update sim limit switch
-    elevatorLimitSwitchSim.setPressed(
-        elevatorSim.getPositionMeters() == SimulationRobotConstants.LIMIT_SWITCH_ZERO);
 
     // Next, we update it. The standard loop time is 20ms.
     elevatorSim.update(SimulationRobotConstants.SIM_STANDARD_LOOP.in(Second));
