@@ -64,7 +64,6 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public Command setScoringPattern() {
-
     LEDPattern pattern =
         LEDPattern.solid(Constants.LEDConstants.ALIGNMENT_COLOR)
             .breathe(Constants.LEDConstants.BREATHE_TIME);
