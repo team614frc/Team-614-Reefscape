@@ -12,11 +12,11 @@ import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-  private final SparkFlex ClimberMotor =
+  private final SparkFlex climberMotor =
       new SparkFlex(Constants.ClimberConstants.CLIMBER_MOTOR, MotorType.kBrushless);
 
   public ClimberSubsystem() {
-    ClimberMotor.configure(
+    climberMotor.configure(
         Configs.ClimberSubsystem.CLIMBER_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
@@ -29,7 +29,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void set(double speed) {
-    ClimberMotor.set(speed);
+    climberMotor.set(speed);
   }
 
   public Command climb() {
