@@ -145,8 +145,8 @@ public class FieldConstants {
   }
 
   public enum Direction {
-    LEFT(true),
-    RIGHT(false);
+    RIGHT(true),
+    LEFFT(false);
 
     Direction(boolean isRight) {
       this.isRight = isRight;
