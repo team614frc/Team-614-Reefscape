@@ -20,7 +20,7 @@ public class CanalSubsystem extends SubsystemBase {
   private final SparkFlex canalMotor =
       new SparkFlex(CanalConstants.CANAL_MOTOR, MotorType.kBrushless);
 
-  private LaserCan laserCan;
+  private final LaserCan laserCan = new LaserCan(5);
 
   /** Creates a new CanalSubsystem. */
   public CanalSubsystem() {
@@ -28,10 +28,9 @@ public class CanalSubsystem extends SubsystemBase {
         Configs.CanalSubsystem.CANAL_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-
-    laserCan = new LaserCan(5);
   }
 
+  @Override
   public void periodic() {
     // This method will be called once per scheduler run
     super.periodic();
@@ -54,7 +53,7 @@ public class CanalSubsystem extends SubsystemBase {
     canalMotor.set(speed);
   }
 
-  public Command intakeCoralCanal() {
+  public Command intake() {
     return Commands.runEnd(
         () -> {
           set(CanalConstants.INTAKE_SPEED);
@@ -64,7 +63,7 @@ public class CanalSubsystem extends SubsystemBase {
         });
   }
 
-  public Command outtakeCoralCanal() {
+  public Command outtake() {
     return Commands.runEnd(
         () -> {
           set(CanalConstants.OUTTAKE_SPEED);
