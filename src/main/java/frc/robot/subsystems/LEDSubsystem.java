@@ -17,14 +17,14 @@ public class LEDSubsystem extends SubsystemBase {
   private static final int kPort = 9;
   private static final int kLength = 120;
 
-  private final AddressableLED m_led;
-  private final AddressableLEDBuffer m_buffer;
+  private final AddressableLED led;
+  private final AddressableLEDBuffer buffer;
 
   public LEDSubsystem() {
-    m_led = new AddressableLED(kPort);
-    m_buffer = new AddressableLEDBuffer(kLength);
-    m_led.setLength(kLength);
-    m_led.start();
+    led = new AddressableLED(kPort);
+    buffer = new AddressableLEDBuffer(kLength);
+    led.setLength(kLength);
+    led.start();
 
     // Set the default command to turn the strip off, otherwise the last colors written by
     // the last command to run will continue to be displayed.
@@ -35,7 +35,7 @@ public class LEDSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Periodically send the latest LED color data to the LED strip for it to display
-    m_led.setData(m_buffer);
+    led.setData(buffer);
     setBasicPattern();
   }
 
@@ -45,13 +45,16 @@ public class LEDSubsystem extends SubsystemBase {
    * @param pattern the LED pattern to run
    */
   public Command runPattern(LEDPattern pattern) {
-    return run(() -> pattern.applyTo(m_buffer));
+    return run(() -> pattern.applyTo(buffer));
   }
 
   public Command setBasicPattern() {
     LEDPattern pattern;
-    if (DriverStation.isAutonomous()) pattern = LEDPattern.solid(Constants.LEDConstants.AUTO_COLOR);
-    else pattern = LEDPattern.solid(Constants.LEDConstants.TELEOP_COLOR);
+    if (DriverStation.isAutonomous()) {
+      pattern = LEDPattern.solid(Constants.LEDConstants.AUTO_COLOR);
+    } else {
+      pattern = LEDPattern.solid(Constants.LEDConstants.TELEOP_COLOR);
+    }
     return runPattern(pattern);
   }
 
@@ -64,6 +67,7 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public Command setScoringPattern() {
+
     LEDPattern pattern =
         LEDPattern.solid(Constants.LEDConstants.ALIGNMENT_COLOR)
             .breathe(Constants.LEDConstants.BREATHE_TIME);
