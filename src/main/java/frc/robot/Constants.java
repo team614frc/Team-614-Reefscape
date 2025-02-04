@@ -148,6 +148,15 @@ public final class Constants {
     public static final Distance DRUM_CIRCUMFERENCE = Meter.of(2.0);
   }
 
+  public static final class ClimberConstants {
+    // Hold time on motor brakes when disabled.
+    public static final int CLIMBER_MOTOR = 27;
+    public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(40);
+    public static final double CLIMB_SPEED = 0.2;
+    public static final double REVERSE_CLIMB_SPEED = -0.2;
+    public static final double CLIMB_REST_SPEED = 0;
+  }
+
   public static class OperatorConstants {
     // Joystick deadband.
     public static final double DEADBAND = 0.1;
