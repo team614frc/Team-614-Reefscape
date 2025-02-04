@@ -28,6 +28,8 @@ public class CanalSubsystem extends SubsystemBase {
         Configs.CanalSubsystem.CANAL_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+
+    laserCan = new LaserCan(5);
   }
 
   public void periodic() {
