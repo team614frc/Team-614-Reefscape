@@ -16,6 +16,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.util.Color;
 import swervelib.math.Matter;
 
 /**
@@ -162,5 +163,15 @@ public final class Constants {
     public static final double DEADBAND = 0.1;
     public static final int DRIVER_PORT = 0;
     public static final int CODRIVER_PORT = 1;
+  }
+
+  public static final class LEDConstants {
+    public static final Color AUTO_COLOR = Color.kOrange;
+    public static final Color TELEOP_COLOR = Color.kOrange;
+    public static final Color ENDGAME_COLOR = Color.kOrange;
+    public static final Color ALIGNMENT_COLOR = Color.kOrange;
+    public static final Distance SPACING = Meters.of(1 / 120.0);
+    public static final LinearVelocity SCROLL_SPEED = MetersPerSecond.of(1);
+    public static final Time BREATHE_TIME = Seconds.of(2);
   }
 }
