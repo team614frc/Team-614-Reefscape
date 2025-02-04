@@ -100,6 +100,16 @@ public final class Configs {
     }
   }
 
+  public static final class CanalSubsystem {
+    public static final SparkFlexConfig CANAL_CONFIG = new SparkFlexConfig();
+
+    static {
+      CANAL_CONFIG
+          .idleMode(IdleMode.kCoast)
+          .smartCurrentLimit((int) Constants.CanalConstants.CANAL_CURRENT_LIMIT.in(Amp));
+    }
+  }
+
   public static final class ClimberSubsystem {
     public static final SparkFlexConfig CLIMBER_CONFIG = new SparkFlexConfig();
 
