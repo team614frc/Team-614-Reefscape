@@ -109,4 +109,14 @@ public final class Configs {
           .smartCurrentLimit((int) Constants.CanalConstants.CANAL_CURRENT_LIMIT.in(Amp));
     }
   }
+
+  public static final class ClimberSubsystem {
+    public static final SparkFlexConfig CLIMBER_CONFIG = new SparkFlexConfig();
+
+    static {
+      CLIMBER_CONFIG
+          .idleMode(IdleMode.kCoast)
+          .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
+    }
+  }
 }

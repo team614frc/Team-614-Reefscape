@@ -16,6 +16,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.util.Color;
 import swervelib.math.Matter;
 
 /**
@@ -157,10 +158,29 @@ public final class Constants {
     public static final Distance DRUM_CIRCUMFERENCE = Meter.of(2.0);
   }
 
+  public static final class ClimberConstants {
+    // Hold time on motor brakes when disabled.
+    public static final int CLIMBER_MOTOR = 27;
+    public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(40);
+    public static final double CLIMB_SPEED = 0.2;
+    public static final double REVERSE_CLIMB_SPEED = -0.2;
+    public static final double CLIMB_REST_SPEED = 0;
+  }
+
   public static class OperatorConstants {
     // Joystick deadband.
     public static final double DEADBAND = 0.1;
     public static final int DRIVER_PORT = 0;
     public static final int CODRIVER_PORT = 1;
+  }
+
+  public static final class LEDConstants {
+    public static final Color AUTO_COLOR = Color.kOrange;
+    public static final Color TELEOP_COLOR = Color.kOrange;
+    public static final Color ENDGAME_COLOR = Color.kOrange;
+    public static final Color ALIGNMENT_COLOR = Color.kOrange;
+    public static final Distance SPACING = Meters.of(1 / 120.0);
+    public static final LinearVelocity SCROLL_SPEED = MetersPerSecond.of(1);
+    public static final Time BREATHE_TIME = Seconds.of(2);
   }
 }
