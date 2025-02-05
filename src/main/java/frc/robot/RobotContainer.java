@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -103,27 +104,24 @@ public class RobotContainer {
     return Commands.startEnd(
         () -> {
           Commands.parallel(
-                  led.setIntakePattern(),
-                  intakePivot.pivotDown(),
-                  intake.intakeGamepiece(),
-                  canal.intake(),
-                  endEffector.intake(),
-                  elevatorArm.setSetpointCommand(Setpoint.kHover))
-              .schedule();
+              led.setIntakePattern(),
+              intakePivot.pivotDown(),
+              intake.intakeGamepiece(),
+              canal.intake(),
+              endEffector.intake(),
+              elevatorArm.setSetpointCommand(Setpoint.kHover));
         },
         () -> {
-          Commands.parallel(intake.stopIntake(), intakePivot.pivotUp()).schedule();
+          Commands.parallel(intake.stopIntake(), intakePivot.pivotUp());
 
           Commands.waitUntil(canal::gamePieceDetected)
               .andThen(canal.stop())
               .andThen(rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION))
-              .andThen(elevatorArm.setSetpointCommand(Setpoint.kIntake))
-              .schedule();
+              .andThen(elevatorArm.setSetpointCommand(Setpoint.kIntake));
 
           Commands.waitUntil(endEffector::hasGamePiece)
               .andThen(led.setBasicPattern())
-              .andThen(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint))
-              .schedule();
+              .andThen(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
         });
   }
 
@@ -135,10 +133,9 @@ public class RobotContainer {
     return Commands.runOnce(
         () -> {
           Commands.sequence(
-                  endEffector.outtake().withTimeout(0.2),
-                  endEffector.stop(),
-                  elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint))
-              .schedule();
+              endEffector.outtake().withTimeout(0.2),
+              endEffector.stop(),
+              elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
         });
   }
 
@@ -146,6 +143,11 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+
+    NamedCommands.registerCommand("L1", elevatorArm.setSetpointCommand(Setpoint.kL1));
+    NamedCommands.registerCommand("L2", elevatorArm.setSetpointCommand(Setpoint.kL2));
+    NamedCommands.registerCommand("L3", elevatorArm.setSetpointCommand(Setpoint.kL3));
+    NamedCommands.registerCommand("Outtake", outtakeCoral());
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
