@@ -6,20 +6,24 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Configs.ClimberSubsystem;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.CanalSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -36,6 +40,8 @@ public class RobotContainer {
   private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
   private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
+  private final CanalSubsystem canal = new CanalSubsystem();
+  private final LEDSubsystem led = new LEDSubsystem();
 
   private final SendableChooser<Command> autoChooser;
 
@@ -73,6 +79,67 @@ public class RobotContainer {
   Command driveFieldOrientedAngularVelocitySim =
       drivebase.driveFieldOriented(driveAngularVelocitySim);
 
+  private Command rumble(double rumblePower, double duration) {
+    return Commands.runOnce(
+            () -> {
+              driverXbox.getHID().setRumble(RumbleType.kBothRumble, rumblePower);
+              codriverXbox.getHID().setRumble(RumbleType.kBothRumble, rumblePower);
+            })
+        .andThen(Commands.waitSeconds(duration))
+        .andThen(
+            () -> {
+              driverXbox.getHID().setRumble(RumbleType.kBothRumble, OperatorConstants.RUMBLE_REST);
+              codriverXbox
+                  .getHID()
+                  .setRumble(RumbleType.kBothRumble, OperatorConstants.RUMBLE_REST);
+            });
+  }
+
+  private Command pivotAndIntake() {
+    return new ConditionalCommand(
+        Commands.none(), // Do nothing if the end effector already has a game piece
+        Commands.startEnd(
+            () -> { // When pressed
+              Commands.parallel(
+                      led.setIntakePattern(),
+                      intakePivot.pivotDown(),
+                      intake.intakeGamepiece(),
+                      canal.intake(),
+                      endEffector.intake(),
+                      elevatorArm.setSetpointCommand(Setpoint.kHover))
+                  .schedule();
+            },
+            () -> { // When released
+              Commands.parallel(intake.stopIntake(), intakePivot.pivotUp()).schedule();
+
+              Commands.waitUntil(canal::gamePieceDetected)
+                  .andThen(canal.stop())
+                  .andThen(
+                      rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION))
+                  .andThen(elevatorArm.setSetpointCommand(Setpoint.kIntake))
+                  .schedule();
+
+              // Keep the canal running separately until a game piece is detected
+              Commands.waitUntil(endEffector::hasGamePiece)
+                  .andThen(led.setBasicPattern())
+                  .andThen(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint))
+                  .schedule();
+            }),
+        endEffector::hasGamePiece // Condition: If true, do nothing; otherwise, execute the command
+        );
+  }
+
+  private Command outtakeCoral() {
+    return Commands.runOnce(
+        () -> {
+          Commands.sequence(
+                  endEffector.outtake().withTimeout(0.2),
+                  endEffector.stop(),
+                  elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint))
+              .schedule();
+        });
+  }
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -98,15 +165,15 @@ public class RobotContainer {
    */
   private void configureBindings() {
     driverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL3));
-    driverXbox.x().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+    driverXbox.x().onTrue(Commands.none());
     driverXbox.b().whileTrue(intake.intakeGamepiece());
-    driverXbox.y().onTrue(Commands.none());
+    driverXbox.y().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
-    driverXbox.leftBumper().onTrue(Commands.none());
+    driverXbox.leftBumper().whileTrue(pivotAndIntake());
     driverXbox.rightBumper().onTrue(Commands.none());
     driverXbox.leftTrigger().onTrue(Commands.none());
-    driverXbox.rightTrigger().onTrue(endEffector.outtake());
+    driverXbox.rightTrigger().onTrue(outtakeCoral());
 
     codriverXbox.a().onTrue(Commands.none());
     codriverXbox.x().onTrue(Commands.none());

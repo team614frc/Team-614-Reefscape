@@ -84,6 +84,7 @@ public final class Constants {
     public static final double INTAKE_SPEED = -1;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
+    public static final int CANAL_REST_SPEED = 0;
   }
 
   public static final class ElevatorConstants {
@@ -91,6 +92,7 @@ public final class Constants {
     public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(40);
     public static final double ELEVATOR_P_VALUE = 0.15;
     public static final double ELEVATOR_D_VALUE = 0.0;
+    public static final int Elevator_HOVER_SETPOINT = 0;
     public static final int ELEVATOR_INTAKE_SETPOINT = 0;
     public static final int ELEVATOR_IDLE_SETPOINT = 0;
     public static final int ELEVATOR_L1_SETPOINT = 0;
@@ -114,6 +116,7 @@ public final class Constants {
     public static final Current ARM_CURRENT_LIMIT = Amp.of(40);
     public static final double ARM_P_VALUE = 0.00005;
     public static final double ARM_D_VALUE = 0.0;
+    public static final int ARM_HOVER_SETPOINT = 0;
     public static final int ARM_INTAKE_SETPOINT = 0;
     public static final int ARM_IDLE_SETPOINT = 0;
     public static final int ARM_L1_SETPOINT = 0;
@@ -172,6 +175,9 @@ public final class Constants {
     public static final double DEADBAND = 0.1;
     public static final int DRIVER_PORT = 0;
     public static final int CODRIVER_PORT = 1;
+    public static final int RUMBLE_REST = 0;
+    public static final int RUMBLE_SPEED = 1;
+    public static final double RUMBLE_DURATION = 0.5;
   }
 
   public static final class LEDConstants {
