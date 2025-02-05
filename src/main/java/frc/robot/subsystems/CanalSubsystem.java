@@ -73,8 +73,8 @@ public class CanalSubsystem extends SubsystemBase {
   public boolean gamePieceDetected() {
     LaserCan.Measurement distance = laserCan.getMeasurement();
 
-    return (distance.distance_mm < 50
-        && distance != null
+    return (distance != null
+        && distance.distance_mm < 50
         && distance.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
   }
 }

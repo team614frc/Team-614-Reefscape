@@ -79,11 +79,11 @@ public class RobotContainer {
   Command driveFieldOrientedAngularVelocitySim =
       drivebase.driveFieldOriented(driveAngularVelocitySim);
 
-  private Command rumble(double rumblePower, double duration) {
+  private Command rumble(double power, double duration) {
     return Commands.runOnce(
             () -> {
-              driverXbox.getHID().setRumble(RumbleType.kBothRumble, rumblePower);
-              codriverXbox.getHID().setRumble(RumbleType.kBothRumble, rumblePower);
+              driverXbox.getHID().setRumble(RumbleType.kBothRumble, power);
+              codriverXbox.getHID().setRumble(RumbleType.kBothRumble, power);
             })
         .andThen(Commands.waitSeconds(duration))
         .andThen(
@@ -95,38 +95,40 @@ public class RobotContainer {
             });
   }
 
+  /**
+   * This conditional command will only run when the end effector does not have a game piece This
+   * keeps the canal running until laserCAN sees the coral
+   */
+  private Command intake() {
+    return Commands.startEnd(
+        () -> {
+          Commands.parallel(
+                  led.setIntakePattern(),
+                  intakePivot.pivotDown(),
+                  intake.intakeGamepiece(),
+                  canal.intake(),
+                  endEffector.intake(),
+                  elevatorArm.setSetpointCommand(Setpoint.kHover))
+              .schedule();
+        },
+        () -> {
+          Commands.parallel(intake.stopIntake(), intakePivot.pivotUp()).schedule();
+
+          Commands.waitUntil(canal::gamePieceDetected)
+              .andThen(canal.stop())
+              .andThen(rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION))
+              .andThen(elevatorArm.setSetpointCommand(Setpoint.kIntake))
+              .schedule();
+
+          Commands.waitUntil(endEffector::hasGamePiece)
+              .andThen(led.setBasicPattern())
+              .andThen(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint))
+              .schedule();
+        });
+  }
+
   private Command pivotAndIntake() {
-    return new ConditionalCommand(
-        Commands.none(), // Do nothing if the end effector already has a game piece
-        Commands.startEnd(
-            () -> { // When pressed
-              Commands.parallel(
-                      led.setIntakePattern(),
-                      intakePivot.pivotDown(),
-                      intake.intakeGamepiece(),
-                      canal.intake(),
-                      endEffector.intake(),
-                      elevatorArm.setSetpointCommand(Setpoint.kHover))
-                  .schedule();
-            },
-            () -> { // When released
-              Commands.parallel(intake.stopIntake(), intakePivot.pivotUp()).schedule();
-
-              Commands.waitUntil(canal::gamePieceDetected)
-                  .andThen(canal.stop())
-                  .andThen(
-                      rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION))
-                  .andThen(elevatorArm.setSetpointCommand(Setpoint.kIntake))
-                  .schedule();
-
-              // Keep the canal running separately until a game piece is detected
-              Commands.waitUntil(endEffector::hasGamePiece)
-                  .andThen(led.setBasicPattern())
-                  .andThen(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint))
-                  .schedule();
-            }),
-        endEffector::hasGamePiece // Condition: If true, do nothing; otherwise, execute the command
-        );
+    return new ConditionalCommand(Commands.none(), intake(), endEffector::hasGamePiece);
   }
 
   private Command outtakeCoral() {

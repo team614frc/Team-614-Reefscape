@@ -160,7 +160,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         () -> {
           switch (setpoint) {
             case kHover:
-              elevatorCurrentTarget = ElevatorConstants.Elevator_HOVER_SETPOINT;
+              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
               armCurrentTarget = ArmConstants.ARM_HOVER_SETPOINT;
             case kIntake:
               elevatorCurrentTarget = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;

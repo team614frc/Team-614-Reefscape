@@ -92,7 +92,7 @@ public final class Constants {
     public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(40);
     public static final double ELEVATOR_P_VALUE = 0.15;
     public static final double ELEVATOR_D_VALUE = 0.0;
-    public static final int Elevator_HOVER_SETPOINT = 0;
+    public static final int ELEVATOR_HOVER_SETPOINT = 0;
     public static final int ELEVATOR_INTAKE_SETPOINT = 0;
     public static final int ELEVATOR_IDLE_SETPOINT = 0;
     public static final int ELEVATOR_L1_SETPOINT = 0;
