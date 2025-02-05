@@ -96,8 +96,8 @@ public class RobotContainer {
   }
 
   /**
-   * This conditional command will only run when the end effector does not have a game piece This
-   * keeps the canal running until laserCAN sees the coral
+   * This command will only run when the end effector does not have a game piece, this keeps the
+   * canal running until laserCAN sees the coral
    */
   private Command intake() {
     return Commands.startEnd(
