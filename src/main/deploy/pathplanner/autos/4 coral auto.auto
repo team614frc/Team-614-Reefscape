@@ -11,9 +11,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "outtakeCoral"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "2 coral path"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pivotAndIntake"
           }
         },
         {
@@ -23,9 +35,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "outtakeCoral"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "3 coral path"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pivotAndIntake"
           }
         },
         {
@@ -35,15 +59,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "outtakeCoral"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4 coral path"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "pivotAndIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4 coral path 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtakeCoral"
           }
         }
       ]

@@ -9,6 +9,12 @@
           "data": {
             "pathName": "1 coral path"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtakeCoral"
+          }
         }
       ]
     }

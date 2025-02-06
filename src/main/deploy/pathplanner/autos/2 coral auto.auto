@@ -11,15 +11,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "outtakeCoral"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "2 coral path"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "pivotAndIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "2 coral path 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtakeCoral"
           }
         }
       ]
