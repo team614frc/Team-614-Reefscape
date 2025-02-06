@@ -114,14 +114,15 @@ public class RobotContainer {
 
     Command canalDetectionParallel =
         Commands.waitUntil(canal::gamePieceDetected)
-            .alongWith(canal.stop())
-            .alongWith(rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION))
-            .alongWith(elevatorArm.setSetpointCommand(Setpoint.kIntake));
+            .andThen(
+                Commands.parallel(
+                    canal.stop(),
+                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
+                    elevatorArm.setSetpointCommand(Setpoint.kIntake)));
 
     Command endEffectorDetection =
         Commands.waitUntil(endEffector::hasGamePiece)
-            .alongWith(led.setBasicPattern())
-            .alongWith(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+            .andThen(led.setBasicPattern(), elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
 
     Command startEndCommand =
         Commands.startEnd(
