@@ -608,33 +608,11 @@ public class SwerveSubsystem extends SubsystemBase {
     if (!limelight.hasTarget()) {
       return Commands.none();
     }
-    switch (limelight.getID()) {
-      case 7 -> position = (direction.isRight) ? 0 : 1;
-      case 18 -> position = (direction.isRight) ? 0 : 1;
-
-      case 6 -> position = (direction.isRight) ? 2 : 3;
-      case 17 -> position = (direction.isRight) ? 2 : 3;
-
-      case 11 -> position = (direction.isRight) ? 4 : 5;
-      case 22 -> position = (direction.isRight) ? 4 : 5;
-
-      case 10 -> position = (direction.isRight) ? 6 : 7;
-      case 21 -> position = (direction.isRight) ? 6 : 7;
-
-      case 9 -> position = (direction.isRight) ? 8 : 9;
-      case 20 -> position = (direction.isRight) ? 8 : 9;
-
-      case 8 -> position = (direction.isRight) ? 10 : 11;
-      case 19 -> position = (direction.isRight) ? 10 : 11;
-
-      default -> {
-        return Commands.none();
-      }
-    }
+    position = FieldConstants.Reef.POSITION_MAP.get(limelight.getID()).get(direction);
     path =
         FieldConstants.Reef.BRANCH_POSITIONS
             .get(position)
-            .get(FieldConstants.ReefHeight.L1)
+            .get(FieldConstants.ReefLevel.L1)
             .toPose2d();
     AllianceFlipUtil.apply(path);
     return driveToPose(path);

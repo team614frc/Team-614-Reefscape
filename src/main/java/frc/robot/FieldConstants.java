@@ -1,7 +1,14 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,15 +89,15 @@ public class FieldConstants {
               Units.inchesToMeters(130.144),
               Rotation2d.fromDegrees(-120))
         }; // Starting facing the driver station in clockwise order
-    public static final ArrayList<Map<ReefHeight, Pose3d>> BRANCH_POSITIONS =
+    public static final ArrayList<Map<ReefLevel, Pose3d>> BRANCH_POSITIONS =
         new ArrayList<>(13); // Starting at the right branch facing the driver station in clockwise
 
     static {
       // Initialize branch positions
       for (int face = 0; face < 6; face++) {
-        Map<ReefHeight, Pose3d> fillRight = new HashMap<>();
-        Map<ReefHeight, Pose3d> fillLeft = new HashMap<>();
-        for (var level : ReefHeight.values()) {
+        Map<ReefLevel, Pose3d> fillRight = new HashMap<>();
+        Map<ReefLevel, Pose3d> fillLeft = new HashMap<>();
+        for (var level : ReefLevel.values()) {
           Pose2d poseDirection = new Pose2d(CENTER, Rotation2d.fromDegrees(180 - (60 * face)));
 
           fillRight.put(
@@ -105,11 +112,10 @@ public class FieldConstants {
                           .transformBy(
                               new Transform2d(Offsets.ADJUST_X, Offsets.ADJUST_Y, new Rotation2d()))
                           .getY(),
-                      level.height),
+                      level.height.in(Meters)),
                   new Rotation3d(
-                      0,
-                      Units.degreesToRadians(level.pitch),
-                      poseDirection.getRotation().getRadians())));
+                      0, level.pitch.in(Radians), poseDirection.getRotation().getRadians())));
+
           fillLeft.put(
               level,
               new Pose3d(
@@ -124,16 +130,29 @@ public class FieldConstants {
                               new Transform2d(
                                   Offsets.ADJUST_X, -Offsets.ADJUST_Y, new Rotation2d()))
                           .getY(),
-                      level.height),
+                      level.height.in(Meters)),
                   new Rotation3d(
-                      0,
-                      Units.degreesToRadians(level.pitch),
-                      poseDirection.getRotation().getRadians())));
+                      0, level.pitch.in(Radians), poseDirection.getRotation().getRadians())));
         }
         BRANCH_POSITIONS.add(fillLeft);
         BRANCH_POSITIONS.add(fillRight);
       }
     }
+
+    public static final Map<Integer, Map<Direction, Integer>> POSITION_MAP =
+        Map.ofEntries(
+            Map.entry(7, Map.of(Direction.RIGHT, 0, Direction.LEFT, 1)),
+            Map.entry(18, Map.of(Direction.RIGHT, 0, Direction.LEFT, 1)),
+            Map.entry(6, Map.of(Direction.RIGHT, 2, Direction.LEFT, 3)),
+            Map.entry(17, Map.of(Direction.RIGHT, 2, Direction.LEFT, 3)),
+            Map.entry(11, Map.of(Direction.RIGHT, 4, Direction.LEFT, 5)),
+            Map.entry(22, Map.of(Direction.RIGHT, 4, Direction.LEFT, 5)),
+            Map.entry(10, Map.of(Direction.RIGHT, 6, Direction.LEFT, 7)),
+            Map.entry(21, Map.of(Direction.RIGHT, 6, Direction.LEFT, 7)),
+            Map.entry(9, Map.of(Direction.RIGHT, 8, Direction.LEFT, 9)),
+            Map.entry(20, Map.of(Direction.RIGHT, 8, Direction.LEFT, 9)),
+            Map.entry(8, Map.of(Direction.RIGHT, 10, Direction.LEFT, 11)),
+            Map.entry(19, Map.of(Direction.RIGHT, 10, Direction.LEFT, 11)));
   }
 
   public static class StagingPositions {
@@ -157,18 +176,18 @@ public class FieldConstants {
     public final boolean isRight;
   }
 
-  public enum ReefHeight {
-    L4(Units.inchesToMeters(72), -90),
-    L3(Units.inchesToMeters(47.625), -35),
-    L2(Units.inchesToMeters(31.875), -35),
-    L1(Units.inchesToMeters(18), 0);
+  public enum ReefLevel {
+    L4(Inches.of(72), Degrees.of(-90)),
+    L3(Inches.of(47.625), Degrees.of(-35)),
+    L2(Inches.of(31.875), Degrees.of(-35)),
+    L1(Inches.of(18), Degrees.of(0));
 
-    ReefHeight(double height, double pitch) {
+    ReefLevel(Distance height, Angle pitch) {
       this.height = height;
       this.pitch = pitch; // in degrees
     }
 
-    public final double height;
-    public final double pitch;
+    public final Distance height;
+    public final Angle pitch;
   }
 }
