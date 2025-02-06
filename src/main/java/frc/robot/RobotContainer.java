@@ -100,43 +100,49 @@ public class RobotContainer {
    * This command will only run when the end effector does not have a game piece, this keeps the
    * canal running until laserCAN sees the coral
    */
-  private Command intake() {
-    return Commands.startEnd(
-        () -> {
-          Commands.parallel(
-              led.setIntakePattern(),
-              intakePivot.pivotDown(),
-              intake.intakeGamepiece(),
-              canal.intake(),
-              endEffector.intake(),
-              elevatorArm.setSetpointCommand(Setpoint.kHover));
-        },
-        () -> {
-          Commands.parallel(intake.stopIntake(), intakePivot.pivotUp());
-
-          Commands.waitUntil(canal::gamePieceDetected)
-              .andThen(canal.stop())
-              .andThen(rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION))
-              .andThen(elevatorArm.setSetpointCommand(Setpoint.kIntake));
-
-          Commands.waitUntil(endEffector::hasGamePiece)
-              .andThen(led.setBasicPattern())
-              .andThen(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
-        });
-  }
-
   private Command pivotAndIntake() {
-    return new ConditionalCommand(Commands.none(), intake(), endEffector::hasGamePiece);
+    Command intakeCommand =
+        Commands.parallel(
+            led.setIntakePattern(),
+            intakePivot.pivotDown(),
+            intake.intakeGamepiece(),
+            canal.intake(),
+            endEffector.intake(),
+            elevatorArm.setSetpointCommand(Setpoint.kHover));
+
+    Command releaseCommand = Commands.parallel(intake.stopIntake(), intakePivot.pivotUp());
+
+    Command canalDetectionParallel =
+        Commands.waitUntil(canal::gamePieceDetected)
+            .alongWith(canal.stop())
+            .alongWith(rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION))
+            .alongWith(elevatorArm.setSetpointCommand(Setpoint.kIntake));
+
+    Command endEffectorDetection =
+        Commands.waitUntil(endEffector::hasGamePiece)
+            .alongWith(led.setBasicPattern())
+            .alongWith(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+
+    Command startEndCommand =
+        Commands.startEnd(
+            () -> intakeCommand.schedule(),
+            () -> {
+              releaseCommand.schedule();
+              canalDetectionParallel.schedule();
+              endEffectorDetection.schedule();
+            });
+
+    return new ConditionalCommand(
+        Commands.none(),
+        startEndCommand,
+        () -> endEffector.hasGamePiece() && canal.gamePieceDetected());
   }
 
   private Command outtakeCoral() {
-    return Commands.runOnce(
-        () -> {
-          Commands.sequence(
-              endEffector.outtake().withTimeout(0.2),
-              endEffector.stop(),
-              elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
-        });
+    return Commands.sequence(
+        endEffector.outtake().withTimeout(0.2),
+        endEffector.stop(),
+        elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
   }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
