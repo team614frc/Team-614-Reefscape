@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants;
 
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   private final SparkFlex intakeMotor =
       new SparkFlex(Constants.IntakeConstants.INTAKE_MOTOR, MotorType.kBrushless);
 
@@ -24,6 +24,20 @@ public class IntakeSubsystem extends SubsystemBase {
         Configs.IntakeSubsystem.INTAKE_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+  }
+
+  public double getSpeed() {
+    return intakeMotor.get();
+  }
+
+  @Override
+  public void close() throws Exception {
+    intakeMotor.close();
+  }
+
+  public void set() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'set'");
   }
 
   @Override
@@ -37,10 +51,17 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.set(speed);
   }
 
+  public SparkFlex getMotor() {
+    return intakeMotor;
+  }
+
   public Command intakeGamepiece() {
-    return Commands.runOnce(
+    return Commands.runEnd(
         () -> {
           set(Constants.IntakeConstants.INTAKE_SPEED);
+        },
+        () -> {
+          set(Constants.IntakeConstants.INTAKE_REST_SPEED);
         });
   }
 
@@ -55,6 +76,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command stopIntake() {
-    return Commands.runOnce(() -> set(Constants.IntakeConstants.INTAKE_REST_SPEED));
+    return Commands.runOnce(
+        () -> {
+          set(0); // Stop the motor
+        });
   }
 }

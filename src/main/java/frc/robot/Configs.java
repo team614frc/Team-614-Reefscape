@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Minute;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Second;
 
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -87,6 +88,16 @@ public final class Configs {
       INTAKE_CONFIG
           .idleMode(IdleMode.kCoast)
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
+    }
+
+    public SparkFlex getMotor() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'getMotor'");
+    }
+
+    public Object intakeGamepiece() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'intakeGamepiece'");
     }
   }
 
