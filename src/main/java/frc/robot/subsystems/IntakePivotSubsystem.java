@@ -52,7 +52,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   public void useOutput(double output) {
-    double feed = feedforward.calculate(getPosition().in(Radians), 0); // No velocity component
+    double feed =
+        feedforward.calculate(
+            getPosition().in(Radians), IntakeConstants.VELOCITY_COMPONENT); // No velocity component
     intakePivotMotor.set(output + feed);
     SmartDashboard.putNumber("Pivot PID output", output);
   }
@@ -85,6 +87,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   public Angle getPosition() {
     var position = intakePivotMotor.getEncoder().getPosition();
-    return Degree.of(position / IntakeConstants.GEAR_RATIO * 360);
+    return Degree.of(
+        position / IntakeConstants.GEAR_RATIO * IntakeConstants.FULL_CIRCLE.in(Degrees));
   }
 }
