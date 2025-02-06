@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -83,7 +85,8 @@ public class RobotContainer {
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
+    //NamedCommands.registerCommand("intakeCoral", intakeAndPivot());
+    //NamedCommands.registerCommand("outtakeCoral", outtakeCoral());
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 

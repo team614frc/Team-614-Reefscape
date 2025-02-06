@@ -11,6 +11,25 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "driveToReefRight"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L3"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "outtakeCoral"
@@ -25,13 +44,32 @@
         {
           "type": "named",
           "data": {
-            "name": "pivotAndIntake"
+            "name": "intakeCoral"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "2 coral path 2"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "driveToReefRight"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L3"
+                }
+              }
+            ]
           }
         },
         {
