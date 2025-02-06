@@ -166,14 +166,8 @@ public class FieldConstants {
   }
 
   public enum Direction {
-    RIGHT(true),
-    LEFT(false);
-
-    Direction(boolean isRight) {
-      this.isRight = isRight;
-    }
-
-    public final boolean isRight;
+    RIGHT,
+    LEFT;
   }
 
   public enum ReefLevel {
