@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -622,19 +621,19 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveCoralStation(
       Direction
           direction) { // may or may not use not sure, also might have to account for robot offset
-            switch(direction) {
-              case RIGHT -> {
-                return driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.RIGHT_CENTER_FACE));
-              }
+    switch (direction) {
+      case RIGHT -> {
+        return driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.RIGHT_CENTER_FACE));
+      }
 
-              case LEFT -> {
-                return driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.LEFT_CENTER_FACE));
-              }
+      case LEFT -> {
+        return driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.LEFT_CENTER_FACE));
+      }
 
-              default -> {
-                return Commands.none();
-              }
-            }
+      default -> {
+        return Commands.none();
+      }
+    }
   }
 
   public Command driveProcessor() {
