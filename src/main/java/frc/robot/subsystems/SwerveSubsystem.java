@@ -602,11 +602,17 @@ public class SwerveSubsystem extends SubsystemBase {
         });
   }
 
+  public int findReefID() {
+    int AprilTagID;
+    int index =
+        FieldConstants.Reef.CENTER_FACES.indexOf(
+            swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES));
+    AprilTagID = FieldConstants.Reef.CENTER_FACES_IDS.get(index);
+    return AprilTagID;
+  }
+
   public Command driveReef(Direction direction) {
-    if (!limelight.hasTarget()) {
-      return Commands.none();
-    }
-    int position = FieldConstants.Reef.POSITION_MAP.get(limelight.getID()).get(direction);
+    int position = FieldConstants.Reef.POSITION_MAP.get(findReefID()).get(direction);
     Pose2d path =
         FieldConstants.Reef.BRANCH_POSITIONS
             .get(position)
