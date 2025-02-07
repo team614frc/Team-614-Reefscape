@@ -36,15 +36,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "2 coral path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeCoral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeCoral"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2 coral path"
+                }
+              }
+            ]
           }
         },
         {
@@ -79,15 +86,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "3 coral path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeCoral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeCoral"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "3 coral path"
+                }
+              }
+            ]
           }
         },
         {
