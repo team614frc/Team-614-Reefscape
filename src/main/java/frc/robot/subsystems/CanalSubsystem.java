@@ -53,6 +53,10 @@ public class CanalSubsystem extends SubsystemBase {
     canalMotor.set(speed);
   }
 
+  public SparkFlex getMotor() {
+    return canalMotor;
+  }
+
   public Command intake() {
     return Commands.runEnd(
         () -> {
@@ -71,5 +75,9 @@ public class CanalSubsystem extends SubsystemBase {
         () -> {
           set(CanalConstants.OUTTAKE_REST_SPEED);
         });
+  }
+
+  public double getSpeed() {
+    return getMotor().get();
   }
 }
