@@ -604,7 +604,6 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public int findReefID() {
-    int AprilTagID;
     int index =
         FieldConstants.Reef.CENTER_FACES.indexOf(
             swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES));
@@ -613,7 +612,7 @@ public class SwerveSubsystem extends SubsystemBase {
         (ally.get() == Alliance.Red)
             ? FieldConstants.Reef.CENTER_FACES_RED_IDS
             : FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
-    AprilTagID = apriltags.get(index);
+    int AprilTagID = apriltags.get(index);
     return AprilTagID;
   }
 
