@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AllianceFlipUtil;
 import frc.robot.Constants;
@@ -620,28 +619,6 @@ public class SwerveSubsystem extends SubsystemBase {
             .toPose2d();
     path = AllianceFlipUtil.apply(path);
     return driveToPose(path);
-  }
-
-  public Command driveCoralStation(
-      Direction
-          direction) { // may or may not use not sure, also might have to account for robot offset
-    switch (direction) {
-      case RIGHT -> {
-        return driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.RIGHT_CENTER_FACE));
-      }
-
-      case LEFT -> {
-        return driveToPose(AllianceFlipUtil.apply(FieldConstants.CoralStation.LEFT_CENTER_FACE));
-      }
-
-      default -> {
-        return Commands.none();
-      }
-    }
-  }
-
-  public Command driveProcessor() {
-    return driveToPose(AllianceFlipUtil.apply(FieldConstants.Processor.CENTER_FACE));
   }
 
   /**
