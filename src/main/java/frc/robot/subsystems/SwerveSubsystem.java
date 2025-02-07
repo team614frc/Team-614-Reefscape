@@ -612,7 +612,7 @@ public class SwerveSubsystem extends SubsystemBase {
             .get(position)
             .get(FieldConstants.ReefLevel.L1)
             .toPose2d();
-    path  = AllianceFlipUtil.apply(path);
+    path = AllianceFlipUtil.apply(path);
     return driveToPose(path);
   }
 
