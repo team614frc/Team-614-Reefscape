@@ -606,7 +606,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (!limelight.hasTarget()) {
       return Commands.none();
     }
-    position = FieldConstants.Reef.POSITION_MAP.get(limelight.getID()).get(direction);
+    int position = FieldConstants.Reef.POSITION_MAP.get(limelight.getID()).get(direction);
     Pose2d path =
         FieldConstants.Reef.BRANCH_POSITIONS
             .get(position)
