@@ -5,19 +5,13 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "1 coral path"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "driveToReefRight"
+                  "pathName": "1 coral path"
                 }
               },
               {
@@ -55,19 +49,13 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "2 coral path 2"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "driveToReefRight"
+                  "pathName": "2 coral path 2"
                 }
               },
               {
@@ -105,19 +93,13 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "3 coral path 2"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "driveToReefLeft"
+                  "pathName": "3 coral path 2"
                 }
               },
               {
@@ -155,25 +137,19 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "4 coral path 2"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "driveToReefRight"
+                  "name": "L3"
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "L3"
+                  "pathName": "4 coral path 2"
                 }
               }
             ]
