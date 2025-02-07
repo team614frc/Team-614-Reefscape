@@ -603,8 +603,6 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Command driveReef(Direction direction) {
-    Pose2d path = new Pose2d(0, 0, new Rotation2d());
-    int position;
     if (!limelight.hasTarget()) {
       return Commands.none();
     }
