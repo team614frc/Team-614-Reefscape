@@ -124,12 +124,11 @@ public class RobotContainer {
       Commands.waitUntil(endEffector::hasGamePiece)
           .andThen(led.setBasicPattern(), elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
 
-  private Command outtakeCoral() {
-    return Commands.sequence(
-        endEffector.outtake().withTimeout(0.2),
-        endEffector.stop(),
-        elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
-  }
+  private Command outtakeCoral =
+      Commands.sequence(
+          endEffector.outtake().withTimeout(0.2),
+          endEffector.stop(),
+          elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
 
   private Command autoIntake() {
     Command startIntake =
@@ -167,7 +166,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2", elevatorArm.setSetpointCommand(Setpoint.kL2));
     NamedCommands.registerCommand("L3", elevatorArm.setSetpointCommand(Setpoint.kL3));
     NamedCommands.registerCommand("Intake", autoIntake());
-    NamedCommands.registerCommand("Outtake", outtakeCoral());
+    NamedCommands.registerCommand("Outtake", outtakeCoral);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -204,7 +203,7 @@ public class RobotContainer {
             (releaseCommand.alongWith(canalDetectionParallel).alongWith(endEffectorDetection))
                 .unless(hasGamePiece()));
 
-    driverXbox.rightTrigger().onTrue(outtakeCoral());
+    driverXbox.rightTrigger().onTrue(outtakeCoral);
 
     codriverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
     codriverXbox.x().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL2));
