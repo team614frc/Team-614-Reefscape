@@ -602,11 +602,10 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public int findReefID() {
-    int AprilTagID;
     int index =
         FieldConstants.Reef.CENTER_FACES.indexOf(
             swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES));
-    AprilTagID = FieldConstants.Reef.CENTER_FACES_IDS.get(index);
+    int AprilTagID = FieldConstants.Reef.CENTER_FACES_IDS.get(index);
     return AprilTagID;
   }
 
