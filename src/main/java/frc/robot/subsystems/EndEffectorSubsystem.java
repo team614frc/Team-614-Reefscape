@@ -14,7 +14,7 @@ import frc.robot.Configs;
 import frc.robot.Constants;
 import frc.robot.Constants.EndEffectorConstants;
 
-public class EndEffectorSubsystem extends SubsystemBase implements AutoCloseable {
+public class EndEffectorSubsystem extends SubsystemBase {
   private final SparkFlex endEffectorMotor =
       new SparkFlex(Constants.EndEffectorConstants.END_EFFECTOR_MOTOR, MotorType.kBrushless);
 
@@ -73,14 +73,5 @@ public class EndEffectorSubsystem extends SubsystemBase implements AutoCloseable
             < EndEffectorConstants.END_EFFECTOR_MIN_RPM.in(
                 Rotations)); // velocty ensures the motor is running before detecting a
     // stall
-  }
-
-  public double getSpeed() {
-    return getMotor().get();
-  }
-
-  @Override
-  public void close() throws Exception {
-    getMotor().close();
   }
 }

@@ -82,6 +82,12 @@ public final class Configs {
 
   public static final class IntakeSubsystem {
     public static final SparkFlexConfig INTAKE_CONFIG = new SparkFlexConfig();
+
+    static {
+      INTAKE_CONFIG
+          .idleMode(IdleMode.kCoast)
+          .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
+    }
   }
 
   public static final class IntakePivotSubsystem {

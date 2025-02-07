@@ -76,8 +76,4 @@ public class CanalSubsystem extends SubsystemBase {
           set(CanalConstants.OUTTAKE_REST_SPEED);
         });
   }
-
-  public double getSpeed() {
-    return getMotor().get();
-  }
 }
