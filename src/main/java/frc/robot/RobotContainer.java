@@ -80,7 +80,7 @@ public class RobotContainer {
   Command driveFieldOrientedAngularVelocitySim =
       drivebase.driveFieldOriented(driveAngularVelocitySim);
 
-  private Command rumble(double power, double duration) {
+  private final Command rumble(double power, double duration) {
     return Commands.runOnce(
             () -> {
               driverXbox.getHID().setRumble(RumbleType.kBothRumble, power);
@@ -106,13 +106,14 @@ public class RobotContainer {
               elevatorArm.setSetpointCommand(Setpoint.kHover))
           .unless(hasGamePiece());
 
-  private BooleanSupplier hasGamePiece() {
+  private final BooleanSupplier hasGamePiece() {
     return () -> endEffector.hasGamePiece() && canal.gamePieceDetected();
   }
 
-  private Command releaseCommand = Commands.parallel(intake.stopIntake(), intakePivot.pivotUp());
+  private final Command releaseCommand =
+      Commands.parallel(intake.stopIntake(), intakePivot.pivotUp());
 
-  private Command canalDetectionParallel =
+  private final Command canalDetectionParallel =
       Commands.waitUntil(canal::gamePieceDetected)
           .andThen(
               Commands.parallel(
@@ -120,17 +121,17 @@ public class RobotContainer {
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
                   elevatorArm.setSetpointCommand(Setpoint.kIntake)));
 
-  private Command endEffectorDetection =
+  private final Command endEffectorDetection =
       Commands.waitUntil(endEffector::hasGamePiece)
           .andThen(led.setBasicPattern(), elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
 
-  private Command outtakeCoral =
+  private final Command outtakeCoral =
       Commands.sequence(
           endEffector.outtake().withTimeout(0.2),
           endEffector.stop(),
           elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
 
-  private Command autoIntake() {
+  private final Command autoIntake() {
     Command startIntake =
         Commands.parallel(
             led.setIntakePattern(),
