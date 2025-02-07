@@ -10,8 +10,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FieldConstants {
@@ -60,43 +60,43 @@ public class FieldConstants {
   public static class Reef {
     public static final Translation2d CENTER =
         new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
+
     public static final double FACE_TO_ZONE_LINE =
         Units.inchesToMeters(12); // Side of the reef to the inside of the reef zone line
 
-    public static final ArrayList<Pose2d> CENTER_FACES =
-        new ArrayList<>(
-            Arrays.asList(
-                new Pose2d[] {
-                  new Pose2d(
-                      Units.inchesToMeters(144.003),
-                      Units.inchesToMeters(158.500),
-                      Rotation2d.fromDegrees(180)),
-                  new Pose2d(
-                      Units.inchesToMeters(160.373),
-                      Units.inchesToMeters(186.857),
-                      Rotation2d.fromDegrees(120)),
-                  new Pose2d(
-                      Units.inchesToMeters(193.116),
-                      Units.inchesToMeters(186.858),
-                      Rotation2d.fromDegrees(60)),
-                  new Pose2d(
-                      Units.inchesToMeters(209.489),
-                      Units.inchesToMeters(158.502),
-                      Rotation2d.fromDegrees(0)),
-                  new Pose2d(
-                      Units.inchesToMeters(193.118),
-                      Units.inchesToMeters(130.145),
-                      Rotation2d.fromDegrees(-60)),
-                  new Pose2d(
-                      Units.inchesToMeters(160.375),
-                      Units.inchesToMeters(130.144),
-                      Rotation2d.fromDegrees(-120))
-                })); // Starting facing the driver station in clockwise order
+    public static final List<Pose2d> CENTER_FACES =
+        List.of(
+            new Pose2d(
+                Units.inchesToMeters(144.003),
+                Units.inchesToMeters(158.500),
+                Rotation2d.fromDegrees(180)),
+            new Pose2d(
+                Units.inchesToMeters(160.373),
+                Units.inchesToMeters(186.857),
+                Rotation2d.fromDegrees(120)),
+            new Pose2d(
+                Units.inchesToMeters(193.116),
+                Units.inchesToMeters(186.858),
+                Rotation2d.fromDegrees(60)),
+            new Pose2d(
+                Units.inchesToMeters(209.489),
+                Units.inchesToMeters(158.502),
+                Rotation2d.fromDegrees(0)),
+            new Pose2d(
+                Units.inchesToMeters(193.118),
+                Units.inchesToMeters(130.145),
+                Rotation2d.fromDegrees(-60)),
+            new Pose2d(
+                Units.inchesToMeters(160.375),
+                Units.inchesToMeters(130.144),
+                Rotation2d.fromDegrees(
+                    -120))); // Starting facing the driver station in clockwise order
 
-    public static final ArrayList<Integer> CENTER_FACES_IDS =
-        new ArrayList<>(Arrays.asList(new Integer[] {7, 6, 11, 10, 9, 8}));
+    public static final List<Integer> CENTER_FACES_RED_IDS = List.of(7, 6, 11, 10, 9, 8);
 
-    public static final ArrayList<Map<ReefLevel, Pose3d>> BRANCH_POSITIONS =
+    public static final List<Integer> CENTER_FACES_BLUE_IDS = List.of(18, 17, 22, 21, 20, 19);
+
+    public static final List<Map<ReefLevel, Pose3d>> BRANCH_POSITIONS =
         new ArrayList<>(13); // Starting at the right branch facing the driver station in clockwise
 
     static {

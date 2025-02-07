@@ -25,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +36,7 @@ import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Direction;
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -606,7 +608,12 @@ public class SwerveSubsystem extends SubsystemBase {
     int index =
         FieldConstants.Reef.CENTER_FACES.indexOf(
             swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES));
-    AprilTagID = FieldConstants.Reef.CENTER_FACES_IDS.get(index);
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    List<Integer> apriltags =
+        (ally.get() == Alliance.Red)
+            ? FieldConstants.Reef.CENTER_FACES_RED_IDS
+            : FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
+    AprilTagID = apriltags.get(index);
     return AprilTagID;
   }
 
