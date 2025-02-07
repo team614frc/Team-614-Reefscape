@@ -119,7 +119,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   public ElevatorArmSubsystem() {
 
     elevatorMotor.configure(
-        Configs.ElevatorArmSubsystem.ARM_CONFIG,
+        Configs.ElevatorArmSubsystem.ELEVATOR_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
@@ -147,10 +147,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  public double getElevatorPosition() {
-    return elevatorMotor.getEncoder().getPosition(); // Replace with actual encoder method
-  }
-
   /**
    * Command to set the subsystem setpoint. This will set the arm and elevator to their predefined
    * positions for the given setpoint.
@@ -162,6 +158,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             case kHover:
               elevatorCurrentTarget = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
               armCurrentTarget = ArmConstants.ARM_HOVER_SETPOINT;
+              break;
             case kIntake:
               elevatorCurrentTarget = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
               armCurrentTarget = ArmConstants.ARM_INTAKE_SETPOINT;
@@ -251,6 +248,5 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             armSim.getVelocityRadPerSec() * SimulationRobotConstants.ARM_REDUCTION),
         RobotController.getBatteryVoltage(),
         SimulationRobotConstants.SIM_UPDATE_TIME.in(Second));
-    // SimBattery is updated in Robot.java
   }
 }

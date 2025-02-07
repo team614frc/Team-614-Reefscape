@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Configs.ClimberSubsystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.CanalSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
@@ -146,6 +146,33 @@ public class RobotContainer {
         elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
   }
 
+  private Command autoIntake() {
+    Command startIntake =
+        Commands.parallel(
+            led.setIntakePattern(),
+            intakePivot.pivotDown(),
+            intake.intakeGamepiece(),
+            canal.intake(),
+            endEffector.intake(),
+            elevatorArm.setSetpointCommand(Setpoint.kHover));
+
+    Command stopIntake =
+        Commands.parallel(
+            intake.stopIntake(),
+            intakePivot.pivotUp(),
+            canal.stop(),
+            elevatorArm.setSetpointCommand(Setpoint.kIntake));
+
+    Command endEffectorDetection =
+        Commands.waitUntil(endEffector::hasGamePiece)
+            .andThen(led.setBasicPattern(), elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+
+    return Commands.sequence(
+        startIntake,
+        Commands.waitUntil(canal::gamePieceDetected).andThen(stopIntake),
+        endEffectorDetection);
+  }
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -154,6 +181,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L1", elevatorArm.setSetpointCommand(Setpoint.kL1));
     NamedCommands.registerCommand("L2", elevatorArm.setSetpointCommand(Setpoint.kL2));
     NamedCommands.registerCommand("L3", elevatorArm.setSetpointCommand(Setpoint.kL3));
+    NamedCommands.registerCommand("Intake", autoIntake());
     NamedCommands.registerCommand("Outtake", outtakeCoral());
 
     // Build an auto chooser. This will use Commands.none() as the default option.
@@ -177,17 +205,17 @@ public class RobotContainer {
   private void configureBindings() {
     driverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL3));
     driverXbox.x().onTrue(Commands.none());
-    driverXbox.b().whileTrue(intake.intakeGamepiece());
+    driverXbox.b().onTrue(Commands.none());
     driverXbox.y().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
-    driverXbox.leftBumper().whileTrue(pivotAndIntake());
-    driverXbox.rightBumper().onTrue(Commands.none());
-    driverXbox.leftTrigger().onTrue(Commands.none());
+    driverXbox.leftBumper().whileTrue(climber.reverseClimb());
+    driverXbox.rightBumper().whileTrue(climber.climb());
+    driverXbox.leftTrigger().whileTrue(pivotAndIntake());
     driverXbox.rightTrigger().onTrue(outtakeCoral());
 
-    codriverXbox.a().onTrue(Commands.none());
-    codriverXbox.x().onTrue(Commands.none());
+    codriverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+    codriverXbox.x().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL2));
     codriverXbox.b().onTrue(Commands.none());
     codriverXbox.y().onTrue(Commands.none());
     codriverXbox.start().onTrue(Commands.none());

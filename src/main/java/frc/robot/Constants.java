@@ -90,7 +90,7 @@ public final class Constants {
   public static final class ElevatorConstants {
     public static final int ELEVATOR_MOTOR = 22;
     public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(40);
-    public static final double ELEVATOR_P_VALUE = 0.15;
+    public static final double ELEVATOR_P_VALUE = 0.01;
     public static final double ELEVATOR_D_VALUE = 0.0;
     public static final int ELEVATOR_HOVER_SETPOINT = 0;
     public static final int ELEVATOR_INTAKE_SETPOINT = 0;
@@ -114,14 +114,14 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
     public static final Current ARM_CURRENT_LIMIT = Amp.of(40);
-    public static final double ARM_P_VALUE = 0.00005;
+    public static final double ARM_P_VALUE = 0.01;
     public static final double ARM_D_VALUE = 0.0;
     public static final int ARM_HOVER_SETPOINT = 0;
     public static final int ARM_INTAKE_SETPOINT = 0;
     public static final int ARM_IDLE_SETPOINT = 0;
     public static final int ARM_L1_SETPOINT = 0;
     public static final int ARM_L2_SETPOINT = 5;
-    public static final int ARM_L3_SETPOINT = 9;
+    public static final int ARM_L3_SETPOINT = 0;
     public static final int ARM_L4_SETPOINT = 0;
     public static final int ARM_ZERO_ENCODER = 0;
     public static final AngularVelocity ARM_MAX_VELOCITY = Rotations.per(Minute).of(5250);
