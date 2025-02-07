@@ -76,16 +76,11 @@ public class EndEffectorSubsystem extends SubsystemBase implements AutoCloseable
   }
 
   public double getSpeed() {
-    return endEffectorMotor.get();
+    return getMotor().get();
   }
 
   @Override
   public void close() throws Exception {
-    endEffectorMotor.close();
-  }
-
-  public void set() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'set'");
+    getMotor().close();
   }
 }

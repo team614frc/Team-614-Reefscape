@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class EndEffectorTest {
   static final double DELTA = 1e-2; // acceptable deviation range
   EndEffectorSubsystem endEffector;
-  SparkFlexSim m_simMotor;
+  SparkFlexSim simMotor;
 
   public EndEffectorTest() {}
 
@@ -21,14 +21,13 @@ class EndEffectorTest {
     assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
     endEffector = new EndEffectorSubsystem(); // Inject mocked motor into subsystem
 
-    m_simMotor =
-        new SparkFlexSim(endEffector.getMotor(), DCMotor.getNeoVortex(1)); // Simulate motor
-    m_simMotor.enable();
+    simMotor = new SparkFlexSim(endEffector.getMotor(), DCMotor.getNeoVortex(1)); // Simulate motor
+    simMotor.enable();
   }
 
   @AfterEach // this method will run after each test
   void shutdown() throws Exception {
-    m_simMotor.disable();
+    simMotor.disable();
     endEffector.getMotor().close();
   }
 

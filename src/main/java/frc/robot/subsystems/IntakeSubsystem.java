@@ -56,13 +56,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   public Command intakeGamepiece() {
-    return Commands.runEnd(
-        () -> {
-          set(Constants.IntakeConstants.INTAKE_SPEED);
-        },
-        () -> {
-          set(Constants.IntakeConstants.INTAKE_REST_SPEED);
-        });
+    return Commands.run(() -> set(Constants.IntakeConstants.INTAKE_SPEED));
   }
 
   public Command pukeGamepiece() {
@@ -76,9 +70,6 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable {
   }
 
   public Command stopIntake() {
-    return Commands.runOnce(
-        () -> {
-          set(0); // Stop the motor
-        });
+    return Commands.runOnce(() -> set(Constants.IntakeConstants.INTAKE_REST_SPEED));
   }
 }
