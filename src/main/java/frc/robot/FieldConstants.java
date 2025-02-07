@@ -17,8 +17,9 @@ import java.util.Map;
 public class FieldConstants {
   public static final double FIELD_LENGTH = Units.inchesToMeters(690.876);
   public static final double FIELD_WIDTH = Units.inchesToMeters(317);
-  public static final double STARTING_LINE_X =
-      Units.inchesToMeters(299.438); // Measured from the inside of starting line
+
+  /** Measured from the inside of starting line * */
+  public static final double STARTING_LINE_X = Units.inchesToMeters(299.438);
 
   public static class Processor {
     public static final Pose2d CENTER_FACE =
@@ -33,8 +34,9 @@ public class FieldConstants {
     public static final Translation2d CLOSE_CAGE =
         new Translation2d(Units.inchesToMeters(345.428), Units.inchesToMeters(199.947));
 
-    // Measured from floor to bottom of cage
+    /** Measured from floor to bottom of cage * */
     public static final double DEEP_HEIGHT = Units.inchesToMeters(3.125);
+
     public static final double SHALLOW_HEIGHT = Units.inchesToMeters(30.125);
   }
 
@@ -61,9 +63,10 @@ public class FieldConstants {
     public static final Translation2d CENTER =
         new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
 
-    public static final double FACE_TO_ZONE_LINE =
-        Units.inchesToMeters(12); // Side of the reef to the inside of the reef zone line
+    /** Side of the reef to the inside of the reef zone line * */
+    public static final double FACE_TO_ZONE_LINE = Units.inchesToMeters(12);
 
+    /** Starting facing the driver station in clockwise order * */
     public static final List<Pose2d> CENTER_FACES =
         List.of(
             new Pose2d(
@@ -89,15 +92,14 @@ public class FieldConstants {
             new Pose2d(
                 Units.inchesToMeters(160.375),
                 Units.inchesToMeters(130.144),
-                Rotation2d.fromDegrees(
-                    -120))); // Starting facing the driver station in clockwise order
+                Rotation2d.fromDegrees(-120)));
 
     public static final List<Integer> CENTER_FACES_RED_IDS = List.of(7, 6, 11, 10, 9, 8);
 
     public static final List<Integer> CENTER_FACES_BLUE_IDS = List.of(18, 17, 22, 21, 20, 19);
 
-    public static final List<Map<ReefLevel, Pose3d>> BRANCH_POSITIONS =
-        new ArrayList<>(13); // Starting at the right branch facing the driver station in clockwise
+    /** Starting at the right branch facing the driver station in clockwise * */
+    public static final List<Map<ReefLevel, Pose3d>> BRANCH_POSITIONS = new ArrayList<>(13);
 
     static {
       // Initialize branch positions
@@ -162,8 +164,8 @@ public class FieldConstants {
             Map.entry(19, Map.of(Direction.RIGHT, 10, Direction.LEFT, 11)));
   }
 
+  /** Measured from the center of the ice cream * */
   public static class StagingPositions {
-    // Measured from the center of the ice cream
     public static final Pose2d LEFT_ICE_CREAM =
         new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(230.5), new Rotation2d());
     public static final Pose2d MIDDLE_ICE_CREAM =
@@ -185,7 +187,7 @@ public class FieldConstants {
 
     ReefLevel(Distance height, Angle pitch) {
       this.height = height;
-      this.pitch = pitch; // in degrees
+      this.pitch = pitch;
     }
 
     public final Distance height;
