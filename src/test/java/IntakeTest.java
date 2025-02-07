@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class IntakeTest {
   static final double DELTA = 1e-2; // acceptable deviation range
   IntakeSubsystem intake;
-  SparkFlexSim m_simMotor;
+  SparkFlexSim simMotor;
 
   public IntakeTest() {}
 
@@ -21,13 +21,13 @@ class IntakeTest {
     assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
     intake = new IntakeSubsystem(); // Inject mocked motor into subsystem
 
-    m_simMotor = new SparkFlexSim(intake.getMotor(), DCMotor.getNeoVortex(1)); // Simulate motor
-    m_simMotor.enable();
+    simMotor = new SparkFlexSim(intake.getMotor(), DCMotor.getNeoVortex(1)); // Simulate motor
+    simMotor.enable();
   }
 
   @AfterEach // this method will run after each test
   void shutdown() throws Exception {
-    m_simMotor.disable();
+    simMotor.disable();
     intake.getMotor().close();
   }
 
