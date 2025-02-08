@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Configs.ClimberSubsystem;
+import frc.robot.Configs.ExampleSubsystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
@@ -36,6 +37,7 @@ public class RobotContainer {
   private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
   private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
+  private final ExampleSubsystem example = new ExampleSubsystem();
 
   private final SendableChooser<Command> autoChooser;
 

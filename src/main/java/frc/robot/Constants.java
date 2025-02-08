@@ -87,7 +87,7 @@ public final class Constants {
   }
 
   public static final class ElevatorConstants {
-    public static final int ELEVATOR_MOTOR = 22;
+    public static final int ELEVATOR_MOTOR = 31;
     public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(40);
     public static final double ELEVATOR_P_VALUE = 0.15;
     public static final double ELEVATOR_D_VALUE = 0.0;

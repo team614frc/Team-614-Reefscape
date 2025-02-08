@@ -119,4 +119,14 @@ public final class Configs {
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
     }
   }
+
+  public static final class ExampleSubsystem {
+    public static final SparkFlexConfig EXAMPLE_CONFIG = new SparkFlexConfig();
+
+    static {
+      EXAMPLE_CONFIG
+          .idleMode(IdleMode.kCoast)
+          .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
+    }
+  }
 }

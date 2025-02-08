@@ -15,7 +15,7 @@
   },
   "angle": {
     "type": "sparkflex_vortex",
-    "id": 16,
+    "id": 30,
     "canbus": null
   },
   "encoder": {
