@@ -143,7 +143,8 @@ public class RobotContainer {
       Commands.sequence(
           endEffector.outtake().withTimeout(0.2),
           endEffector.stop(),
-          elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+          elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint),
+          elevatorArm.setSetpointCommand(Setpoint.kHover).withTimeout(1.5));
 
   private final Command autoIntake() {
     Command startIntake =
@@ -164,7 +165,7 @@ public class RobotContainer {
 
     Command endEffectorDetection =
         Commands.waitUntil(endEffector::hasGamePiece)
-            .andThen(led.setBasicPattern(), elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+            .andThen(led.setBasicPattern(), elevatorArm.setSetpointCommand(Setpoint.kHover));
 
     return Commands.sequence(
         startIntake,
@@ -221,7 +222,17 @@ public class RobotContainer {
 
     codriverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
     codriverXbox.x().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL2));
-    codriverXbox.b().onTrue(Commands.none());
+    codriverXbox
+        .b()
+        .onTrue(
+            elevatorArm
+                .setSetpointCommand(Setpoint.kIntake)
+                .alongWith(endEffector.intake())
+                .until(elevatorArm::reachedSetpoint)
+                .andThen(endEffector.stall())
+                .alongWith(elevatorArm.setSetpointCommand(Setpoint.kHover))
+                .until(elevatorArm::reachedSetpoint)
+                .andThen(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint)));
     codriverXbox.y().onTrue(Commands.none());
     codriverXbox.start().onTrue(Commands.none());
     codriverXbox.back().onTrue(Commands.none());

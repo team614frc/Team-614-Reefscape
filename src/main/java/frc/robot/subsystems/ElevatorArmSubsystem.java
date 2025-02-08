@@ -136,6 +136,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     armMotorSim = new SparkFlexSim(armMotor, armMotorModel);
   }
 
+  public boolean atSetpoint() {
+    return (elevatorEncoder.getPosition() == elevatorCurrentTarget)
+        && (armEncoder.getPosition() == armCurrentTarget);
+  }
+
   /**
    * Drive the arm and elevator motors to their respective setpoints. This will use MAXMotion
    * position control which will allow for a smooth acceleration and deceleration to the mechanisms'
@@ -145,6 +150,10 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     armController.setReference(armCurrentTarget, ControlType.kMAXMotionPositionControl);
     elevatorClosedLoopController.setReference(
         elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
+  }
+
+  public boolean reachedSetpoint() {
+    return true;
   }
 
   /**
