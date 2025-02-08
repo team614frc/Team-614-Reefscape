@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkAnalogSensor;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -12,7 +12,7 @@ import frc.robot.Configs;
 public class ExampleSubsystem extends SubsystemBase {
   private final SparkFlex flexMotor = new SparkFlex(16, MotorType.kBrushless);
 
-  private RelativeEncoder flexEncoder = flexMotor.getExternalEncoder();
+  private SparkAnalogSensor flexEncoder = flexMotor.getAnalog();
 
   public ExampleSubsystem() {
     flexMotor.configure(
