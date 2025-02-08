@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -26,7 +27,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
-import java.util.function.BooleanSupplier;
 import swervelib.SwerveInputStream;
 
 /**
@@ -96,34 +96,48 @@ public class RobotContainer {
             });
   }
 
-  private final Command intakeCommand =
-      Commands.parallel(
-              led.setIntakePattern(),
-              intakePivot.pivotDown(),
-              intake.intakeGamepiece(),
-              canal.intake(),
-              endEffector.intake(),
-              elevatorArm.setSetpointCommand(Setpoint.kHover))
-          .unless(hasGamePiece());
+  /**
+   * This command will only run when the end effector does not have a game piece, this keeps the
+   * canal running until laserCAN sees the coral
+   */
+  private Command pivotAndIntake() {
+    Command intakeCommand =
+        Commands.parallel(
+            led.setIntakePattern(),
+            intakePivot.pivotDown(),
+            intake.intakeGamepiece(),
+            canal.intake(),
+            endEffector.intake(),
+            elevatorArm.setSetpointCommand(Setpoint.kHover));
 
-  private final BooleanSupplier hasGamePiece() {
-    return () -> endEffector.hasGamePiece() && canal.gamePieceDetected();
+    Command releaseCommand = Commands.parallel(intake.stopIntake(), intakePivot.pivotUp());
+
+    Command canalDetectionParallel =
+        Commands.waitUntil(canal::gamePieceDetected)
+            .andThen(
+                Commands.parallel(
+                    canal.stop(),
+                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
+                    elevatorArm.setSetpointCommand(Setpoint.kIntake)));
+
+    Command endEffectorDetection =
+        Commands.waitUntil(endEffector::hasGamePiece)
+            .andThen(led.setBasicPattern(), elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+
+    Command startEndCommand =
+        Commands.startEnd(
+            () -> intakeCommand.schedule(),
+            () -> {
+              releaseCommand.schedule();
+              canalDetectionParallel.schedule();
+              endEffectorDetection.schedule();
+            });
+
+    return new ConditionalCommand(
+        Commands.none(),
+        startEndCommand,
+        () -> endEffector.hasGamePiece() && canal.gamePieceDetected());
   }
-
-  private final Command releaseCommand =
-      Commands.parallel(intake.stopIntake(), intakePivot.pivotUp());
-
-  private final Command canalDetectionParallel =
-      Commands.waitUntil(canal::gamePieceDetected)
-          .andThen(
-              Commands.parallel(
-                  canal.stop(),
-                  rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                  elevatorArm.setSetpointCommand(Setpoint.kIntake)));
-
-  private final Command endEffectorDetection =
-      Commands.waitUntil(endEffector::hasGamePiece)
-          .andThen(led.setBasicPattern(), elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
 
   private final Command outtakeCoral =
       Commands.sequence(
@@ -196,14 +210,7 @@ public class RobotContainer {
     driverXbox.back().onTrue(Commands.none());
     driverXbox.leftBumper().whileTrue(climber.reverseClimb());
     driverXbox.rightBumper().whileTrue(climber.climb());
-
-    driverXbox.leftTrigger().whileTrue(intakeCommand);
-    driverXbox
-        .leftTrigger()
-        .onFalse(
-            (releaseCommand.alongWith(canalDetectionParallel).alongWith(endEffectorDetection))
-                .unless(hasGamePiece()));
-
+    driverXbox.leftTrigger().whileTrue(pivotAndIntake());
     driverXbox.rightTrigger().onTrue(outtakeCoral);
 
     codriverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
