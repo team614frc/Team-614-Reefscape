@@ -9,7 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CanalTest {
+class ClimbTest {
   public static final double DELTA = 1e-2; // acceptable deviation range
   private ClimberSubsystem climber;
   private SparkFlexSim simMotor;
