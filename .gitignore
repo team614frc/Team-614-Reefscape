@@ -187,4 +187,4 @@ compile_commands.json
 .factorypath
 
 # BuildConstants will be built by GitHub Actions runner
-./src/main/java/frc/robot/BuildConstants.java
+src/main/java/frc/robot/BuildConstants.java
