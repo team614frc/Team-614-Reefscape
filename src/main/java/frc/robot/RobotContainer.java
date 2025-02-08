@@ -208,6 +208,16 @@ public class RobotContainer {
     driverXbox.y().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
+    driverXbox.leftTrigger().onTrue(Commands.none());
+    driverXbox.rightTrigger().onTrue(endEffector.outtake());
+    driverXbox
+        .leftBumper()
+        .whileTrue(
+            Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT)));
+    driverXbox
+        .rightBumper()
+        .whileTrue(
+            Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT)));
     driverXbox.leftBumper().whileTrue(climber.reverseClimb());
     driverXbox.rightBumper().whileTrue(climber.climb());
     driverXbox.leftTrigger().whileTrue(pivotAndIntake());
