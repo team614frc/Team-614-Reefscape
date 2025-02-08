@@ -5,11 +5,12 @@ run-name: ${{ github.event.pull_request.head.ref }}
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events.
-on: 
- push:
+on:
+  push:
     branches: [main]
- pull_request:
+  pull_request:
     branches: ["**"]
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   spotless:
@@ -23,14 +24,16 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: 17
+          distribution: "zulu"
+          java-version:
+            17
             # Grant execute permission for gradlew
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      
+
       - name: Compile and run tests on robot code specifically spotless
         run: ./gradlew spotlessCheck
+
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
@@ -56,4 +59,13 @@ jobs:
       - name: Compile and run tests on robot code
         run: ./gradlew build
 
+      # Commits and pushes the BuildConstants.java file
+      - name: Generate BuildConstants.java
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+          git add src/main/java/frc/robot/BuildConstants.java
+          git commit --amend --no-edit  # Amends the last commit from the PR merge
+          git push --force origin main  # Overwrites the last commit with the new one
