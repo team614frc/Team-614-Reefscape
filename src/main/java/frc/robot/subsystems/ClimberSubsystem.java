@@ -17,7 +17,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public ClimberSubsystem() {
     climberMotor.configure(
-        Configs.ClimberSubsystem.CLIMBER_CONFIG,
+        Configs.ClimberConfig.CLIMBER_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }

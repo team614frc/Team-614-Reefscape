@@ -119,12 +119,12 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   public ElevatorArmSubsystem() {
 
     elevatorMotor.configure(
-        Configs.ElevatorArmSubsystem.ELEVATOR_CONFIG,
+        Configs.ElevatorArmConfig.ELEVATOR_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
     armMotor.configure(
-        Configs.ElevatorArmSubsystem.ARM_CONFIG,
+        Configs.ElevatorArmConfig.ARM_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 

@@ -14,7 +14,7 @@ import frc.robot.Constants.ElevatorConstants;
 
 public final class Configs {
 
-  public static final class ElevatorArmSubsystem {
+  public static final class ElevatorArmConfig {
     public static final SparkFlexConfig ELEVATOR_CONFIG = new SparkFlexConfig();
     public static final SparkFlexConfig ARM_CONFIG = new SparkFlexConfig();
 
@@ -69,7 +69,7 @@ public final class Configs {
     }
   }
 
-  public static final class EndEffectorSubsystem {
+  public static final class EndEffectorConfig {
     public static final SparkFlexConfig END_EFFECTOR_CONFIG = new SparkFlexConfig();
 
     static {
@@ -80,7 +80,7 @@ public final class Configs {
     }
   }
 
-  public static final class IntakeSubsystem {
+  public static final class IntakeConfig {
     public static final SparkFlexConfig INTAKE_CONFIG = new SparkFlexConfig();
 
     static {
@@ -90,7 +90,7 @@ public final class Configs {
     }
   }
 
-  public static final class IntakePivotSubsystem {
+  public static final class IntakePivotConfig {
     public static final SparkFlexConfig INTAKE_PIVOT_CONFIG = new SparkFlexConfig();
 
     static {
@@ -100,7 +100,7 @@ public final class Configs {
     }
   }
 
-  public static final class CanalSubsystem {
+  public static final class CanalConfig {
     public static final SparkFlexConfig CANAL_CONFIG = new SparkFlexConfig();
 
     static {
@@ -110,7 +110,7 @@ public final class Configs {
     }
   }
 
-  public static final class ClimberSubsystem {
+  public static final class ClimberConfig {
     public static final SparkFlexConfig CLIMBER_CONFIG = new SparkFlexConfig();
 
     static {
