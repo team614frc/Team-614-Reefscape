@@ -26,6 +26,10 @@ public class IntakeSubsystem extends SubsystemBase {
         PersistMode.kPersistParameters);
   }
 
+  public SparkFlex getMotor() {
+    return intakeMotor;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -38,9 +42,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command intakeGamepiece() {
-    return Commands.runOnce(
+    return Commands.runEnd(
         () -> {
           set(Constants.IntakeConstants.INTAKE_SPEED);
+        },
+        () -> {
+          set(Constants.IntakeConstants.INTAKE_REST_SPEED);
         });
   }
 

@@ -4,43 +4,48 @@ import com.revrobotics.sim.SparkFlexSim;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.Constants;
-import frc.robot.subsystems.CanalSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CanalTest {
+class IntakeTest {
   private static final double DELTA = 1e-2; // acceptable deviation range
-  private CanalSubsystem canal;
+  private IntakeSubsystem intake;
   private SparkFlexSim simMotor;
 
   @BeforeEach // this method will run before each test
   void setup() {
     assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
-    canal = new CanalSubsystem(); // Inject mocked motor into subsystem
+    intake = new IntakeSubsystem(); // Inject mocked motor into subsystem
 
-    simMotor = new SparkFlexSim(canal.getMotor(), DCMotor.getNeoVortex(1)); // Simulate motor
+    simMotor = new SparkFlexSim(intake.getMotor(), DCMotor.getNeoVortex(1)); // Simulate motor
     simMotor.enable();
   }
 
   @AfterEach // this method will run after each test
   void shutdown() throws Exception {
     simMotor.disable();
-    canal.getMotor().close();
+    intake.getMotor().close();
   }
 
   @Test // marks this method as a test
-  void intakeTest() {
-
+  void intakeGamepieceTest() {
     // executing the command
-    canal.intake().execute();
+    intake.intakeGamepiece().execute();
     // When the command is executed we are getting the speed at the subsystem
-    assertEquals(Constants.CanalConstants.INTAKE_SPEED, canal.getMotor().get(), DELTA);
+    assertEquals(Constants.IntakeConstants.INTAKE_SPEED, intake.getMotor().get(), DELTA);
   }
 
   @Test
-  void outtakeTest() {
-    canal.outtake().execute();
-    assertEquals(Constants.CanalConstants.OUTTAKE_SPEED, canal.getMotor().get(), DELTA);
+  void pukeGamepieceTest() {
+    intake.pukeGamepiece().execute();
+    assertEquals(Constants.IntakeConstants.OUTTAKE_SPEED, intake.getMotor().get(), DELTA);
+  }
+
+  @Test
+  void stopIntakeTest() {
+    intake.stopIntake().execute();
+    assertEquals(0.0, intake.getMotor().get(), DELTA);
   }
 }
