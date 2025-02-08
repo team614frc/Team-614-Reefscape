@@ -22,6 +22,10 @@ public class ClimberSubsystem extends SubsystemBase {
         PersistMode.kPersistParameters);
   }
 
+  public SparkFlex getMotor() {
+    return climberMotor;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
