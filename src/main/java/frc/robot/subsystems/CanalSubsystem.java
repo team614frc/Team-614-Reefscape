@@ -25,7 +25,7 @@ public class CanalSubsystem extends SubsystemBase {
   /** Creates a new CanalSubsystem. */
   public CanalSubsystem() {
     canalMotor.configure(
-        Configs.CanalSubsystem.CANAL_CONFIG,
+        Configs.CanalSubsystemConfig.CANAL_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
