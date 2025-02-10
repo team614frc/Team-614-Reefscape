@@ -29,12 +29,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AllianceFlipUtil;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Direction;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -586,6 +588,9 @@ public class SwerveSubsystem extends SubsystemBase {
     updatePosition(limelight.getVisionEstimate());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
+    SmartDashboard.putBoolean("Sees Coral", limelight.hasTargetCoral());
+    SmartDashboard.putNumber("Coral X Coordinates", limelight.getTargetCoral().getX());
+    SmartDashboard.putNumber("Coral Y Coordinates", limelight.getTargetCoral().getY());
   }
 
   public void updatePosition(Optional<PoseEstimate> visionEstimate) {
@@ -625,6 +630,15 @@ public class SwerveSubsystem extends SubsystemBase {
             .toPose2d();
     path = AllianceFlipUtil.apply(path);
     return driveToPose(path);
+  }
+
+  public Command driveCoral() {
+    if(limelight.hasTargetCoral()) {
+      Pose2d coralPose = limelight.getTargetCoral();
+      Pose2d pose2d = new Pose2d(coralPose.getX()+FieldConstants.Offsets.ADJUST_X,coralPose.getY()+FieldConstants.Offsets.ADJUST_Y,new Rotation2d());
+      return driveToPose(pose2d);
+    }
+    return Commands.none();
   }
 
   /**

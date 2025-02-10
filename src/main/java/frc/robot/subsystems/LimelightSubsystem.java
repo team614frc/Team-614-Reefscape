@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
@@ -10,19 +11,27 @@ import limelight.structures.*;
 import limelight.structures.LimelightSettings.LEDMode;
 
 public class LimelightSubsystem extends SubsystemBase {
-  private final Limelight limelight = new Limelight("limelight-april");
+  private final Limelight limelightfront = new Limelight("limelight-april");
+  private final Limelight limelightback = new Limelight("limelight-coral");
 
   private LimelightPoseEstimator poseEstimator;
-  private LimelightTargetData limelightTargetData;
+  private LimelightTargetData limelightTargetDataApril;
+  private LimelightTargetData limelightTargetDataCoral;
 
   public LimelightSubsystem() {
-    limelight
+    limelightfront
         .settingsBuilder()
         .withLimelightLEDMode(LEDMode.PipelineControl)
         .withCameraOffset(FieldConstants.Offsets.CAMERA_OFFSET)
         .save();
-    poseEstimator = limelight.getPoseEstimator(true);
-    limelightTargetData = new LimelightTargetData(limelight);
+    poseEstimator = limelightfront.getPoseEstimator(true);
+    limelightTargetDataApril = new LimelightTargetData(limelightfront);
+    limelightback
+    .settingsBuilder()
+    .withLimelightLEDMode(LEDMode.PipelineControl)
+    .withCameraOffset(FieldConstants.Offsets.CAMERA_OFFSET)
+    .save();
+    limelightTargetDataCoral = new LimelightTargetData(limelightback);
   }
 
   public Optional<PoseEstimate> getVisionEstimate() {
@@ -30,20 +39,29 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   public int getID() {
-    return (int) limelightTargetData.getAprilTagID();
+    return (int) limelightTargetDataApril.getAprilTagID();
   }
 
   public void updateSettings(Orientation3d orientation3d) {
-    limelight.settingsBuilder().withRobotOrientation(orientation3d).save();
+    limelightfront.settingsBuilder().withRobotOrientation(orientation3d).save();
   }
 
-  public boolean hasTarget() {
-    return limelightTargetData.getTargetStatus();
+  public boolean hasTargetApril() {
+    return limelightTargetDataApril.getTargetStatus();
+  }
+
+  public boolean hasTargetCoral() {
+    return limelightTargetDataCoral.getTargetStatus();
+  }
+
+  public Pose2d getTargetCoral() {
+    return limelightTargetDataCoral.getTargetToRobot().toPose2d();
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Sees AprilTag", hasTarget());
+    SmartDashboard.putBoolean("Sees AprilTag", hasTargetApril());
+    SmartDashboard.putBoolean("Sees Coral", hasTargetCoral());
     SmartDashboard.putNumber("AprilTag ID", getID());
   }
 }
