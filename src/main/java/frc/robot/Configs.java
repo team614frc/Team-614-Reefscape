@@ -21,7 +21,8 @@ public final class Configs {
     static {
       // Basic settings of elevator motor
       ELEVATOR_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
+          .inverted(true)
           .smartCurrentLimit(
               (int)
                   Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(
@@ -45,7 +46,7 @@ public final class Configs {
           .allowedClosedLoopError(ElevatorConstants.ELEVATOR_LOOP_ERROR);
 
       ARM_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .smartCurrentLimit(
               (int) ArmConstants.ARM_CURRENT_LIMIT.in(Amp)); // .voltageCompensation(12);
 
