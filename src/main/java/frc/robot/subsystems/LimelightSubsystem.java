@@ -44,6 +44,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public void updateSettings(Orientation3d orientation3d) {
     limelightfront.settingsBuilder().withRobotOrientation(orientation3d).save();
+    limelightback.settingsBuilder().withRobotOrientation(orientation3d).save();
   }
 
   public boolean hasTargetApril() {
