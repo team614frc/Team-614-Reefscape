@@ -43,6 +43,10 @@ public class CanalSubsystem extends SubsystemBase {
     canalMotor.set(speed);
   }
 
+  public SparkFlex getMotor() {
+    return canalMotor;
+  }
+
   public Command intake() {
     return Commands.runEnd(
         () -> {

@@ -33,6 +33,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("End Effector Has Game Piece", hasGamePiece());
   }
 
+  public SparkFlex getMotor() {
+    return endEffectorMotor;
+  }
+
   // Set the power level for the end effector motor
   public void set(double speed) {
     endEffectorMotor.set(speed);
