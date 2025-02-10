@@ -39,7 +39,7 @@ class IntakeTest {
 
   @Test
   void pukeGamepieceTest() {
-    intake.pukeGamepiece().execute();
+    intake.outtakeGamepiece().execute();
     assertEquals(Constants.IntakeConstants.OUTTAKE_SPEED, intake.getMotor().get(), DELTA);
   }
 
