@@ -33,7 +33,7 @@ class CanalTest {
   void intakeTest() {
 
     // executing the command
-    canal.intake().execute();
+    canal.intakeTest().execute();
     // When the command is executed we are getting the speed at the subsystem
     assertEquals(Constants.CanalConstants.INTAKE_SPEED, canal.getMotor().get(), DELTA);
   }

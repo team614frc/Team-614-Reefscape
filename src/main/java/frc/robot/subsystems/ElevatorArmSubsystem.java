@@ -36,6 +36,7 @@ import frc.robot.Constants.SimulationRobotConstants;
 
 public class ElevatorArmSubsystem extends SubsystemBase {
   public enum Setpoint {
+    kHover,
     kIntake,
     kIdleSetpoint,
     kL1,
@@ -44,16 +45,19 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kL4;
   }
 
+  // Elevator Motor
   private SparkFlex elevatorMotor =
       new SparkFlex(ElevatorConstants.ELEVATOR_MOTOR, MotorType.kBrushless);
   private SparkClosedLoopController elevatorClosedLoopController =
       elevatorMotor.getClosedLoopController();
+  private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
 
+  // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
-  private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
+  private RelativeEncoder armEncoder = armMotor.getExternalEncoder();
   private SparkClosedLoopController armController = armMotor.getClosedLoopController();
-  private RelativeEncoder armEncoder = armMotor.getEncoder();
 
+  // Default Current Target
   private double elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
   private double armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
 
@@ -118,25 +122,26 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   public ElevatorArmSubsystem() {
 
     elevatorMotor.configure(
-        Configs.ElevatorArmSubsystem.ARM_CONFIG,
+        Configs.ElevatorArmConfig.ELEVATOR_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
     armMotor.configure(
-        Configs.ElevatorArmSubsystem.ARM_CONFIG,
+        Configs.ElevatorArmConfig.ARM_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
     // Display mechanism2d
     SmartDashboard.putData("Elevator Subsystem", mech2d);
 
-    // Zero arm and elevator encoders on initialization
-    elevatorEncoder.setPosition(ElevatorConstants.ELEVATOR_ZERO_ENCODER);
-    armEncoder.setPosition(ArmConstants.ARM_ZERO_ENCODER);
-
     // Initialize simulation values
     elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
     armMotorSim = new SparkFlexSim(armMotor, armMotorModel);
+  }
+
+  public boolean atSetpoint() {
+    return (elevatorEncoder.getPosition() == elevatorCurrentTarget)
+        && (armEncoder.getPosition() == armCurrentTarget);
   }
 
   /**
@@ -145,13 +150,12 @@ public class ElevatorArmSubsystem extends SubsystemBase {
    * setpoints.
    */
   private void moveToSetpoint() {
-    armController.setReference(armCurrentTarget, ControlType.kMAXMotionPositionControl);
-    elevatorClosedLoopController.setReference(
-        elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
+    armController.setReference(armCurrentTarget, ControlType.kPosition);
+    elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
   }
 
-  public double getElevatorPosition() {
-    return elevatorMotor.getEncoder().getPosition(); // Replace with actual encoder method
+  public boolean reachedSetpoint() {
+    return true;
   }
 
   /**
@@ -162,6 +166,10 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     return this.runOnce(
         () -> {
           switch (setpoint) {
+            case kHover:
+              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
+              armCurrentTarget = ArmConstants.ARM_HOVER_SETPOINT;
+              break;
             case kIntake:
               elevatorCurrentTarget = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
               armCurrentTarget = ArmConstants.ARM_INTAKE_SETPOINT;
@@ -251,6 +259,5 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             armSim.getVelocityRadPerSec() * SimulationRobotConstants.ARM_REDUCTION),
         RobotController.getBatteryVoltage(),
         SimulationRobotConstants.SIM_UPDATE_TIME.in(Second));
-    // SimBattery is updated in Robot.java
   }
 }

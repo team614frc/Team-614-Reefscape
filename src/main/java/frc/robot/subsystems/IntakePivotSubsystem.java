@@ -1,3 +1,4 @@
+/*
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -40,7 +41,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   public IntakePivotSubsystem() {
     intakePivotMotor.configure(
-        Configs.IntakePivotSubsystem.INTAKE_PIVOT_CONFIG,
+        Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
@@ -91,3 +92,4 @@ public class IntakePivotSubsystem extends SubsystemBase {
         position / IntakeConstants.GEAR_RATIO * IntakeConstants.FULL_CIRCLE.in(Degrees));
   }
 }
+*/

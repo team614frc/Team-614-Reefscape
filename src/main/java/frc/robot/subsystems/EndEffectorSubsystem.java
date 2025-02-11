@@ -20,7 +20,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   public EndEffectorSubsystem() {
     endEffectorMotor.configure(
-        Configs.EndEffectorSubsystem.END_EFFECTOR_CONFIG,
+        Configs.EndEffectorConfig.END_EFFECTOR_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
@@ -44,16 +44,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   // Command to activate the end effector (e.g., for gripping or releasing)
   public Command intake() {
-    return Commands.runEnd(
-        () -> set(Constants.EndEffectorConstants.INTAKE_SPEED),
-        () -> set(Constants.EndEffectorConstants.INTAKE_REST_SPEED));
+    return Commands.runOnce(() -> set(Constants.EndEffectorConstants.INTAKE_SPEED));
   }
 
   public Command outtake() {
-    return Commands.runEnd(
-        () -> set(Constants.EndEffectorConstants.OUTTAKE_SPEED), // Outtake speed (negative value)
-        () -> set(0) // Stop motor when command ends
-        );
+    return Commands.runOnce(() -> set(Constants.EndEffectorConstants.OUTTAKE_SPEED));
   }
 
   // Command to deactivate the end effector (e.g., stop gripping or releasing)
@@ -61,6 +56,27 @@ public class EndEffectorSubsystem extends SubsystemBase {
     return Commands.runOnce(
         () -> {
           set(0); // Stop the motor
+        });
+  }
+
+  public Command intakeTest() {
+    return Commands.runEnd(
+        () -> set(Constants.EndEffectorConstants.INTAKE_SPEED), // Intake speed (negative value)
+        () -> set(0) // Stop motor when command ends
+        );
+  }
+
+  public Command outtakeTest() {
+    return Commands.runEnd(
+        () -> set(Constants.EndEffectorConstants.OUTTAKE_SPEED), // Outtake speed (negative value)
+        () -> set(0) // Stop motor when command ends
+        );
+  }
+
+  public Command stall() {
+    return Commands.runOnce(
+        () -> {
+          set(0.1);
         });
   }
 

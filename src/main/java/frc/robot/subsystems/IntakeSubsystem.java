@@ -21,7 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
     intakeMotor.configure(
-        Configs.IntakeSubsystem.INTAKE_CONFIG,
+        Configs.IntakeConfig.INTAKE_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
@@ -51,7 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
-  public Command pukeGamepiece() {
+  public Command outtakeGamepiece() {
     return Commands.runEnd(
         () -> {
           set(Constants.IntakeConstants.OUTTAKE_SPEED);
