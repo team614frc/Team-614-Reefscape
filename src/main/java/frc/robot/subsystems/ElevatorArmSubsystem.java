@@ -10,7 +10,7 @@ import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -45,16 +45,19 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kL4;
   }
 
+  // Elevator Motor
   private SparkFlex elevatorMotor =
       new SparkFlex(ElevatorConstants.ELEVATOR_MOTOR, MotorType.kBrushless);
   private SparkClosedLoopController elevatorClosedLoopController =
       elevatorMotor.getClosedLoopController();
+  private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
 
+  // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
-  private AbsoluteEncoder elevatorEncoder = elevatorMotor.getAbsoluteEncoder();
+  private RelativeEncoder armEncoder = armMotor.getExternalEncoder();
   private SparkClosedLoopController armController = armMotor.getClosedLoopController();
-  private AbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
 
+  // Default Current Target
   private double elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
   private double armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
 
@@ -147,9 +150,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
    * setpoints.
    */
   private void moveToSetpoint() {
-    armController.setReference(armCurrentTarget, ControlType.kMAXMotionPositionControl);
-    elevatorClosedLoopController.setReference(
-        elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
+    armController.setReference(armCurrentTarget, ControlType.kPosition);
+    elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
   }
 
   public boolean reachedSetpoint() {

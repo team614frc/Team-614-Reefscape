@@ -21,6 +21,7 @@ public class CanalSubsystem extends SubsystemBase {
       new SparkFlex(CanalConstants.CANAL_MOTOR, MotorType.kBrushless);
 
   private final LaserCan laserCan = new LaserCan(5);
+  LaserCan.Measurement distance = laserCan.getMeasurement();
 
   /** Creates a new CanalSubsystem. */
   public CanalSubsystem() {
@@ -37,6 +38,7 @@ public class CanalSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Canal Motor Output", canalMotor.get());
     SmartDashboard.putBoolean("Game Piece Detection", gamePieceDetected());
+    SmartDashboard.putNumber("LaserCAN Distance", distance.distance_mm);
   }
 
   public void set(double speed) {
@@ -48,12 +50,9 @@ public class CanalSubsystem extends SubsystemBase {
   }
 
   public Command intake() {
-    return Commands.runEnd(
+    return Commands.runOnce(
         () -> {
           set(CanalConstants.INTAKE_SPEED);
-        },
-        () -> {
-          set(CanalConstants.INTAKE_REST_SPEED);
         });
   }
 
@@ -75,10 +74,18 @@ public class CanalSubsystem extends SubsystemBase {
   }
 
   public boolean gamePieceDetected() {
-    LaserCan.Measurement distance = laserCan.getMeasurement();
-
     return (distance != null
-        && distance.distance_mm < 50
+        && distance.distance_mm < 185
         && distance.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
+  }
+
+  public Command intakeTest() {
+    return Commands.runEnd(
+        () -> {
+          set(CanalConstants.INTAKE_SPEED);
+        },
+        () -> {
+          set(CanalConstants.INTAKE_REST_SPEED);
+        });
   }
 }

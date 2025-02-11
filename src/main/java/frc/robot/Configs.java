@@ -22,7 +22,6 @@ public final class Configs {
       // Basic settings of elevator motor
       ELEVATOR_CONFIG
           .idleMode(IdleMode.kBrake)
-          .inverted(true)
           .smartCurrentLimit(
               (int)
                   Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(
@@ -33,10 +32,15 @@ public final class Configs {
           .reverseLimitSwitchType(Type.kNormallyOpen);
       ELEVATOR_CONFIG
           .closedLoop
-          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+          .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
           // PID Values for position control
-          .p(Constants.ElevatorConstants.ELEVATOR_P_VALUE)
-          .d(Constants.ElevatorConstants.ELEVATOR_D_VALUE)
+          // .p(Constants.ElevatorConstants.ELEVATOR_P_VALUE)
+          // .d(Constants.ElevatorConstants.ELEVATOR_D_VALUE)
+          .pidf(
+              ElevatorConstants.ELEVATOR_P_VALUE,
+              0,
+              ElevatorConstants.ELEVATOR_D_VALUE,
+              ElevatorConstants.ELEVATOR_F_VALUE)
           .outputRange(ElevatorConstants.ELEVATOR_MIN_RANGE, ElevatorConstants.ELEVATOR_MAX_RANGE)
           .maxMotion
           // Set MAXMotion parameters for position control
@@ -44,6 +48,8 @@ public final class Configs {
           .maxAcceleration(
               ElevatorConstants.ELEVATOR_MAX_ACCELERATION.in(Rotations.per(Minute).per(Second)))
           .allowedClosedLoopError(ElevatorConstants.ELEVATOR_LOOP_ERROR);
+
+      ELEVATOR_CONFIG.externalEncoder.inverted(true);
 
       ARM_CONFIG
           .idleMode(IdleMode.kBrake)
@@ -107,6 +113,7 @@ public final class Configs {
     static {
       CANAL_CONFIG
           .idleMode(IdleMode.kCoast)
+          .inverted(true)
           .smartCurrentLimit((int) Constants.CanalConstants.CANAL_CURRENT_LIMIT.in(Amp));
     }
   }

@@ -33,14 +33,14 @@ class EndEffectorTest {
   void intakeTest() {
 
     // executing the command
-    endEffector.intake().execute();
+    endEffector.intakeTest().execute();
     // When the command is executed we are getting the speed at the subsystem
     assertEquals(Constants.EndEffectorConstants.INTAKE_SPEED, endEffector.getMotor().get(), DELTA);
   }
 
   @Test
   void outtakeTest() {
-    endEffector.outtake().execute();
+    endEffector.outtakeTest().execute();
     assertEquals(Constants.EndEffectorConstants.OUTTAKE_SPEED, endEffector.getMotor().get(), DELTA);
   }
 
