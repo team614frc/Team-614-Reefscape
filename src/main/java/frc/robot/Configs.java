@@ -63,7 +63,7 @@ public final class Configs {
        */
       ARM_CONFIG
           .closedLoop
-          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+          .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
           // Set PID values for position control
           .p(ArmConstants.ARM_P_VALUE)
           .d(ArmConstants.ARM_D_VALUE)
