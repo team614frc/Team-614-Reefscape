@@ -40,7 +40,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   public IntakePivotSubsystem() {
     intakePivotMotor.configure(
-        Configs.IntakePivotSubsystem.INTAKE_PIVOT_CONFIG,
+        Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
