@@ -14,14 +14,14 @@ import frc.robot.Constants.ElevatorConstants;
 
 public final class Configs {
 
-  public static final class ElevatorArmSubsystem {
+  public static final class ElevatorArmConfig {
     public static final SparkFlexConfig ELEVATOR_CONFIG = new SparkFlexConfig();
     public static final SparkFlexConfig ARM_CONFIG = new SparkFlexConfig();
 
     static {
       // Basic settings of elevator motor
       ELEVATOR_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .smartCurrentLimit(
               (int)
                   Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(
@@ -32,10 +32,15 @@ public final class Configs {
           .reverseLimitSwitchType(Type.kNormallyOpen);
       ELEVATOR_CONFIG
           .closedLoop
-          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+          .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
           // PID Values for position control
-          .p(Constants.ElevatorConstants.ELEVATOR_P_VALUE)
-          .d(Constants.ElevatorConstants.ELEVATOR_D_VALUE)
+          // .p(Constants.ElevatorConstants.ELEVATOR_P_VALUE)
+          // .d(Constants.ElevatorConstants.ELEVATOR_D_VALUE)
+          .pidf(
+              ElevatorConstants.ELEVATOR_P_VALUE,
+              0,
+              ElevatorConstants.ELEVATOR_D_VALUE,
+              ElevatorConstants.ELEVATOR_F_VALUE)
           .outputRange(ElevatorConstants.ELEVATOR_MIN_RANGE, ElevatorConstants.ELEVATOR_MAX_RANGE)
           .maxMotion
           // Set MAXMotion parameters for position control
@@ -44,8 +49,10 @@ public final class Configs {
               ElevatorConstants.ELEVATOR_MAX_ACCELERATION.in(Rotations.per(Minute).per(Second)))
           .allowedClosedLoopError(ElevatorConstants.ELEVATOR_LOOP_ERROR);
 
+      ELEVATOR_CONFIG.externalEncoder.inverted(true);
+
       ARM_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .smartCurrentLimit(
               (int) ArmConstants.ARM_CURRENT_LIMIT.in(Amp)); // .voltageCompensation(12);
 
@@ -69,7 +76,7 @@ public final class Configs {
     }
   }
 
-  public static final class EndEffectorSubsystem {
+  public static final class EndEffectorConfig {
     public static final SparkFlexConfig END_EFFECTOR_CONFIG = new SparkFlexConfig();
 
     static {
@@ -80,7 +87,7 @@ public final class Configs {
     }
   }
 
-  public static final class IntakeSubsystem {
+  public static final class IntakeConfig {
     public static final SparkFlexConfig INTAKE_CONFIG = new SparkFlexConfig();
 
     static {
@@ -90,7 +97,7 @@ public final class Configs {
     }
   }
 
-  public static final class IntakePivotSubsystem {
+  public static final class IntakePivotConfig {
     public static final SparkFlexConfig INTAKE_PIVOT_CONFIG = new SparkFlexConfig();
 
     static {
@@ -100,7 +107,7 @@ public final class Configs {
     }
   }
 
-  public static final class CanalSubsystem {
+  public static final class CanalConfig {
     public static final SparkFlexConfig CANAL_CONFIG = new SparkFlexConfig();
 
     static {
@@ -110,7 +117,7 @@ public final class Configs {
     }
   }
 
-  public static final class ClimberSubsystem {
+  public static final class ClimberConfig {
     public static final SparkFlexConfig CLIMBER_CONFIG = new SparkFlexConfig();
 
     static {
