@@ -179,6 +179,11 @@ public class FieldConstants {
     LEFT;
   }
 
+  public enum DetectionMode {
+    CORAL,
+    APRILTAG;
+  }
+
   public enum ReefLevel {
     L4(Inches.of(72), Degrees.of(-90)),
     L3(Inches.of(47.625), Degrees.of(-35)),

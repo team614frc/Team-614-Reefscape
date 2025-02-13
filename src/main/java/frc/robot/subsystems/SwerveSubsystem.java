@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AllianceFlipUtil;
 import frc.robot.Constants;
@@ -583,7 +584,8 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     limelight.updateSettings(getOrientation3d());
-    updatePosition(limelight.getVisionEstimate());
+    // updatePosition(limelight.getVisionEstimate());
+    SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
   }
@@ -625,6 +627,14 @@ public class SwerveSubsystem extends SubsystemBase {
             .toPose2d();
     path = AllianceFlipUtil.apply(path);
     return driveToPose(path);
+  }
+
+  public Command alignCoral() {
+    if (limelight.hasTargetBack()) {
+      Pose2d pose2d = new Pose2d(0, 0, new Rotation2d(limelight.getTargetAngleBack()));
+      return driveToPose(pose2d);
+    }
+    return Commands.none();
   }
 
   /**
