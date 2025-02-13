@@ -36,7 +36,6 @@ import frc.robot.Constants;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Direction;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -585,12 +584,10 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     limelight.updateSettings(getOrientation3d());
-    updatePosition(limelight.getVisionEstimate());
+    // updatePosition(limelight.getVisionEstimate());
+    SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
-    SmartDashboard.putBoolean("Sees Coral", limelight.hasTargetCoral());
-    SmartDashboard.putNumber("Coral X Coordinates", limelight.getTargetCoral().getX());
-    SmartDashboard.putNumber("Coral Y Coordinates", limelight.getTargetCoral().getY());
   }
 
   public void updatePosition(Optional<PoseEstimate> visionEstimate) {
@@ -632,10 +629,9 @@ public class SwerveSubsystem extends SubsystemBase {
     return driveToPose(path);
   }
 
-  public Command driveCoral() {
-    if(limelight.hasTargetCoral()) {
-      Pose2d coralPose = limelight.getTargetCoral();
-      Pose2d pose2d = new Pose2d(coralPose.getX()+FieldConstants.Offsets.ADJUST_X,coralPose.getY()+FieldConstants.Offsets.ADJUST_Y,new Rotation2d());
+  public Command alignCoral() {
+    if (limelight.hasTargetBack()) {
+      Pose2d pose2d = new Pose2d(0, 0, new Rotation2d(limelight.getTargetAngleBack()));
       return driveToPose(pose2d);
     }
     return Commands.none();
