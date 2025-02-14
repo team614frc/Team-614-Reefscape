@@ -45,7 +45,7 @@ public final class Constants {
     public static final Current INTAKE_CURRENT_LIMIT = Amp.of(40);
     public static final Current INTAKE_PIVOT_CURRENT_LIMIT = Amp.of(40);
     public static final double OUTTAKE_SPEED = 0;
-    public static final double INTAKE_SPEED = 0.8;
+    public static final double INTAKE_SPEED = 0.2;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
 
@@ -68,7 +68,7 @@ public final class Constants {
 
   public static class EndEffectorConstants {
     public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(40);
-    public static final double OUTTAKE_SPEED = 0;
+    public static final double OUTTAKE_SPEED = -0.2;
     public static final double INTAKE_SPEED = 0.45;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
@@ -80,29 +80,32 @@ public final class Constants {
   public static final class CanalConstants {
     public static final int CANAL_MOTOR = 23;
     public static final Current CANAL_CURRENT_LIMIT = Amp.of(40);
-    public static final double OUTTAKE_SPEED = 1;
-    public static final double INTAKE_SPEED = -1;
+    public static final double OUTTAKE_SPEED = 0;
+    public static final double INTAKE_SPEED = 0.05;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
+    public static final int CANAL_REST_SPEED = 0;
   }
 
   public static final class ElevatorConstants {
     public static final int ELEVATOR_MOTOR = 22;
     public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(40);
-    public static final double ELEVATOR_P_VALUE = 0.15;
-    public static final double ELEVATOR_D_VALUE = 0.0;
-    public static final int ELEVATOR_INTAKE_SETPOINT = 0;
-    public static final int ELEVATOR_IDLE_SETPOINT = 0;
-    public static final int ELEVATOR_L1_SETPOINT = 0;
-    public static final int ELEVATOR_L2_SETPOINT = 15;
-    public static final int ELEVATOR_L3_SETPOINT = 34;
+    public static final double ELEVATOR_P_VALUE = 1.5;
+    public static final double ELEVATOR_D_VALUE = 0;
+    public static final double ELEVATOR_F_VALUE = 0.02;
+    public static final int ELEVATOR_HOVER_SETPOINT = 9;
+    public static final int ELEVATOR_INTAKE_SETPOINT = 7;
+    public static final double ELEVATOR_IDLE_SETPOINT = 5.84;
+    public static final int ELEVATOR_L1_SETPOINT = 6;
+    public static final double ELEVATOR_L2_SETPOINT = 11.5;
+    public static final double ELEVATOR_L3_SETPOINT = 0;
     public static final int ELEVATOR_L4_SETPOINT = 0;
     public static final int ELEVATOR_THRESHOLD = 1;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
     public static final AngularVelocity ELEVATOR_MAX_VELOCITY = Rotations.per(Minute).of(5250);
     public static final AngularAcceleration ELEVATOR_MAX_ACCELERATION =
         Rotations.per(Minute).per(Second).of(7500);
-    public static final double ELEVATOR_LOOP_ERROR = 0.5;
+    public static final double ELEVATOR_LOOP_ERROR = 0;
     public static final double ELEVATOR_MIN_RANGE = -1;
     public static final double ELEVATOR_MAX_RANGE = 1;
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
@@ -112,13 +115,14 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
     public static final Current ARM_CURRENT_LIMIT = Amp.of(40);
-    public static final double ARM_P_VALUE = 0.00005;
+    public static final double ARM_P_VALUE = 0.01;
     public static final double ARM_D_VALUE = 0.0;
+    public static final int ARM_HOVER_SETPOINT = 0;
     public static final int ARM_INTAKE_SETPOINT = 0;
     public static final int ARM_IDLE_SETPOINT = 0;
     public static final int ARM_L1_SETPOINT = 0;
-    public static final int ARM_L2_SETPOINT = 5;
-    public static final int ARM_L3_SETPOINT = 9;
+    public static final int ARM_L2_SETPOINT = 0;
+    public static final int ARM_L3_SETPOINT = 0;
     public static final int ARM_L4_SETPOINT = 0;
     public static final int ARM_ZERO_ENCODER = 0;
     public static final AngularVelocity ARM_MAX_VELOCITY = Rotations.per(Minute).of(5250);
