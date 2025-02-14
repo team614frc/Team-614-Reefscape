@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -48,13 +49,12 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   // Elevator Motor
   private SparkFlex elevatorMotor =
       new SparkFlex(ElevatorConstants.ELEVATOR_MOTOR, MotorType.kBrushless);
-  private SparkClosedLoopController elevatorClosedLoopController =
-      elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
+  private SparkClosedLoopController elevatorController = elevatorMotor.getClosedLoopController();
 
   // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
-  private RelativeEncoder armEncoder = armMotor.getExternalEncoder();
+  private SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
   private SparkClosedLoopController armController = armMotor.getClosedLoopController();
 
   // Default Current Target
@@ -151,7 +151,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
    */
   private void moveToSetpoint() {
     armController.setReference(armCurrentTarget, ControlType.kPosition);
-    elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
+    elevatorController.setReference(elevatorCurrentTarget, ControlType.kPosition);
   }
 
   public boolean reachedSetpoint() {

@@ -6,7 +6,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Second;
 
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import frc.robot.Constants.ArmConstants;
@@ -26,10 +25,6 @@ public final class Configs {
               (int)
                   Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(
                       Amp)); // .voltageCompensation(12);
-      ELEVATOR_CONFIG
-          .limitSwitch
-          .reverseLimitSwitchEnabled(true)
-          .reverseLimitSwitchType(Type.kNormallyOpen);
       ELEVATOR_CONFIG
           .closedLoop
           .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
