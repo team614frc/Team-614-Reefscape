@@ -108,7 +108,7 @@ public class RobotContainer {
             intake.intakeGamepiece(),
             canal.intake(),
             endEffector.intake(),
-            elevatorArm.setSetpointCommand(Setpoint.kHover));
+            elevatorArm.setSetpoint(Setpoint.kHover));
 
     Command releaseCommand = Commands.parallel(intake.stopIntake());
     // intakePivot.pivotUp());
@@ -119,11 +119,11 @@ public class RobotContainer {
                 Commands.parallel(
                     canal.stop(),
                     rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                    elevatorArm.setSetpointCommand(Setpoint.kIntake)));
+                    elevatorArm.setSetpoint(Setpoint.kIntake)));
 
     Command endEffectorDetection =
         Commands.waitUntil(endEffector::hasGamePiece)
-            .andThen(led.setBasicPattern(), elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+            .andThen(led.setBasicPattern(), elevatorArm.setSetpoint(Setpoint.kIdleSetpoint));
 
     Command startEndCommand =
         Commands.startEnd(
@@ -144,8 +144,8 @@ public class RobotContainer {
       Commands.sequence(
           endEffector.outtake().withTimeout(0.2),
           endEffector.stop(),
-          elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint),
-          elevatorArm.setSetpointCommand(Setpoint.kHover).withTimeout(1.5));
+          elevatorArm.setSetpoint(Setpoint.kIdleSetpoint),
+          elevatorArm.setSetpoint(Setpoint.kHover).withTimeout(1.5));
 
   private final Command autoIntake() {
     Command startIntake =
@@ -155,18 +155,18 @@ public class RobotContainer {
             intake.intakeGamepiece(),
             canal.intake(),
             endEffector.intake(),
-            elevatorArm.setSetpointCommand(Setpoint.kHover));
+            elevatorArm.setSetpoint(Setpoint.kHover));
 
     Command stopIntake =
         Commands.parallel(
             intake.stopIntake(),
             // intakePivot.pivotUp(),
             canal.stop(),
-            elevatorArm.setSetpointCommand(Setpoint.kIntake));
+            elevatorArm.setSetpoint(Setpoint.kIntake));
 
     Command endEffectorDetection =
         Commands.waitUntil(endEffector::hasGamePiece)
-            .andThen(led.setBasicPattern(), elevatorArm.setSetpointCommand(Setpoint.kHover));
+            .andThen(led.setBasicPattern(), elevatorArm.setSetpoint(Setpoint.kHover));
 
     return Commands.sequence(
         startIntake,
@@ -179,9 +179,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    NamedCommands.registerCommand("L1", elevatorArm.setSetpointCommand(Setpoint.kL1));
-    NamedCommands.registerCommand("L2", elevatorArm.setSetpointCommand(Setpoint.kL2));
-    NamedCommands.registerCommand("L3", elevatorArm.setSetpointCommand(Setpoint.kL3));
+    NamedCommands.registerCommand("L1", elevatorArm.setSetpoint(Setpoint.kL1));
+    NamedCommands.registerCommand("L2", elevatorArm.setSetpoint(Setpoint.kL2));
+    NamedCommands.registerCommand("L3", elevatorArm.setSetpoint(Setpoint.kL3));
     NamedCommands.registerCommand("Intake", autoIntake());
     NamedCommands.registerCommand("Outtake", outtakeCoral);
 
@@ -204,7 +204,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL3));
+    driverXbox.a().onTrue(elevatorArm.setSetpoint(Setpoint.kL3));
     driverXbox
         .x()
         .whileTrue(
@@ -213,7 +213,7 @@ public class RobotContainer {
         .b()
         .whileTrue(
             Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT)));
-    driverXbox.y().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+    driverXbox.y().onTrue(elevatorArm.setSetpoint(Setpoint.kIdleSetpoint));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
     driverXbox.leftBumper().whileTrue(climber.reverseClimb());
@@ -221,8 +221,8 @@ public class RobotContainer {
     driverXbox.leftTrigger().whileTrue(pivotAndIntake());
     driverXbox.rightTrigger().onTrue(outtakeCoral);
 
-    codriverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL1));
-    codriverXbox.x().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL2));
+    codriverXbox.a().onTrue(elevatorArm.setSetpoint(Setpoint.kL1));
+    codriverXbox.x().onTrue(elevatorArm.setSetpoint(Setpoint.kL2));
     /* codriverXbox
     .b()
     .onTrue(

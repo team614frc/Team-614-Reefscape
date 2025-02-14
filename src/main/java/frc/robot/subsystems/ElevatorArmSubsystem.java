@@ -162,7 +162,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
    * Command to set the subsystem setpoint. This will set the arm and elevator to their predefined
    * positions for the given setpoint.
    */
-  public Command setSetpointCommand(Setpoint setpoint) {
+  public Command setSetpoint(Setpoint setpoint) {
     return this.runOnce(
         () -> {
           switch (setpoint) {
