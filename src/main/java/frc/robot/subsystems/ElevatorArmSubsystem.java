@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -54,7 +55,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
-  private RelativeEncoder armEncoder = armMotor.getExternalEncoder();
+  private SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
   private SparkClosedLoopController armController = armMotor.getClosedLoopController();
 
   // Default Current Target
@@ -139,6 +140,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     armMotorSim = new SparkFlexSim(armMotor, armMotorModel);
   }
 
+  public boolean atSetpoint() {
+    return (elevatorEncoder.getPosition() == elevatorCurrentTarget)
+        && (armEncoder.getPosition() == armCurrentTarget);
+  }
+
   /**
    * Drive the arm and elevator motors to their respective setpoints. This will use MAXMotion
    * position control which will allow for a smooth acceleration and deceleration to the mechanisms'
@@ -153,7 +159,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
    * Command to set the subsystem setpoint. This will set the arm and elevator to their predefined
    * positions for the given setpoint.
    */
-  public Command setSetpointCommand(Setpoint setpoint) {
+  public Command setSetpoint(Setpoint setpoint) {
     return this.runOnce(
         () -> {
           switch (setpoint) {

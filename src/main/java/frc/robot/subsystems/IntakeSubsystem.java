@@ -51,7 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
-  public Command pukeGamepiece() {
+  public Command outtakeGamepiece() {
     return Commands.runEnd(
         () -> {
           set(Constants.IntakeConstants.OUTTAKE_SPEED);
