@@ -29,8 +29,6 @@ public final class Configs {
           .closedLoop
           .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
           // PID Values for position control
-          // .p(Constants.ElevatorConstants.ELEVATOR_P_VALUE)
-          // .d(Constants.ElevatorConstants.ELEVATOR_D_VALUE)
           .pidf(
               ElevatorConstants.ELEVATOR_P_VALUE,
               0,
@@ -58,7 +56,7 @@ public final class Configs {
        */
       ARM_CONFIG
           .closedLoop
-          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+          .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
           // Set PID values for position control
           .p(ArmConstants.ARM_P_VALUE)
           .d(ArmConstants.ARM_D_VALUE)

@@ -49,8 +49,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   // Elevator Motor
   private SparkFlex elevatorMotor =
       new SparkFlex(ElevatorConstants.ELEVATOR_MOTOR, MotorType.kBrushless);
+  private SparkClosedLoopController elevatorClosedLoopController =
+      elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
-  private SparkClosedLoopController elevatorController = elevatorMotor.getClosedLoopController();
 
   // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
@@ -151,11 +152,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
    */
   private void moveToSetpoint() {
     armController.setReference(armCurrentTarget, ControlType.kPosition);
-    elevatorController.setReference(elevatorCurrentTarget, ControlType.kPosition);
-  }
-
-  public boolean reachedSetpoint() {
-    return true;
+    elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
   }
 
   /**
