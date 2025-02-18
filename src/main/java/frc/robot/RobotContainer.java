@@ -13,13 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Configs.ClimberSubsystem;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.ElevatorArmSubsystem;
-import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
-import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.IntakePivotSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -31,11 +25,11 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final IntakeSubsystem intake = new IntakeSubsystem();
-  private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
-  private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
-  private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
-  private final ClimberSubsystem climber = new ClimberSubsystem();
+  // private final IntakeSubsystem intake = new IntakeSubsystem();
+  // private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
+  // private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
+  // private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
+  // private final ClimberSubsystem climber = new ClimberSubsystem();
 
   private final SendableChooser<Command> autoChooser;
 
@@ -97,14 +91,14 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL3));
-    driverXbox.x().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
-    driverXbox.b().whileTrue(intake.intakeGamepiece());
+    // driverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL3));
+    // driverXbox.x().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+    // driverXbox.b().whileTrue(intake.intakeGamepiece());
     driverXbox.y().onTrue(Commands.none());
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
     driverXbox.leftTrigger().onTrue(Commands.none());
-    driverXbox.rightTrigger().onTrue(endEffector.outtake());
+    // driverXbox.rightTrigger().onTrue(endEffector.outtake());
     driverXbox
         .leftBumper()
         .whileTrue(

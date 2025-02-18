@@ -193,7 +193,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    moveToSetpoint();
+    // moveToSetpoint();
     // Display subsystem values
     SmartDashboard.putNumber("Arm Target Position", armCurrentTarget);
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
@@ -201,28 +201,28 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Actual Position", elevatorEncoder.getPosition());
 
     // Update mechanism2d
-    elevatorMech2d.setLength(
-        SimulationRobotConstants.PIXELS_PER_METER
-                * SimulationRobotConstants.MIN_ELEVATOR_HEIGHT.in(Meter)
-            + SimulationRobotConstants.PIXELS_PER_METER
-                * (elevatorEncoder.getPosition() / SimulationRobotConstants.ELEVATOR_GEARING)
-                * (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter)
-                    * SimulationRobotConstants.DRUM_CIRCUMFERENCE.in(Meter)
-                    * Math.PI));
-    armMech2d.setAngle(
-        ElevatorConstants.ELEVATOR_STARTING_ANGLE.in(Degrees)
-            - ( // mirror the angles so they display in the correct direction
-            Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS)
-                + Units.rotationsToDegrees(
-                    armEncoder.getPosition() / SimulationRobotConstants.ARM_REDUCTION))
-            - SimulationRobotConstants.ELEVATOR_ACCOUNT.in(
-                Degrees) // subtract 90 degrees to account for the elevator
-        );
-  }
+    //   elevatorMech2d.setLength(
+    //       SimulationRobotConstants.PIXELS_PER_METER
+    //               * SimulationRobotConstants.MIN_ELEVATOR_HEIGHT.in(Meter)
+    //           + SimulationRobotConstants.PIXELS_PER_METER
+    //               * (elevatorEncoder.getPosition() / SimulationRobotConstants.ELEVATOR_GEARING)
+    //               * (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter)
+    //                   * SimulationRobotConstants.DRUM_CIRCUMFERENCE.in(Meter)
+    //                   * Math.PI));
+    //   armMech2d.setAngle(
+    //       ElevatorConstants.ELEVATOR_STARTING_ANGLE.in(Degrees)
+    //           - ( // mirror the angles so they display in the correct direction
+    //           Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS)
+    //               + Units.rotationsToDegrees(
+    //                   armEncoder.getPosition() / SimulationRobotConstants.ARM_REDUCTION))
+    //           - SimulationRobotConstants.ELEVATOR_ACCOUNT.in(
+    //               Degrees) // subtract 90 degrees to account for the elevator
+    //       );
+    // }
 
-  /** Get the current drawn by each simulation physics model */
-  public double getSimulationCurrentDraw() {
-    return elevatorSim.getCurrentDrawAmps() + armSim.getCurrentDrawAmps();
+    // /** Get the current drawn by each simulation physics model */
+    // public double getSimulationCurrentDraw() {
+    //   return elevatorSim.getCurrentDrawAmps() + armSim.getCurrentDrawAmps();
   }
 
   @Override
