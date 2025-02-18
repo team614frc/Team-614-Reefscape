@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -38,7 +39,10 @@ public class CanalSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Canal Motor Output", canalMotor.get());
     SmartDashboard.putBoolean("Game Piece Detection", gamePieceDetected());
-    SmartDashboard.putNumber("LaserCAN Distance", distance.distance_mm);
+
+    if (!RobotBase.isSimulation()) {
+      SmartDashboard.putNumber("LaserCAN Distance", distance.distance_mm);
+    }
   }
 
   public void set(double speed) {
