@@ -93,14 +93,13 @@ public final class Constants {
     public static final double ELEVATOR_P_VALUE = 1.5;
     public static final double ELEVATOR_D_VALUE = 0;
     public static final double ELEVATOR_F_VALUE = 0.02;
-    public static final int ELEVATOR_HOVER_SETPOINT = 9;
-    public static final int ELEVATOR_INTAKE_SETPOINT = 7;
-    public static final double ELEVATOR_IDLE_SETPOINT = 5.84;
-    public static final int ELEVATOR_L1_SETPOINT = 6;
-    public static final double ELEVATOR_L2_SETPOINT = 11.5;
+    public static final int ELEVATOR_HOVER_SETPOINT = 0;
+    public static final int ELEVATOR_INTAKE_SETPOINT = 0;
+    public static final double ELEVATOR_IDLE_SETPOINT = 0;
+    public static final double ELEVATOR_L1_SETPOINT = 0;
+    public static final double ELEVATOR_L2_SETPOINT = 0;
     public static final double ELEVATOR_L3_SETPOINT = 0;
     public static final int ELEVATOR_L4_SETPOINT = 0;
-    public static final int ELEVATOR_THRESHOLD = 1;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
     public static final AngularVelocity ELEVATOR_MAX_VELOCITY = Rotations.per(Minute).of(5250);
     public static final AngularAcceleration ELEVATOR_MAX_ACCELERATION =
@@ -110,29 +109,41 @@ public final class Constants {
     public static final double ELEVATOR_MAX_RANGE = 1;
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
     public static final Angle ELEVATOR_STARTING_ANGLE = Degrees.of(180);
+    public static final double ELEVATOR_TOLERANCE = 1.5;
   }
 
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
     public static final Current ARM_CURRENT_LIMIT = Amp.of(40);
-    public static final double ARM_P_VALUE = 0.01;
-    public static final double ARM_D_VALUE = 0.0;
-    public static final int ARM_HOVER_SETPOINT = 0;
-    public static final int ARM_INTAKE_SETPOINT = 0;
-    public static final int ARM_IDLE_SETPOINT = 0;
-    public static final int ARM_L1_SETPOINT = 0;
-    public static final int ARM_L2_SETPOINT = 0;
-    public static final int ARM_L3_SETPOINT = 0;
-    public static final int ARM_L4_SETPOINT = 0;
+    public static final double kP = 40.0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kS = 0;
+    public static final double kG = 0.85;
+    public static final double kV = 0;
+    public static final double kA = 0;
+    public static final double kPDown = 2.0;
+    public static final double kIDown = 0;
+    public static final double kDDown = 0;
+    public static final double ARM_HOVER_SETPOINT = 0.025;
+    public static final double ARM_INTAKE_SETPOINT = 0.025;
+    // public static final double ARM_IDLE_SETPOINT = 0.529;
+    public static final double ARM_IDLE_SETPOINT = 0.278;
+    public static final double ARM_L1_SETPOINT = 0;
+    public static final double ARM_L2_SETPOINT = 0.440;
+    public static final double ARM_L3_SETPOINT = 0.440;
+    public static final double ARM_L4_SETPOINT = 0;
+    public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
     public static final int ARM_ZERO_ENCODER = 0;
-    public static final AngularVelocity ARM_MAX_VELOCITY = Rotations.per(Minute).of(5250);
+    public static final AngularVelocity ARM_MAX_VELOCITY = Rotations.per(Minute).of(900000);
     public static final AngularAcceleration ARM_MAX_ACCELERATION =
-        Rotations.per(Minute).per(Second).of(7500);
+        Rotations.per(Minute).per(Minute).of(1000000);
     public static final double ARM_MIN_RANGE = -1;
     public static final double ARM_MAX_RANGE = 1;
     public static final double ARM_LOOP_ERROR = 0.25;
     public static final Angle ARM_STARTING_ANGLE = Degrees.of(180);
     public static final Angle ARM_ANGLE_COMPENSATE = Degrees.of(90);
+    public static final double ARM_TOLERANCE = 0.05;
   }
 
   public static final class SimulationRobotConstants {

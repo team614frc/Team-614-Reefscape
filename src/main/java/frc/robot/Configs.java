@@ -6,7 +6,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Second;
 
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import frc.robot.Constants.ArmConstants;
@@ -27,10 +26,6 @@ public final class Configs {
                   Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(
                       Amp)); // .voltageCompensation(12);
       ELEVATOR_CONFIG
-          .limitSwitch
-          .reverseLimitSwitchEnabled(true)
-          .reverseLimitSwitchType(Type.kNormallyOpen);
-      ELEVATOR_CONFIG
           .closedLoop
           .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
           // PID Values for position control
@@ -47,30 +42,10 @@ public final class Configs {
               ElevatorConstants.ELEVATOR_MAX_ACCELERATION.in(Rotations.per(Minute).per(Second)))
           .allowedClosedLoopError(ElevatorConstants.ELEVATOR_LOOP_ERROR);
 
-      ELEVATOR_CONFIG.externalEncoder.inverted(true);
-
       ARM_CONFIG
           .idleMode(IdleMode.kBrake)
           .smartCurrentLimit(
               (int) ArmConstants.ARM_CURRENT_LIMIT.in(Amp)); // .voltageCompensation(12);
-
-      /*
-       * Configure the reverse limit switch for the elevator. By enabling the limit switch, this
-       * will prevent any actuation of the elevator in the reverse direction if the limit switch is
-       * pressed.
-       */
-      ARM_CONFIG
-          .closedLoop
-          .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-          // Set PID values for position control
-          .p(ArmConstants.ARM_P_VALUE)
-          .d(ArmConstants.ARM_D_VALUE)
-          .outputRange(ArmConstants.ARM_MIN_RANGE, ArmConstants.ARM_MAX_RANGE)
-          .maxMotion
-          // Set MAXMotion parameters for position control
-          .maxVelocity(ArmConstants.ARM_MAX_VELOCITY.in(Rotations.per(Minute)))
-          .maxAcceleration(ArmConstants.ARM_MAX_ACCELERATION.in(Rotations.per(Minute).per(Second)))
-          .allowedClosedLoopError(ArmConstants.ARM_LOOP_ERROR);
     }
   }
 
@@ -79,7 +54,7 @@ public final class Configs {
 
     static {
       END_EFFECTOR_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .smartCurrentLimit(
               (int) Constants.EndEffectorConstants.END_EFFECTOR_CURRENT_LIMIT.in(Amp));
     }
@@ -111,6 +86,7 @@ public final class Configs {
     static {
       CANAL_CONFIG
           .idleMode(IdleMode.kCoast)
+          .inverted(true)
           .smartCurrentLimit((int) Constants.CanalConstants.CANAL_CURRENT_LIMIT.in(Amp));
     }
   }

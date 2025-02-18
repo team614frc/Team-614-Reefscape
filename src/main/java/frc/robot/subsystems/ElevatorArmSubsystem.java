@@ -7,18 +7,23 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Kilogram;
 import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
-import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -54,8 +59,19 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
-  private RelativeEncoder armEncoder = armMotor.getExternalEncoder();
-  private SparkClosedLoopController armController = armMotor.getClosedLoopController();
+  private SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
+
+  private ProfiledPIDController pid =
+      new ProfiledPIDController(
+          ArmConstants.kP,
+          ArmConstants.kI,
+          ArmConstants.kD,
+          new TrapezoidProfile.Constraints(
+              ArmConstants.ARM_MAX_VELOCITY.in(RotationsPerSecond),
+              ArmConstants.ARM_MAX_ACCELERATION.in(RotationsPerSecondPerSecond)));
+
+  private final ArmFeedforward armFeedforward =
+      new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kV, ArmConstants.kA);
 
   // Default Current Target
   private double elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
@@ -139,21 +155,47 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     armMotorSim = new SparkFlexSim(armMotor, armMotorModel);
   }
 
+  public boolean reachedSetpoint() {
+    return (Math.abs(elevatorEncoder.getPosition() - elevatorCurrentTarget)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE)
+        && (Math.abs(armEncoder.getPosition() - armCurrentTarget) <= ArmConstants.ARM_TOLERANCE);
+  }
+
+  private double getArmAngleRadians() {
+    return (armEncoder.getPosition() - ArmConstants.ARM_FEEDFORWARD_OFFSET)
+        * (2 * Math.PI); // Convert to radians
+  }
+
+  private double getArmVelocityRadiansPerSec() {
+    return armEncoder.getVelocity() * (2 * Math.PI); // Convert to radians per second
+  }
+
   /**
    * Drive the arm and elevator motors to their respective setpoints. This will use MAXMotion
    * position control which will allow for a smooth acceleration and deceleration to the mechanisms'
    * setpoints.
    */
   private void moveToSetpoint() {
-    armController.setReference(armCurrentTarget, ControlType.kPosition);
-    elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
+    double armAngleRadians = getArmAngleRadians();
+    double armVelocityRadiansPerSec = getArmVelocityRadiansPerSec();
+
+    double armFeedForwardVoltage =
+        armFeedforward.calculate(armAngleRadians, armVelocityRadiansPerSec);
+
+    SmartDashboard.putNumber("Arm Feed Forward", armFeedForwardVoltage);
+
+    armMotor.setVoltage(
+        pid.calculate(armAngleRadians, Units.degreesToRadians(armCurrentTarget))
+            + armFeedForwardVoltage);
+
+    // elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
   }
 
   /**
    * Command to set the subsystem setpoint. This will set the arm and elevator to their predefined
    * positions for the given setpoint.
    */
-  public Command setSetpointCommand(Setpoint setpoint) {
+  public Command setSetpoint(Setpoint setpoint) {
     return this.runOnce(
         () -> {
           switch (setpoint) {
