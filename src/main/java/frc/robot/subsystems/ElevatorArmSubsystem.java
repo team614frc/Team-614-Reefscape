@@ -162,18 +162,17 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   }
 
   private double getArmAngleRadians() {
-    return (armEncoder.getPosition() - ArmConstants.ARM_FEEDFORWARD_OFFSET)
-        * (2 * Math.PI); // Convert to radians
+    return Units.rotationsToRadians(armEncoder.getPosition()) - ArmConstants.ARM_FEEDFORWARD_OFFSET;
   }
 
   private double getArmVelocityRadiansPerSec() {
-    return armEncoder.getVelocity() * (2 * Math.PI); // Convert to radians per second
+    return Units.rotationsPerMinuteToRadiansPerSecond(armEncoder.getVelocity());
   }
 
   /**
-   * Drive the arm and elevator motors to their respective setpoints. This will use MAXMotion
-   * position control which will allow for a smooth acceleration and deceleration to the mechanisms'
-   * setpoints.
+   * Drive the arm and elevator motors to their respective setpoints. The Elevator will use REV
+   * MAXMotion position control which will allow for a smooth acceleration and deceleration to the
+   * mechanisms' setpoints and the Arm will use PIDController and ArmFeedForward from WPILib.
    */
   private void moveToSetpoint() {
     double armAngleRadians = getArmAngleRadians();
@@ -181,12 +180,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
     double armFeedForwardVoltage =
         armFeedforward.calculate(armAngleRadians, armVelocityRadiansPerSec);
-
     SmartDashboard.putNumber("Arm Feed Forward", armFeedForwardVoltage);
 
-    armMotor.setVoltage(
-        pid.calculate(armAngleRadians, Units.degreesToRadians(armCurrentTarget))
-            + armFeedForwardVoltage);
+    double pidOutput = pid.calculate(armAngleRadians, Units.rotationsToRadians(armCurrentTarget));
+
+    armMotor.setVoltage(pidOutput + armFeedForwardVoltage);
 
     // elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
   }
