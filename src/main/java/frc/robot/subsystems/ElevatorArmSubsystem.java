@@ -73,8 +73,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
       new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kV, ArmConstants.kA);
 
   // Default Current Target
-  private double elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
-  private double armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
+  private double elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
+  private double armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
 
   // Simulation setup and variables
   private DCMotor elevatorMotorModel =
@@ -158,9 +158,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   }
 
   public boolean reachedSetpoint() {
-    return (Math.abs(elevatorEncoder.getPosition() - elevatorCurrentTarget)
-            <= ElevatorConstants.ELEVATOR_TOLERANCE)
-        && (Math.abs(armEncoder.getPosition() - armCurrentTarget) <= ArmConstants.ARM_TOLERANCE);
+    return Math.abs(elevatorEncoder.getPosition() - elevatorSetpoint)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE
+        && Math.abs(armEncoder.getPosition() - armSetpoint) <= ArmConstants.ARM_TOLERANCE;
   }
 
   private double getArmAngleRadians() {
@@ -173,20 +173,18 @@ public class ElevatorArmSubsystem extends SubsystemBase {
    * mechanisms' setpoints and the Arm will use PIDController and ArmFeedForward from WPILib.
    */
   private void moveToSetpoint() {
-    double armAngleRadians = getArmAngleRadians();
-
-    double armFeedForwardVoltage =
+    double armFeedforwardVoltage =
         armFeedforward.calculate(
             pid.getSetpoint().position
                 - Units.rotationsToRadians(ArmConstants.ARM_FEEDFORWARD_OFFSET),
             pid.getSetpoint().velocity);
-    SmartDashboard.putNumber("Arm Feed Forward", armFeedForwardVoltage);
+    SmartDashboard.putNumber("Arm Feed Forward", armFeedforwardVoltage);
 
-    double pidOutput = pid.calculate(armAngleRadians, Units.rotationsToRadians(armCurrentTarget));
+    double pidOutput = pid.calculate(getArmAngleRadians(), Units.rotationsToRadians(armSetpoint));
 
-    armMotor.setVoltage(pidOutput + armFeedForwardVoltage);
+    armMotor.setVoltage(pidOutput + armFeedforwardVoltage);
 
-    elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
+    elevatorClosedLoopController.setReference(elevatorSetpoint, ControlType.kPosition);
   }
 
   /**
@@ -198,32 +196,32 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         () -> {
           switch (setpoint) {
             case kHover:
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
-              armCurrentTarget = ArmConstants.ARM_HOVER_SETPOINT;
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
+              armSetpoint = ArmConstants.ARM_HOVER_SETPOINT;
               break;
             case kIntake:
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
-              armCurrentTarget = ArmConstants.ARM_INTAKE_SETPOINT;
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
+              armSetpoint = ArmConstants.ARM_INTAKE_SETPOINT;
               break;
             case kIdleSetpoint:
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
-              armCurrentTarget = ArmConstants.ARM_IDLE_SETPOINT;
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
+              armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
               break;
             case kL1:
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L1_SETPOINT;
-              armCurrentTarget = ArmConstants.ARM_L1_SETPOINT;
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_L1_SETPOINT;
+              armSetpoint = ArmConstants.ARM_L1_SETPOINT;
               break;
             case kL2:
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L2_SETPOINT;
-              armCurrentTarget = ArmConstants.ARM_L2_SETPOINT;
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_SETPOINT;
+              armSetpoint = ArmConstants.ARM_L2_SETPOINT;
               break;
             case kL3:
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L3_SETPOINT;
-              armCurrentTarget = ArmConstants.ARM_L3_SETPOINT;
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
+              armSetpoint = ArmConstants.ARM_L3_SETPOINT;
               break;
             case kL4:
-              elevatorCurrentTarget = ElevatorConstants.ELEVATOR_L4_SETPOINT;
-              armCurrentTarget = ArmConstants.ARM_L4_SETPOINT;
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_L4_SETPOINT;
+              armSetpoint = ArmConstants.ARM_L4_SETPOINT;
               break;
           }
         });
@@ -234,9 +232,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     moveToSetpoint();
     // Display subsystem values
-    SmartDashboard.putNumber("Arm Target Position", armCurrentTarget);
+    SmartDashboard.putNumber("Arm Target Position", armSetpoint);
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator Target Position", elevatorCurrentTarget);
+    SmartDashboard.putNumber("Elevator Target Position", elevatorSetpoint);
     SmartDashboard.putNumber("Elevator Actual Position", elevatorEncoder.getPosition());
 
     // Update mechanism2d
