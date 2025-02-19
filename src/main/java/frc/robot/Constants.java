@@ -176,8 +176,8 @@ public final class Constants {
     public static final double DEADBAND = 0.1;
     public static final int DRIVER_PORT = 0;
     public static final int CODRIVER_PORT = 1;
-    public static final int RUMBLE_REST = 0;
-    public static final int RUMBLE_SPEED = 1;
+    public static final double RUMBLE_REST = 0;
+    public static final double RUMBLE_SPEED = 1;
     public static final double RUMBLE_DURATION = 0.5;
   }
 

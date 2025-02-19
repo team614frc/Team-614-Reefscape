@@ -22,7 +22,7 @@ public class CanalSubsystem extends SubsystemBase {
       new SparkFlex(CanalConstants.CANAL_MOTOR, MotorType.kBrushless);
 
   private final LaserCan laserCan = new LaserCan(5);
-  LaserCan.Measurement distance = laserCan.getMeasurement();
+  private final LaserCan.Measurement distance = laserCan.getMeasurement();
 
   /** Creates a new CanalSubsystem. */
   public CanalSubsystem() {

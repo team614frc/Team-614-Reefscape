@@ -232,8 +232,7 @@ public class RobotContainer {
                         elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake())
                     .until(elevatorArm::atSetpoint),
                 endEffector.stall(),
-                new ParallelCommandGroup(elevatorArm.setSetpoint(Setpoint.kHover))
-                    .until(elevatorArm::atSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kHover).until(elevatorArm::atSetpoint),
                 new ParallelCommandGroup(
                     endEffector.stop(), elevatorArm.setSetpoint(Setpoint.kIdleSetpoint))));
     codriverXbox.y().onTrue(endEffector.intake());
