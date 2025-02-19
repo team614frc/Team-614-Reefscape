@@ -21,6 +21,7 @@ public final class Configs {
       // Basic settings of elevator motor
       ELEVATOR_CONFIG
           .idleMode(IdleMode.kBrake)
+          .inverted(true)
           .smartCurrentLimit(
               (int)
                   Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(

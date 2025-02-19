@@ -7,14 +7,13 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Kilogram;
 import static edu.wpi.first.units.Units.Meter;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -67,8 +66,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
           ArmConstants.kI,
           ArmConstants.kD,
           new TrapezoidProfile.Constraints(
-              ArmConstants.ARM_MAX_VELOCITY.in(RotationsPerSecond),
-              ArmConstants.ARM_MAX_ACCELERATION.in(RotationsPerSecondPerSecond)));
+              Units.rotationsToRadians(ArmConstants.ARM_MAX_VELOCITY),
+              Units.rotationsToRadians(ArmConstants.ARM_MAX_ACCELERATION)));
 
   private final ArmFeedforward armFeedforward =
       new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kV, ArmConstants.kA);
@@ -147,6 +146,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
+    // Resets Elevator Encoder position to 0
+    elevatorEncoder.setPosition(0);
+        
     // Display mechanism2d
     SmartDashboard.putData("Elevator Subsystem", mech2d);
 
@@ -162,11 +164,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   }
 
   private double getArmAngleRadians() {
-    return Units.rotationsToRadians(armEncoder.getPosition()) - ArmConstants.ARM_FEEDFORWARD_OFFSET;
-  }
-
-  private double getArmVelocityRadiansPerSec() {
-    return Units.rotationsPerMinuteToRadiansPerSecond(armEncoder.getVelocity());
+    return Units.rotationsToRadians(armEncoder.getPosition());
   }
 
   /**
@@ -176,17 +174,19 @@ public class ElevatorArmSubsystem extends SubsystemBase {
    */
   private void moveToSetpoint() {
     double armAngleRadians = getArmAngleRadians();
-    double armVelocityRadiansPerSec = getArmVelocityRadiansPerSec();
 
     double armFeedForwardVoltage =
-        armFeedforward.calculate(armAngleRadians, armVelocityRadiansPerSec);
+        armFeedforward.calculate(
+            pid.getSetpoint().position
+                - Units.rotationsToRadians(ArmConstants.ARM_FEEDFORWARD_OFFSET),
+            pid.getSetpoint().velocity);
     SmartDashboard.putNumber("Arm Feed Forward", armFeedForwardVoltage);
 
     double pidOutput = pid.calculate(armAngleRadians, Units.rotationsToRadians(armCurrentTarget));
 
     armMotor.setVoltage(pidOutput + armFeedForwardVoltage);
 
-    // elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
+    elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
   }
 
   /**

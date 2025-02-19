@@ -42,7 +42,7 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR = 24;
     public static final int INTAKE_PIVOT_MOTOR = 26;
-    public static final Current INTAKE_CURRENT_LIMIT = Amp.of(40);
+    public static final Current INTAKE_CURRENT_LIMIT = Amp.of(80);
     public static final Current INTAKE_PIVOT_CURRENT_LIMIT = Amp.of(40);
     public static final double OUTTAKE_SPEED = 0;
     public static final double INTAKE_SPEED = 0.2;
@@ -67,7 +67,7 @@ public final class Constants {
   }
 
   public static class EndEffectorConstants {
-    public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(40);
+    public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(80);
     public static final double OUTTAKE_SPEED = -0.2;
     public static final double INTAKE_SPEED = 0.45;
     public static final double INTAKE_REST_SPEED = 0;
@@ -79,7 +79,7 @@ public final class Constants {
 
   public static final class CanalConstants {
     public static final int CANAL_MOTOR = 23;
-    public static final Current CANAL_CURRENT_LIMIT = Amp.of(40);
+    public static final Current CANAL_CURRENT_LIMIT = Amp.of(80);
     public static final double OUTTAKE_SPEED = 0;
     public static final double INTAKE_SPEED = 0.05;
     public static final double INTAKE_REST_SPEED = 0;
@@ -89,15 +89,15 @@ public final class Constants {
 
   public static final class ElevatorConstants {
     public static final int ELEVATOR_MOTOR = 22;
-    public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(40);
+    public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(80);
     public static final double ELEVATOR_P_VALUE = 1.5;
     public static final double ELEVATOR_D_VALUE = 0;
     public static final double ELEVATOR_F_VALUE = 0.02;
     public static final int ELEVATOR_HOVER_SETPOINT = 0;
     public static final int ELEVATOR_INTAKE_SETPOINT = 0;
-    public static final double ELEVATOR_IDLE_SETPOINT = 0;
+    public static final double ELEVATOR_IDLE_SETPOINT = 1;
     public static final double ELEVATOR_L1_SETPOINT = 0;
-    public static final double ELEVATOR_L2_SETPOINT = 0;
+    public static final double ELEVATOR_L2_SETPOINT = 6;
     public static final double ELEVATOR_L3_SETPOINT = 0;
     public static final int ELEVATOR_L4_SETPOINT = 0;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
@@ -114,8 +114,8 @@ public final class Constants {
 
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
-    public static final Current ARM_CURRENT_LIMIT = Amp.of(40);
-    public static final double kP = 40.0;
+    public static final Current ARM_CURRENT_LIMIT = Amp.of(80);
+    public static final double kP = 2.0;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 0;
@@ -128,16 +128,15 @@ public final class Constants {
     public static final double ARM_HOVER_SETPOINT = 0.025;
     public static final double ARM_INTAKE_SETPOINT = 0.025;
     // public static final double ARM_IDLE_SETPOINT = 0.529;
-    public static final double ARM_IDLE_SETPOINT = 0.278;
+    public static final double ARM_IDLE_SETPOINT = 0.440;
     public static final double ARM_L1_SETPOINT = 0;
     public static final double ARM_L2_SETPOINT = 0.440;
     public static final double ARM_L3_SETPOINT = 0.440;
     public static final double ARM_L4_SETPOINT = 0;
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
     public static final int ARM_ZERO_ENCODER = 0;
-    public static final AngularVelocity ARM_MAX_VELOCITY = Rotations.per(Minute).of(900000);
-    public static final AngularAcceleration ARM_MAX_ACCELERATION =
-        Rotations.per(Minute).per(Minute).of(1000000);
+    public static final double ARM_MAX_VELOCITY = 2;
+    public static final double ARM_MAX_ACCELERATION = 0.4;
     public static final double ARM_MIN_RANGE = -1;
     public static final double ARM_MAX_RANGE = 1;
     public static final double ARM_LOOP_ERROR = 0.25;
@@ -176,7 +175,7 @@ public final class Constants {
   public static final class ClimberConstants {
     // Hold time on motor brakes when disabled.
     public static final int CLIMBER_MOTOR = 27;
-    public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(40);
+    public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(80);
     public static final double CLIMB_SPEED = 0.2;
     public static final double REVERSE_CLIMB_SPEED = -0.2;
     public static final double CLIMB_REST_SPEED = 0;

@@ -97,7 +97,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.a().onTrue(elevatorArm.setSetpoint(Setpoint.kL3));
+    driverXbox.a().onTrue(elevatorArm.setSetpoint(Setpoint.kL2));
     driverXbox.x().onTrue(elevatorArm.setSetpoint(Setpoint.kIdleSetpoint));
     driverXbox.b().whileTrue(intake.intakeGamepiece());
     driverXbox.y().onTrue(Commands.none());
