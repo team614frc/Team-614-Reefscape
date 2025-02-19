@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -223,18 +224,18 @@ public class RobotContainer {
 
     codriverXbox.a().onTrue(elevatorArm.setSetpoint(Setpoint.kL1));
     codriverXbox.x().onTrue(elevatorArm.setSetpoint(Setpoint.kL2));
-    /* codriverXbox
-    .b()
-    .onTrue(
-        elevatorArm
-            .setSetpointCommand(Setpoint.kIntake)
-            .alongWith(endEffector.intake())
-            .until(elevatorArm::reachedSetpoint)
-            .andThen(endEffector.stall())
-            .alongWith(elevatorArm.setSetpointCommand(Setpoint.kHover))
-            .until(elevatorArm::reachedSetpoint)
-            .andThen(endEffector.stop())
-            .alongWith(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint))); */
+    codriverXbox
+        .b()
+        .onTrue(
+            Commands.sequence(
+                new ParallelCommandGroup(
+                        elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake())
+                    .until(elevatorArm::atSetpoint),
+                endEffector.stall(),
+                new ParallelCommandGroup(elevatorArm.setSetpoint(Setpoint.kHover))
+                    .until(elevatorArm::atSetpoint),
+                new ParallelCommandGroup(
+                    endEffector.stop(), elevatorArm.setSetpoint(Setpoint.kIdleSetpoint))));
     codriverXbox.y().onTrue(endEffector.intake());
     codriverXbox.start().onTrue(Commands.none());
     codriverXbox.back().onTrue(Commands.none());
