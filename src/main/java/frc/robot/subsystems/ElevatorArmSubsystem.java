@@ -148,7 +148,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
     // Resets Elevator Encoder position to 0
     elevatorEncoder.setPosition(0);
-        
+
     // Display mechanism2d
     SmartDashboard.putData("Elevator Subsystem", mech2d);
 
