@@ -93,13 +93,13 @@ public final class Constants {
     public static final double ELEVATOR_P_VALUE = 1.5;
     public static final double ELEVATOR_D_VALUE = 0;
     public static final double ELEVATOR_F_VALUE = 0.02;
-    public static final int ELEVATOR_HOVER_SETPOINT = 0;
-    public static final int ELEVATOR_INTAKE_SETPOINT = 0;
+    public static final double ELEVATOR_HOVER_SETPOINT = 0;
+    public static final double ELEVATOR_INTAKE_SETPOINT = 0;
     public static final double ELEVATOR_IDLE_SETPOINT = 1;
     public static final double ELEVATOR_L1_SETPOINT = 0;
     public static final double ELEVATOR_L2_SETPOINT = 6;
     public static final double ELEVATOR_L3_SETPOINT = 0;
-    public static final int ELEVATOR_L4_SETPOINT = 0;
+    public static final double ELEVATOR_L4_SETPOINT = 0;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
     public static final AngularVelocity ELEVATOR_MAX_VELOCITY = Rotations.per(Minute).of(5250);
     public static final AngularAcceleration ELEVATOR_MAX_ACCELERATION =

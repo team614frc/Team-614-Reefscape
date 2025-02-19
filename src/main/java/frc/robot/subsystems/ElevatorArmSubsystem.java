@@ -146,7 +146,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    // Resets Elevator Encoder position to 0
+    // Resets elevator encoder position to 0
     elevatorEncoder.setPosition(0);
 
     // Display mechanism2d
