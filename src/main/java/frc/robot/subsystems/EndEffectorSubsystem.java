@@ -59,20 +59,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
         });
   }
 
-  public Command intakeTest() {
-    return Commands.runEnd(
-        () -> set(Constants.EndEffectorConstants.INTAKE_SPEED), // Intake speed (negative value)
-        () -> set(0) // Stop motor when command ends
-        );
-  }
-
-  public Command outtakeTest() {
-    return Commands.runEnd(
-        () -> set(Constants.EndEffectorConstants.OUTTAKE_SPEED), // Outtake speed (negative value)
-        () -> set(0) // Stop motor when command ends
-        );
-  }
-
   public Command stall() {
     return Commands.runOnce(
         () -> {

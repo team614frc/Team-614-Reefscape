@@ -82,14 +82,4 @@ public class CanalSubsystem extends SubsystemBase {
         && distance.distance_mm < 185
         && distance.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
   }
-
-  public Command intakeTest() {
-    return Commands.runEnd(
-        () -> {
-          set(CanalConstants.INTAKE_SPEED);
-        },
-        () -> {
-          set(CanalConstants.INTAKE_REST_SPEED);
-        });
-  }
 }

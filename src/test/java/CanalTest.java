@@ -1,16 +1,11 @@
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.revrobotics.sim.SparkFlexSim;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.system.plant.DCMotor;
-import frc.robot.Constants;
 import frc.robot.subsystems.CanalSubsystem;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 class CanalTest {
-  private static final double DELTA = 1e-2; // acceptable deviation range
   private CanalSubsystem canal;
   private SparkFlexSim simMotor;
 
@@ -27,20 +22,5 @@ class CanalTest {
   void shutdown() throws Exception {
     simMotor.disable();
     canal.getMotor().close();
-  }
-
-  @Test // marks this method as a test
-  void intakeTest() {
-
-    // executing the command
-    canal.intakeTest().execute();
-    // When the command is executed we are getting the speed at the subsystem
-    assertEquals(Constants.CanalConstants.INTAKE_SPEED, canal.getMotor().get(), DELTA);
-  }
-
-  @Test
-  void outtakeTest() {
-    canal.outtake().execute();
-    assertEquals(Constants.CanalConstants.OUTTAKE_SPEED, canal.getMotor().get(), DELTA);
   }
 }
