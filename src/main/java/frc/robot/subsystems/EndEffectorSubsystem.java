@@ -55,7 +55,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
   public Command stop() {
     return Commands.runOnce(
         () -> {
-          set(0); // Stop the motor
+          set(Constants.EndEffectorConstants.INTAKE_REST_SPEED); // Stop the motor
         });
   }
 
