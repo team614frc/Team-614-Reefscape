@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -22,7 +23,7 @@ public class CanalSubsystem extends SubsystemBase {
       new SparkFlex(CanalConstants.CANAL_MOTOR, MotorType.kBrushless);
 
   private final LaserCan laserCan = new LaserCan(5);
-  private final LaserCan.Measurement distance = laserCan.getMeasurement();
+  private LaserCan.Measurement distance = laserCan.getMeasurement();
 
   /** Creates a new CanalSubsystem. */
   public CanalSubsystem() {
@@ -30,12 +31,23 @@ public class CanalSubsystem extends SubsystemBase {
         Configs.CanalConfig.CANAL_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+
+    // Initialize LaserCan settings
+    try {
+      laserCan.setRangingMode(LaserCan.RangingMode.SHORT);
+      laserCan.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
+      laserCan.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
+    } catch (ConfigurationFailedException e) {
+      System.out.println("Configuration failed! " + e);
+    }
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     super.periodic();
+
+    distance = laserCan.getMeasurement();
 
     SmartDashboard.putNumber("Canal Motor Output", canalMotor.get());
     SmartDashboard.putBoolean("Game Piece Detection", gamePieceDetected());

@@ -23,7 +23,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
-// import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -38,7 +38,7 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
   private final IntakeSubsystem intake = new IntakeSubsystem();
-  // private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
+  private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
   private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
   private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
@@ -105,14 +105,13 @@ public class RobotContainer {
     Command intakeCommand =
         Commands.parallel(
             led.setIntakePattern(),
-            // intakePivot.pivotDown(),
+            intakePivot.pivotDown(),
             intake.intakeGamepiece(),
             canal.intake(),
             endEffector.intake(),
             elevatorArm.setSetpoint(Setpoint.kHover));
 
-    Command releaseCommand = Commands.parallel(intake.stopIntake());
-    // intakePivot.pivotUp());
+    Command releaseCommand = Commands.parallel(intake.stopIntake(), intakePivot.pivotUp());
 
     Command canalDetectionParallel =
         Commands.waitUntil(canal::gamePieceDetected)
@@ -152,7 +151,7 @@ public class RobotContainer {
     Command startIntake =
         Commands.parallel(
             led.setIntakePattern(),
-            // intakePivot.pivotDown(),
+            intakePivot.pivotDown(),
             intake.intakeGamepiece(),
             canal.intake(),
             endEffector.intake(),
@@ -161,7 +160,7 @@ public class RobotContainer {
     Command stopIntake =
         Commands.parallel(
             intake.stopIntake(),
-            // intakePivot.pivotUp(),
+            intakePivot.pivotUp(),
             canal.stop(),
             elevatorArm.setSetpoint(Setpoint.kIntake));
 
