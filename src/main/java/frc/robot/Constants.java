@@ -115,7 +115,7 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
     public static final Current ARM_CURRENT_LIMIT = Amp.of(80);
-    public static final double kP = 2.0;
+    public static final double kP = 1.5;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 0;
@@ -128,7 +128,7 @@ public final class Constants {
     public static final double ARM_HOVER_SETPOINT = 0.025;
     public static final double ARM_INTAKE_SETPOINT = 0.025;
     // public static final double ARM_IDLE_SETPOINT = 0.529;
-    public static final double ARM_IDLE_SETPOINT = 0.440;
+    public static final double ARM_IDLE_SETPOINT = 0.1;
     public static final double ARM_L1_SETPOINT = 0;
     public static final double ARM_L2_SETPOINT = 0.440;
     public static final double ARM_L3_SETPOINT = 0.440;

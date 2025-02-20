@@ -45,6 +45,7 @@ public final class Configs {
 
       ARM_CONFIG
           .idleMode(IdleMode.kBrake)
+          .inverted(true)
           .smartCurrentLimit(
               (int) ArmConstants.ARM_CURRENT_LIMIT.in(Amp)); // .voltageCompensation(12);
     }
