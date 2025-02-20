@@ -58,9 +58,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
-  private SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
+  private final SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
 
-  private ProfiledPIDController pid =
+  private final ProfiledPIDController pid =
       new ProfiledPIDController(
           ArmConstants.kP,
           ArmConstants.kI,
