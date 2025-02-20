@@ -168,9 +168,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   }
 
   /**
-   * Drive the arm and elevator motors to their respective setpoints. The Elevator will use REV
-   * MAXMotion position control which will allow for a smooth acceleration and deceleration to the
-   * mechanisms' setpoints and the Arm will use PIDController and ArmFeedForward from WPILib.
+   * Drive the arm and elevator motors to their respective setpoints. The elevator will use REV
+   * MAXMotion position control which will allow for a smooth acceleration and deceleration of the
+   * mechanisms' setpoints and the Arm will use PIDController and ArmFeedforward from WPILib.
    */
   private void moveToSetpoint() {
     double armFeedforwardVoltage =
