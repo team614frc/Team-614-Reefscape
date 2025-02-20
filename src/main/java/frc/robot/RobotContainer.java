@@ -205,7 +205,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.a().onTrue(elevatorArm.setSetpoint(Setpoint.kL3));
+    driverXbox.a().onTrue(elevatorArm.setSetpoint(Setpoint.kL2));
     driverXbox
         .x()
         .whileTrue(
@@ -230,9 +230,9 @@ public class RobotContainer {
             Commands.sequence(
                 new ParallelCommandGroup(
                         elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake())
-                    .until(elevatorArm::atSetpoint),
+                    .until(elevatorArm::reachedSetpoint),
                 endEffector.stall(),
-                elevatorArm.setSetpoint(Setpoint.kHover).until(elevatorArm::atSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kHover).until(elevatorArm::reachedSetpoint),
                 new ParallelCommandGroup(
                     endEffector.stop(), elevatorArm.setSetpoint(Setpoint.kIdleSetpoint))));
     codriverXbox.y().onTrue(endEffector.intake());

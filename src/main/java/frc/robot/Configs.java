@@ -21,6 +21,7 @@ public final class Configs {
       // Basic settings of elevator motor
       ELEVATOR_CONFIG
           .idleMode(IdleMode.kBrake)
+          .inverted(true)
           .smartCurrentLimit(
               (int)
                   Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(
@@ -42,30 +43,11 @@ public final class Configs {
               ElevatorConstants.ELEVATOR_MAX_ACCELERATION.in(Rotations.per(Minute).per(Second)))
           .allowedClosedLoopError(ElevatorConstants.ELEVATOR_LOOP_ERROR);
 
-      ELEVATOR_CONFIG.externalEncoder.inverted(true);
-
       ARM_CONFIG
           .idleMode(IdleMode.kBrake)
+          .inverted(true)
           .smartCurrentLimit(
               (int) ArmConstants.ARM_CURRENT_LIMIT.in(Amp)); // .voltageCompensation(12);
-
-      /*
-       * Configure the reverse limit switch for the elevator. By enabling the limit switch, this
-       * will prevent any actuation of the elevator in the reverse direction if the limit switch is
-       * pressed.
-       */
-      ARM_CONFIG
-          .closedLoop
-          .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-          // Set PID values for position control
-          .p(ArmConstants.ARM_P_VALUE)
-          .d(ArmConstants.ARM_D_VALUE)
-          .outputRange(ArmConstants.ARM_MIN_RANGE, ArmConstants.ARM_MAX_RANGE)
-          .maxMotion
-          // Set MAXMotion parameters for position control
-          .maxVelocity(ArmConstants.ARM_MAX_VELOCITY.in(Rotations.per(Minute)))
-          .maxAcceleration(ArmConstants.ARM_MAX_ACCELERATION.in(Rotations.per(Minute).per(Second)))
-          .allowedClosedLoopError(ArmConstants.ARM_LOOP_ERROR);
     }
   }
 
@@ -74,7 +56,7 @@ public final class Configs {
 
     static {
       END_EFFECTOR_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .smartCurrentLimit(
               (int) Constants.EndEffectorConstants.END_EFFECTOR_CURRENT_LIMIT.in(Amp));
     }
