@@ -85,7 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
         false, 1); // Enable if you want to resynchronize your absolute encoders and motor encoders
     // periodically when they are not moving.
     // swerveDrive
-        // .pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder
+    // .pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder
     // and push the offsets onto it. Throws warning if not possible
     setupPathPlanner();
     // limelight = new LimelightSubsystem();
@@ -355,7 +355,6 @@ public class SwerveSubsystem extends SubsystemBase {
   public ChassisSpeeds getRobotVelocity() {
     return swerveDrive.getRobotVelocity();
   }
-
 
   public void addVisionReading(Pose2d pose2d) {
     swerveDrive.addVisionMeasurement(pose2d, Timer.getFPGATimestamp());
