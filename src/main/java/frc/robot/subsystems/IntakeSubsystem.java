@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   private final SparkFlex intakeMotor =
-      new SparkFlex(Constants.IntakeConstants.INTAKE_MOTOR, MotorType.kBrushless);
+      new SparkFlex(IntakeConstants.INTAKE_MOTOR, MotorType.kBrushless);
 
   public IntakeSubsystem() {
     intakeMotor.configure(
@@ -44,24 +44,24 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command intakeGamepiece() {
     return Commands.runEnd(
         () -> {
-          set(Constants.IntakeConstants.INTAKE_SPEED);
+          set(IntakeConstants.INTAKE_SPEED);
         },
         () -> {
-          set(Constants.IntakeConstants.INTAKE_REST_SPEED);
+          set(IntakeConstants.INTAKE_REST_SPEED);
         });
   }
 
   public Command outtakeGamepiece() {
     return Commands.runEnd(
         () -> {
-          set(Constants.IntakeConstants.OUTTAKE_SPEED);
+          set(IntakeConstants.OUTTAKE_SPEED);
         },
         () -> {
-          set(Constants.IntakeConstants.OUTTAKE_REST_SPEED);
+          set(IntakeConstants.OUTTAKE_REST_SPEED);
         });
   }
 
   public Command stopIntake() {
-    return Commands.runOnce(() -> set(Constants.IntakeConstants.INTAKE_REST_SPEED));
+    return Commands.runOnce(() -> set(IntakeConstants.INTAKE_REST_SPEED));
   }
 }

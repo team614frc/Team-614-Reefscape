@@ -44,25 +44,25 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   // Command to activate the end effector (e.g., for gripping or releasing)
   public Command intake() {
-    return Commands.runOnce(() -> set(Constants.EndEffectorConstants.INTAKE_SPEED));
+    return Commands.runOnce(() -> set(EndEffectorConstants.INTAKE_SPEED));
   }
 
   public Command outtake() {
-    return Commands.runOnce(() -> set(Constants.EndEffectorConstants.OUTTAKE_SPEED));
+    return Commands.runOnce(() -> set(EndEffectorConstants.OUTTAKE_SPEED));
   }
 
   // Command to deactivate the end effector (e.g., stop gripping or releasing)
   public Command stop() {
     return Commands.runOnce(
         () -> {
-          set(Constants.EndEffectorConstants.INTAKE_REST_SPEED); // Stop the motor
+          set(EndEffectorConstants.INTAKE_REST_SPEED); // Stop the motor
         });
   }
 
   public Command stall() {
     return Commands.runOnce(
         () -> {
-          set(0.1);
+          set(EndEffectorConstants.STALL_SPEED);
         });
   }
 

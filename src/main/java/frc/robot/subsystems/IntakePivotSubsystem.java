@@ -20,12 +20,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakePivotSubsystem extends SubsystemBase {
   private final SparkFlex intakePivotMotor =
-      new SparkFlex(Constants.IntakeConstants.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
+      new SparkFlex(IntakeConstants.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
 
   private final PIDController pidController =
       new PIDController(

@@ -91,7 +91,7 @@ public class CanalSubsystem extends SubsystemBase {
 
   public boolean gamePieceDetected() {
     return (distance != null
-        && distance.distance_mm < 185
+        && distance.distance_mm < CanalConstants.LASER_MAX_DISTANCE
         && distance.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
   }
 }

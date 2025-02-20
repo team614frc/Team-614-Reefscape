@@ -75,6 +75,7 @@ public final class Constants {
     public static final int END_EFFECTOR_MOTOR = 25;
     public static final double END_EFFECTOR_MIN_OUTPUT = 0.15;
     public static final Angle END_EFFECTOR_MIN_RPM = Rotations.of(50);
+    public static final double STALL_SPEED = 0.1;
   }
 
   public static final class CanalConstants {
@@ -85,6 +86,7 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final int CANAL_REST_SPEED = 0;
+    public static final int LASER_MAX_DISTANCE = 185;
   }
 
   public static final class ElevatorConstants {
@@ -128,7 +130,7 @@ public final class Constants {
     public static final double ARM_HOVER_SETPOINT = 0.025;
     public static final double ARM_INTAKE_SETPOINT = 0.025;
     // public static final double ARM_IDLE_SETPOINT = 0.529;
-    public static final double ARM_IDLE_SETPOINT = 0.1;
+    public static final double ARM_IDLE_SETPOINT = 0.4;
     public static final double ARM_L1_SETPOINT = 0;
     public static final double ARM_L2_SETPOINT = 0.440;
     public static final double ARM_L3_SETPOINT = 0.440;
