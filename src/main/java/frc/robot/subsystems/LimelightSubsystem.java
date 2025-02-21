@@ -10,12 +10,13 @@ import limelight.structures.*;
 import limelight.structures.LimelightSettings.LEDMode;
 
 public class LimelightSubsystem extends SubsystemBase {
-  private final Limelight limelight = new Limelight("limelight-april");
+  private final Limelight limelight;
 
   private LimelightPoseEstimator poseEstimator;
   private LimelightTargetData limelightTargetData;
 
   public LimelightSubsystem() {
+    limelight = new Limelight("limelight-april");
     limelight
         .settingsBuilder()
         .withLimelightLEDMode(LEDMode.PipelineControl)
@@ -45,5 +46,6 @@ public class LimelightSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("Sees AprilTag", hasTarget());
     SmartDashboard.putNumber("AprilTag ID", getID());
+    
   }
 }

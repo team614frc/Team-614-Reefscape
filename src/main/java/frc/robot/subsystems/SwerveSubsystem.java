@@ -57,7 +57,7 @@ public class SwerveSubsystem extends SubsystemBase {
   /** Swerve drive object. */
   private final SwerveDrive swerveDrive;
 
-  private final LimelightSubsystem limelight;
+  // private final LimelightSubsystem limelight;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -97,7 +97,7 @@ public class SwerveSubsystem extends SubsystemBase {
         .pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder
     // and push the offsets onto it. Throws warning if not possible
     setupPathPlanner();
-    limelight = new LimelightSubsystem();
+    // limelight = new LimelightSubsystem();
   }
 
   /**
@@ -114,7 +114,7 @@ public class SwerveSubsystem extends SubsystemBase {
             controllerCfg,
             Constants.MAX_SPEED.in(MetersPerSecond),
             new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
-    limelight = new LimelightSubsystem();
+    // limelight = new LimelightSubsystem();
   }
 
   @Override
@@ -582,8 +582,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    limelight.updateSettings(getOrientation3d());
-    updatePosition(limelight.getVisionEstimate());
+    // limelight.updateSettings(getOrientation3d());
+    // updatePosition(limelight.getVisionEstimate());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
   }

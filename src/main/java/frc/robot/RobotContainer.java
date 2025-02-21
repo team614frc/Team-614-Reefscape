@@ -86,6 +86,13 @@ public class RobotContainer {
     // NamedCommands.registerCommand("intakeCoral", intakeAndPivot());
     // NamedCommands.registerCommand("outtakeCoral", outtakeCoral());
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putString("Maven Name", BuildConstants.MAVEN_NAME);
+    SmartDashboard.putString("Version", BuildConstants.VERSION);
+    SmartDashboard.putString("Git Sha", BuildConstants.GIT_SHA);
+    SmartDashboard.putString("Git Date", BuildConstants.GIT_DATE);
+    SmartDashboard.putString("Branch", BuildConstants.GIT_BRANCH);
+    SmartDashboard.putString("Build Date", BuildConstants.BUILD_DATE);
+    SmartDashboard.putNumber("Git Revision", BuildConstants.GIT_REVISION);
   }
 
   /**
