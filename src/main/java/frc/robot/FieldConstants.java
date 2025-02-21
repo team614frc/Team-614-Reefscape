@@ -98,7 +98,7 @@ public class FieldConstants {
 
     static {
       for (int i = 0; i < CENTER_FACES_RED.size(); i++) {
-        CENTER_FACES_RED.add(CENTER_FACES_BLUE.get(i));
+        CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(i)));
       }
     }
 
