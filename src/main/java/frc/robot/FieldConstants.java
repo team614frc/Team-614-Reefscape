@@ -67,7 +67,7 @@ public class FieldConstants {
     public static final double FACE_TO_ZONE_LINE = Units.inchesToMeters(12);
 
     /** Starting facing the driver station in clockwise order * */
-    public static final List<Pose2d> CENTER_FACES =
+    public static final List<Pose2d> CENTER_FACES_BLUE =
         List.of(
             new Pose2d(
                 Units.inchesToMeters(144.003),
@@ -93,6 +93,14 @@ public class FieldConstants {
                 Units.inchesToMeters(160.375),
                 Units.inchesToMeters(130.144),
                 Rotation2d.fromDegrees(-120)));
+
+    public static final List<Pose2d> CENTER_FACES_RED = new ArrayList<>(5);
+
+    static {
+      for (int i = 0; i < CENTER_FACES_RED.size(); i++) {
+        CENTER_FACES_RED.add(CENTER_FACES_BLUE.get(i));
+      }
+    }
 
     public static final List<Integer> CENTER_FACES_RED_IDS = List.of(7, 6, 11, 10, 9, 8);
 

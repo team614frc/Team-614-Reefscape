@@ -94,7 +94,7 @@ public class RobotContainer {
     // driverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL3));
     // driverXbox.x().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
     // driverXbox.b().whileTrue(intake.intakeGamepiece());
-    driverXbox.y().whileTrue(Commands.deferredProxy(() -> drivebase.alignCoral()));
+    // driverXbox.y().whileTrue(Commands.deferredProxy(() -> drivebase.alignCoral()));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(Commands.none());
     driverXbox.leftTrigger().onTrue(Commands.none());

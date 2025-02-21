@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AllianceFlipUtil;
 import frc.robot.Constants;
@@ -41,9 +40,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import limelight.estimator.PoseEstimate;
-import limelight.structures.AngularVelocity3d;
-import limelight.structures.Orientation3d;
+import limelight.networktables.AngularVelocity3d;
+import limelight.networktables.Orientation3d;
+import limelight.networktables.PoseEstimate;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -584,6 +583,7 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     limelight.updateSettings(getOrientation3d());
+    SmartDashboard.putNumber("Closest AprilTagID", findReefID());
     // updatePosition(limelight.getVisionEstimate());
     SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
@@ -606,15 +606,22 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public int findReefID() {
-    int index =
-        FieldConstants.Reef.CENTER_FACES.indexOf(
-            swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES));
     Optional<Alliance> ally = DriverStation.getAlliance();
-    List<Integer> apriltags =
-        (ally.get() == Alliance.Red)
-            ? FieldConstants.Reef.CENTER_FACES_RED_IDS
-            : FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
-    int AprilTagID = apriltags.get(index);
+    int index;
+    int AprilTagID;
+    List<Integer> apriltags;
+    if (ally.isEmpty() || ally.get() == Alliance.Red) {
+      index =
+          FieldConstants.Reef.CENTER_FACES_RED.indexOf(
+              swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES_RED));
+      apriltags = FieldConstants.Reef.CENTER_FACES_RED_IDS;
+    } else {
+      index =
+          FieldConstants.Reef.CENTER_FACES_RED.indexOf(
+              swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES_BLUE));
+      apriltags = FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
+    }
+    AprilTagID = apriltags.get(index);
     return AprilTagID;
   }
 
@@ -629,13 +636,13 @@ public class SwerveSubsystem extends SubsystemBase {
     return driveToPose(path);
   }
 
-  public Command alignCoral() {
-    if (limelight.hasTargetBack()) {
-      Pose2d pose2d = new Pose2d(0, 0, new Rotation2d(limelight.getTargetAngleBack()));
-      return driveToPose(pose2d);
-    }
-    return Commands.none();
-  }
+  // public Command alignCoral() {
+  //   if (limelight.hasTargetBack()) {
+  //     Pose2d pose2d = new Pose2d(0, 0, new Rotation2d(limelight.getTargetAngleBack()));
+  //     return driveToPose(pose2d);
+  //   }
+  //   return Commands.none();
+  // }
 
   /**
    * Gets the swerve drive object.
