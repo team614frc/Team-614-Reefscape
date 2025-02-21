@@ -40,9 +40,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import limelight.estimator.PoseEstimate;
-import limelight.structures.AngularVelocity3d;
-import limelight.structures.Orientation3d;
+import limelight.networktables.AngularVelocity3d;
+import limelight.networktables.Orientation3d;
+import limelight.networktables.PoseEstimate;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -154,7 +154,7 @@ public class SwerveSubsystem extends SubsystemBase {
               // trains
               new PIDConstants(5.0, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
+              new PIDConstants(4.0, 0.0, 0.0)
               // Rotation PID constants
               ),
           config,
