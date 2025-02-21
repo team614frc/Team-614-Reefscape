@@ -617,7 +617,7 @@ public class SwerveSubsystem extends SubsystemBase {
       apriltags = FieldConstants.Reef.CENTER_FACES_RED_IDS;
     } else {
       index =
-          FieldConstants.Reef.CENTER_FACES_RED.indexOf(
+          FieldConstants.Reef.CENTER_FACES_BLUE.indexOf(
               swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES_BLUE));
       apriltags = FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
     }
