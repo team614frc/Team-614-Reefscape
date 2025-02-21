@@ -97,7 +97,7 @@ public final class Constants {
     public static final double ELEVATOR_F_VALUE = 0.02;
     public static final double ELEVATOR_HOVER_SETPOINT = 0;
     public static final double ELEVATOR_INTAKE_SETPOINT = 0;
-    public static final double ELEVATOR_IDLE_SETPOINT = 1;
+    public static final double ELEVATOR_IDLE_SETPOINT = 3;
     public static final double ELEVATOR_L1_SETPOINT = 0;
     public static final double ELEVATOR_L2_SETPOINT = 6;
     public static final double ELEVATOR_L3_SETPOINT = 0;
@@ -117,7 +117,7 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
     public static final Current ARM_CURRENT_LIMIT = Amp.of(80);
-    public static final double kP = 1.5;
+    public static final double kP = 1.25;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 0;
@@ -144,7 +144,7 @@ public final class Constants {
     public static final double ARM_LOOP_ERROR = 0.25;
     public static final Angle ARM_STARTING_ANGLE = Degrees.of(180);
     public static final Angle ARM_ANGLE_COMPENSATE = Degrees.of(90);
-    public static final double ARM_TOLERANCE = 0.05;
+    public static final double ARM_TOLERANCE = 0.04;
   }
 
   public static final class SimulationRobotConstants {

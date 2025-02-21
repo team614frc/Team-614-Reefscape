@@ -105,31 +105,32 @@ public class RobotContainer {
     Command intakeCommand =
         Commands.parallel(
             led.setIntakePattern(),
-            intakePivot.pivotDown(),
-            intake.intakeGamepiece(),
-            canal.intake(),
-            endEffector.intake(),
-            elevatorArm.setSetpoint(Setpoint.kHover));
+            // intakePivot.pivotDown(),
+            // intake.intakeGamepiece(),
+            canal.intake());
+    // endEffector.intake());
+    // elevatorArm.setSetpoint(Setpoint.kHover));
 
-    Command releaseCommand = Commands.parallel(intake.stopIntake(), intakePivot.pivotUp());
+    // Command releaseCommand = Commands.parallel(intake.stopIntake());
+    // intakePivot.pivotUp());
 
     Command canalDetectionParallel =
         Commands.waitUntil(canal::gamePieceDetected)
             .andThen(
                 Commands.parallel(
                     canal.stop(),
-                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                    elevatorArm.setSetpoint(Setpoint.kIntake)));
+                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION)));
+    // elevatorArm.setSetpoint(Setpoint.kIntake)));
 
     Command endEffectorDetection =
         Commands.waitUntil(endEffector::hasGamePiece)
-            .andThen(led.setBasicPattern(), elevatorArm.setSetpoint(Setpoint.kIdleSetpoint));
+            .andThen(led.setBasicPattern()); // elevatorArm.setSetpoint(Setpoint.kIdleSetpoint));
 
     Command startEndCommand =
         Commands.startEnd(
             () -> intakeCommand.schedule(),
             () -> {
-              releaseCommand.schedule();
+              //   releaseCommand.schedule();
               canalDetectionParallel.schedule();
               endEffectorDetection.schedule();
             });
@@ -151,18 +152,17 @@ public class RobotContainer {
     Command startIntake =
         Commands.parallel(
             led.setIntakePattern(),
-            intakePivot.pivotDown(),
-            intake.intakeGamepiece(),
+            // intakePivot.pivotDown(),
+            // intake.intakeGamepiece(),
             canal.intake(),
             endEffector.intake(),
             elevatorArm.setSetpoint(Setpoint.kHover));
 
     Command stopIntake =
         Commands.parallel(
-            intake.stopIntake(),
-            intakePivot.pivotUp(),
-            canal.stop(),
-            elevatorArm.setSetpoint(Setpoint.kIntake));
+            // intake.stopIntake(),
+            // intakePivot.pivotUp(),
+            canal.stop(), elevatorArm.setSetpoint(Setpoint.kIntake));
 
     Command endEffectorDetection =
         Commands.waitUntil(endEffector::hasGamePiece)
