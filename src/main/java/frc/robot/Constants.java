@@ -42,8 +42,8 @@ public final class Constants {
     public static final int INTAKE_PIVOT_MOTOR = 26;
     public static final Current INTAKE_CURRENT_LIMIT = Amp.of(80);
     public static final Current INTAKE_PIVOT_CURRENT_LIMIT = Amp.of(40);
-    public static final double OUTTAKE_SPEED = 0;
-    public static final double INTAKE_SPEED = 0.2;
+    public static final double OUTTAKE_SPEED = -0.3;
+    public static final double INTAKE_SPEED = 0.3;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
 
@@ -70,7 +70,7 @@ public final class Constants {
   public static class EndEffectorConstants {
     public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(80);
     public static final double OUTTAKE_SPEED = -0.2;
-    public static final double INTAKE_SPEED = 0.45;
+    public static final double INTAKE_SPEED = 0.05;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final int END_EFFECTOR_MOTOR = 25;
@@ -83,11 +83,11 @@ public final class Constants {
     public static final int CANAL_MOTOR = 23;
     public static final Current CANAL_CURRENT_LIMIT = Amp.of(80);
     public static final double OUTTAKE_SPEED = 0;
-    public static final double INTAKE_SPEED = 0.05;
+    public static final double INTAKE_SPEED = 0.15;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final int CANAL_REST_SPEED = 0;
-    public static final double CANAL_SLOW_SPEED = 0.1;
+    public static final double CANAL_SLOW_SPEED = 0.025;
     public static final int LASER_MAX_DISTANCE = 180;
   }
 
@@ -117,21 +117,21 @@ public final class Constants {
     public static final double ELEVATOR_MAX_RANGE = 1;
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
     public static final Angle ELEVATOR_STARTING_ANGLE = Degrees.of(180);
-    public static final double ELEVATOR_TOLERANCE = 1.5;
+    public static final double ELEVATOR_TOLERANCE = 0.1;
   }
 
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
     public static final Current ARM_CURRENT_LIMIT = Amp.of(80);
-    public static final double kP = 0.1;
+    public static final double kP = 1.5;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 0;
     public static final double kG = 0.85;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double ARM_HOVER_SETPOINT = 0.3;
-    public static final double ARM_INTAKE_SETPOINT = 0.2;
+    public static final double ARM_HOVER_SETPOINT = 0.03;
+    public static final double ARM_INTAKE_SETPOINT = 0.03;
     // public static final double ARM_IDLE_SETPOINT = 0.529;
     public static final double ARM_IDLE_SETPOINT = 0.5;
     public static final double ARM_L1_SETPOINT = 0;
@@ -140,14 +140,14 @@ public final class Constants {
     public static final double ARM_L4_SETPOINT = 0;
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
     public static final int ARM_ZERO_ENCODER = 0;
-    public static final double ARM_MAX_VELOCITY = 2;
-    public static final double ARM_MAX_ACCELERATION = 0.4;
+    public static final double ARM_MAX_VELOCITY = 4;
+    public static final double ARM_MAX_ACCELERATION = 1;
     public static final double ARM_MIN_RANGE = -1;
     public static final double ARM_MAX_RANGE = 1;
     public static final double ARM_LOOP_ERROR = 0.25;
     public static final Angle ARM_STARTING_ANGLE = Degrees.of(180);
     public static final Angle ARM_ANGLE_COMPENSATE = Degrees.of(90);
-    public static final double ARM_TOLERANCE = 0.04;
+    public static final double ARM_TOLERANCE = 0.05;
   }
 
   public static final class SimulationRobotConstants {

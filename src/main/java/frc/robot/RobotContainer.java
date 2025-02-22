@@ -177,13 +177,19 @@ public class RobotContainer {
         endEffectorDetection);
   }
 
+  private final Command canalIntake() {
+    return Commands.parallel(
+        canal.intake(), Commands.waitUntil(canal::gamePieceDetected).andThen(canal.slow()));
+  }
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
 
-    elevatorArm.setDefaultCommand(elevatorArm.runPIDControl());
-    intakePivot.setDefaultCommand(intakePivot.pivotPIDControl());
+    // canal.setDefaultCommand(canal.intake());
+    // elevatorArm.setDefaultCommand(elevatorArm.runPIDControl());
+    // intakePivot.setDefaultCommand(intakePivot.pivotPIDControl());
 
     NamedCommands.registerCommand("L1", elevatorArm.setSetpoint(Setpoint.kL1));
     NamedCommands.registerCommand("L2", elevatorArm.setSetpoint(Setpoint.kL2));
@@ -227,26 +233,48 @@ public class RobotContainer {
     driverXbox.leftTrigger().whileTrue(pivotAndIntake());
     driverXbox.rightTrigger().onTrue(outtakeCoral);
 
-    codriverXbox.a().onTrue(elevatorArm.setSetpoint(Setpoint.kL1));
-    codriverXbox.x().onTrue(elevatorArm.setSetpoint(Setpoint.kL2));
+    codriverXbox.a().whileTrue(canalIntake());
+    codriverXbox.x().whileTrue(intake.outtakeGamepiece());
     codriverXbox
         .b()
         .onTrue(
             Commands.sequence(
                 new ParallelCommandGroup(
-                        elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake())
-                    .until(elevatorArm::reachedSetpoint),
-                endEffector.stall(),
-                elevatorArm.setSetpoint(Setpoint.kHover).until(elevatorArm::reachedSetpoint),
-                new ParallelCommandGroup(
-                    endEffector.stop(), elevatorArm.setSetpoint(Setpoint.kIdleSetpoint))));
-    codriverXbox.y().onTrue(endEffector.intake());
+                    elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                // Commands.waitUntil(elevatorArm::reachedSetpoint),
+                // elevatorArm.setSetpoint(Setpoint.kArmHover),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorIdle)));
+
+    codriverXbox.y().whileTrue(intake.intakeGamepiece());
     codriverXbox.start().onTrue(Commands.none());
     codriverXbox.back().onTrue(Commands.none());
-    codriverXbox.leftBumper().onTrue(elevatorArm.setSetpoint(Setpoint.kIdleSetpoint));
-    codriverXbox.rightBumper().onTrue(elevatorArm.setSetpoint(Setpoint.kHover));
-    codriverXbox.leftTrigger().onTrue(elevatorArm.setSetpoint(Setpoint.kL2));
-    codriverXbox.rightTrigger().onTrue(elevatorArm.setSetpoint(Setpoint.kIntake));
+    codriverXbox
+        .leftBumper()
+        .onTrue(
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorIdle)));
+    codriverXbox
+        .rightBumper()
+        .onTrue(
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kEleveatorL3),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmL3)));
+    codriverXbox
+        .leftTrigger()
+        .onTrue(
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmHover)));
+    codriverXbox.rightTrigger().onTrue(outtakeCoral);
 
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation()
