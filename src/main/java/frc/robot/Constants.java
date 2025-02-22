@@ -9,8 +9,6 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularAcceleration;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -64,6 +62,9 @@ public final class Constants {
     public static final double PIVOT_REST_SPEED = 0;
     public static final int VELOCITY_COMPONENT = 0;
     public static final Angle FULL_CIRCLE = Degrees.of(360);
+    public static final double PIVOT_MAX_VELOCITY = 2;
+    public static final double PIVOT_MAX_ACCELERATION = 0.4;
+    public static final double PIVOT_FEEDFORWARD_OFFSET = 0;
   }
 
   public static class EndEffectorConstants {
@@ -86,26 +87,31 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final int CANAL_REST_SPEED = 0;
-    public static final int LASER_MAX_DISTANCE = 185;
+    public static final double CANAL_SLOW_SPEED = 0.1;
+    public static final int LASER_MAX_DISTANCE = 180;
   }
 
   public static final class ElevatorConstants {
     public static final int ELEVATOR_MOTOR = 22;
     public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(80);
-    public static final double ELEVATOR_P_VALUE = 1.5;
-    public static final double ELEVATOR_D_VALUE = 0;
-    public static final double ELEVATOR_F_VALUE = 0.02;
-    public static final double ELEVATOR_HOVER_SETPOINT = 0;
-    public static final double ELEVATOR_INTAKE_SETPOINT = 0;
-    public static final double ELEVATOR_IDLE_SETPOINT = 3;
+    public static final double kP = 6;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kS = 0;
+    public static final double kG = 0.02;
+    public static final double kV = 0;
+    public static final double kA = 0;
+    public static final double ELEVATOR_HOVER_SETPOINT = 6.19;
+    public static final double ELEVATOR_INTAKE_SETPOINT = 3.74;
+    // public static final double ELEVATOR_IDLE_SETPOINT = 0.74;
+    public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
     public static final double ELEVATOR_L1_SETPOINT = 0;
-    public static final double ELEVATOR_L2_SETPOINT = 6;
-    public static final double ELEVATOR_L3_SETPOINT = 0;
+    public static final double ELEVATOR_L2_SETPOINT = 0.74;
+    public static final double ELEVATOR_L3_SETPOINT = 6.19;
     public static final double ELEVATOR_L4_SETPOINT = 0;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
-    public static final AngularVelocity ELEVATOR_MAX_VELOCITY = Rotations.per(Minute).of(5250);
-    public static final AngularAcceleration ELEVATOR_MAX_ACCELERATION =
-        Rotations.per(Minute).per(Second).of(7500);
+    public static final double ELEVATOR_MAX_VELOCITY = 20;
+    public static final double ELEVATOR_MAX_ACCELERATION = 50;
     public static final double ELEVATOR_LOOP_ERROR = 0;
     public static final double ELEVATOR_MIN_RANGE = -1;
     public static final double ELEVATOR_MAX_RANGE = 1;
@@ -117,20 +123,17 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
     public static final Current ARM_CURRENT_LIMIT = Amp.of(80);
-    public static final double kP = 1.25;
+    public static final double kP = 0.1;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 0;
     public static final double kG = 0.85;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double kPDown = 2.0;
-    public static final double kIDown = 0;
-    public static final double kDDown = 0;
-    public static final double ARM_HOVER_SETPOINT = 0.025;
-    public static final double ARM_INTAKE_SETPOINT = 0.025;
+    public static final double ARM_HOVER_SETPOINT = 0.3;
+    public static final double ARM_INTAKE_SETPOINT = 0.2;
     // public static final double ARM_IDLE_SETPOINT = 0.529;
-    public static final double ARM_IDLE_SETPOINT = 0.4;
+    public static final double ARM_IDLE_SETPOINT = 0.5;
     public static final double ARM_L1_SETPOINT = 0;
     public static final double ARM_L2_SETPOINT = 0.440;
     public static final double ARM_L3_SETPOINT = 0.440;
@@ -178,8 +181,8 @@ public final class Constants {
     // Hold time on motor brakes when disabled.
     public static final int CLIMBER_MOTOR = 27;
     public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(80);
-    public static final double CLIMB_SPEED = 0.2;
-    public static final double REVERSE_CLIMB_SPEED = -0.2;
+    public static final double CLIMB_SPEED = 0.4;
+    public static final double REVERSE_CLIMB_SPEED = -0.4;
     public static final double CLIMB_REST_SPEED = 0;
   }
 
@@ -194,7 +197,7 @@ public final class Constants {
   }
 
   public static final class LEDConstants {
-    public static final Color AUTO_COLOR = Color.kOrange;
+    public static final Color AUTO_COLOR = Color.kRed;
     public static final Color TELEOP_COLOR = Color.kOrange;
     public static final Color ENDGAME_COLOR = Color.kOrange;
     public static final Color ALIGNMENT_COLOR = Color.kOrange;

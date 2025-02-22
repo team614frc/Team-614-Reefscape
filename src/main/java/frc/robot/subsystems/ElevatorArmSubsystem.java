@@ -13,10 +13,8 @@ import static edu.wpi.first.units.Units.Seconds;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -49,18 +47,27 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kL4;
   }
 
+  private boolean firstRun = true;
+
   // Elevator Motor
   private SparkFlex elevatorMotor =
       new SparkFlex(ElevatorConstants.ELEVATOR_MOTOR, MotorType.kBrushless);
-  private SparkClosedLoopController elevatorClosedLoopController =
-      elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
+
+  private final ProfiledPIDController elevatorPid =
+      new ProfiledPIDController(
+          ElevatorConstants.kP,
+          ElevatorConstants.kI,
+          ElevatorConstants.kD,
+          new TrapezoidProfile.Constraints(
+              ElevatorConstants.ELEVATOR_MAX_VELOCITY,
+              ElevatorConstants.ELEVATOR_MAX_ACCELERATION));
 
   // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
   private final SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
 
-  private final ProfiledPIDController pid =
+  private final ProfiledPIDController armPid =
       new ProfiledPIDController(
           ArmConstants.kP,
           ArmConstants.kI,
@@ -167,24 +174,56 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     return Units.rotationsToRadians(armEncoder.getPosition());
   }
 
+  private double getElevatorPosition() {
+    return elevatorEncoder.getPosition();
+  }
+
   /**
    * Drive the arm and elevator motors to their respective setpoints. The elevator will use REV
    * MAXMotion position control which will allow for a smooth acceleration and deceleration of the
    * mechanisms' setpoints and the Arm will use PIDController and ArmFeedforward from WPILib.
    */
-  private void moveToSetpoint() {
-    double armFeedforwardVoltage =
-        armFeedforward.calculate(
-            pid.getSetpoint().position
-                - Units.rotationsToRadians(ArmConstants.ARM_FEEDFORWARD_OFFSET),
-            pid.getSetpoint().velocity);
-    SmartDashboard.putNumber("Arm Feed Forward", armFeedforwardVoltage);
+  // private void moveToSetpoint() {
+  //   double armFeedforwardVoltage =
+  //       armFeedforward.calculate(
+  //           armPid.getSetpoint().position
+  //               - Units.rotationsToRadians(ArmConstants.ARM_FEEDFORWARD_OFFSET),
+  //           armPid.getSetpoint().velocity);
 
-    double pidOutput = pid.calculate(getArmAngleRadians(), Units.rotationsToRadians(armSetpoint));
+  //   double armPidOutput =
+  //       armPid.calculate(getArmAngleRadians(), Units.rotationsToRadians(armSetpoint));
+  //   double elevatorPidOutput = elevatorPid.calculate(getElevatorPosition(), elevatorSetpoint);
 
-    armMotor.setVoltage(pidOutput + armFeedforwardVoltage);
+  //   // armMotor.setVoltage(pidOutput + armFeedforwardVoltage);
 
-    elevatorClosedLoopController.setReference(elevatorSetpoint, ControlType.kPosition);
+  //   elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
+  // }
+
+  public Command runPIDControl() {
+    return run(
+        () -> {
+          if (firstRun) {
+            firstRun = false;
+          } else {
+            double armPidOutput =
+                armPid.calculate(getArmAngleRadians(), Units.rotationsToRadians(armSetpoint));
+            double armFeedforwardVoltage =
+                armFeedforward.calculate(
+                    armPid.getSetpoint().position
+                        - Units.rotationsToRadians(ArmConstants.ARM_FEEDFORWARD_OFFSET),
+                    armPid.getSetpoint().velocity);
+
+            SmartDashboard.putNumber("Arm PID", armPidOutput);
+            SmartDashboard.putNumber("Arm Calculate", armPid.getSetpoint().position);
+            SmartDashboard.putNumber("Arm Goal", armPid.getGoal().position);
+            SmartDashboard.putNumber("Arm Feedforward2", armFeedforwardVoltage);
+
+            armMotor.setVoltage(armPidOutput); // + armFeedforwardVoltage);
+          }
+
+          double elevatorPidOutput = elevatorPid.calculate(getElevatorPosition(), elevatorSetpoint);
+          // elevatorMotor.setVoltage(elevatorPidOutput + ElevatorConstants.kG);
+        });
   }
 
   /**
@@ -229,8 +268,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    moveToSetpoint();
     // Display subsystem values
     SmartDashboard.putNumber("Arm Target Position", armSetpoint);
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
