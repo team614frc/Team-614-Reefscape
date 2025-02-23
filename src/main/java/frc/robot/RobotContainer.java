@@ -97,78 +97,68 @@ public class RobotContainer {
             });
   }
 
-  private final Command autoOuttakeCoral() {
-    return Commands.sequence(
-        endEffector.outtake(),
-        elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        endEffector.stop(),
-        elevatorArm.setSetpoint(Setpoint.kArmIdle));
-    //   Commands.waitSeconds(1),
-    //   elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-    //   Commands.waitUntil(elevatorArm::reachedSetpoint),
-    //   elevatorArm.setSetpoint(Setpoint.kArmHover));
-  }
+  private final Command autoOuttakeCoral =
+      Commands.sequence(
+          endEffector.outtake(),
+          elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          endEffector.stop(),
+          elevatorArm.setSetpoint(Setpoint.kArmIdle));
 
-  private final Command autoIntake() {
-    return Commands.sequence(
-        canal.intake(),
-        elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        elevatorArm.setSetpoint(Setpoint.kArmHover),
-        endEffector.intake(),
-        Commands.waitUntil(canal::gamePieceDetected),
-        elevatorArm.setSetpoint(Setpoint.kIntake),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        elevatorArm.setSetpoint(Setpoint.kHover));
-  }
+  private final Command autoIntake =
+      Commands.sequence(
+          canal.intake(),
+          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          elevatorArm.setSetpoint(Setpoint.kArmHover),
+          endEffector.intake(),
+          Commands.waitUntil(canal::gamePieceDetected),
+          elevatorArm.setSetpoint(Setpoint.kIntake),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          elevatorArm.setSetpoint(Setpoint.kHover));
 
-  private final Command autoL2() {
-    return Commands.either(
-        Commands.sequence(
-            elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-            Commands.waitUntil(elevatorArm::reachedSetpoint),
-            elevatorArm.setSetpoint(Setpoint.kArmL2)),
-        Commands.sequence(
-            elevatorArm.setSetpoint(Setpoint.kPushArm),
-            Commands.waitUntil(elevatorArm::reachedSetpoint),
-            elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-            Commands.waitUntil(elevatorArm::reachedSetpoint),
-            elevatorArm.setSetpoint(Setpoint.kArmL2)),
-        () -> elevatorArm.armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET);
-  }
+  private final Command autoL2 =
+      Commands.either(
+          Commands.sequence(
+              elevatorArm.setSetpoint(Setpoint.kElevatorL2),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kArmL2)),
+          Commands.sequence(
+              elevatorArm.setSetpoint(Setpoint.kPushArm),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kElevatorL2),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kArmL2)),
+          () -> elevatorArm.armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET);
 
-  private final Command autoL3() {
-    return Commands.either(
-        Commands.sequence(
-            elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-            Commands.waitUntil(elevatorArm::reachedSetpoint),
-            elevatorArm.setSetpoint(Setpoint.kArmL3)),
-        Commands.sequence(
-            elevatorArm.setSetpoint(Setpoint.kPushArm),
-            Commands.waitUntil(elevatorArm::reachedSetpoint),
-            elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-            Commands.waitUntil(elevatorArm::reachedSetpoint),
-            elevatorArm.setSetpoint(Setpoint.kArmL3)),
-        () -> elevatorArm.armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET);
-  }
+  private final Command autoL3 =
+      Commands.either(
+          Commands.sequence(
+              elevatorArm.setSetpoint(Setpoint.kElevatorL3),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kArmL3)),
+          Commands.sequence(
+              elevatorArm.setSetpoint(Setpoint.kPushArm),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kElevatorL3),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kArmL3)),
+          () -> elevatorArm.armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET);
 
-  private final Command autoHover() {
-    return Commands.sequence(
-        elevatorArm.setSetpoint(Setpoint.kPushArm),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        elevatorArm.setSetpoint(Setpoint.kArmHover));
-  }
+  private final Command autoHover =
+      Commands.sequence(
+          elevatorArm.setSetpoint(Setpoint.kPushArm),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          elevatorArm.setSetpoint(Setpoint.kArmHover));
 
-  private final Command autoIdle() {
-    return Commands.sequence(
-        led.setBasicPattern(),
-        elevatorArm.setSetpoint(Setpoint.kArmIdle),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
-  }
+  private final Command autoIdle =
+      Commands.sequence(
+          led.setBasicPattern(),
+          elevatorArm.setSetpoint(Setpoint.kArmIdle),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -177,12 +167,12 @@ public class RobotContainer {
 
     // canal.setDefaultCommand(canal.intake());
 
-    NamedCommands.registerCommand("L2", autoL2());
-    NamedCommands.registerCommand("L3", autoL3());
-    NamedCommands.registerCommand("Canal Intake", autoIntake());
-    NamedCommands.registerCommand("Score Coral", autoOuttakeCoral());
-    NamedCommands.registerCommand("Hover Canal", autoHover());
-    NamedCommands.registerCommand("Idle Setpoint", autoIdle());
+    NamedCommands.registerCommand("L2", autoL2);
+    NamedCommands.registerCommand("L3", autoL3);
+    NamedCommands.registerCommand("Canal Intake", autoIntake);
+    NamedCommands.registerCommand("Score Coral", autoOuttakeCoral);
+    NamedCommands.registerCommand("Hover Canal", autoHover);
+    NamedCommands.registerCommand("Idle Setpoint", autoIdle);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -271,7 +261,7 @@ public class RobotContainer {
                 Commands.waitUntil(elevatorArm::reachedSetpoint),
                 elevatorArm.setSetpoint(Setpoint.kArmHover)));
     codriverXbox
-        .rightTrigger()
+        .leftTrigger()
         .onTrue(
             Commands.either(
                 Commands.sequence(
@@ -290,6 +280,8 @@ public class RobotContainer {
         .onTrue(
             Commands.either(
                 Commands.sequence(
+                    elevatorArm.setSetpoint(Setpoint.kPushArm),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kElevatorL3),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL3)),

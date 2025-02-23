@@ -102,7 +102,6 @@ public final class Constants {
     public static final double kA = 0;
     public static final double ELEVATOR_HOVER_SETPOINT = 6.19;
     public static final double ELEVATOR_INTAKE_SETPOINT = 3.74;
-    // public static final double ELEVATOR_IDLE_SETPOINT = 0.74;
     public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
     public static final double ELEVATOR_L1_SETPOINT = 0;
     public static final double ELEVATOR_L2_SETPOINT = 0.05;
