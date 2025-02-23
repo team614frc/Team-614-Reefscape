@@ -55,9 +55,9 @@ public final class Constants {
     public static final double PIVOT_kV = 0;
     public static final double PIVOT_kA = 0;
     public static final double GEAR_RATIO = 60;
-    public static final Angle PIVOT_MAX = Degrees.of(20);
-    public static final Angle PIVOT_MIN = Degrees.of(105);
-    public static final Angle PIVOT_ALGAE = Degrees.of(0);
+    public static final double PIVOT_UP = 0;
+    public static final double PIVOT_DOWN = 105;
+    public static final double PIVOT_ALGAE = 0;
     public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
@@ -113,6 +113,8 @@ public final class Constants {
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
     public static final Angle ELEVATOR_SIM_STARTING_ANGLE = Degrees.of(180);
     public static final double ELEVATOR_TOLERANCE = 0.1;
+    public static final double ELEVATOR_SLOW_DOWN_SPEED = -0.1;
+    public static final double ELEVATOR_STALL_VELOCITY = 0.1;
   }
 
   public static final class ArmConstants {

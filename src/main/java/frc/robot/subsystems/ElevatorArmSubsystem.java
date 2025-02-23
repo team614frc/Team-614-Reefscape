@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ArmConstants;
@@ -73,7 +74,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
-  private final SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
+  private SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
 
   private final ProfiledPIDController armPid =
       new ProfiledPIDController(
@@ -183,6 +184,24 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   private double getElevatorPosition() {
     return elevatorEncoder.getPosition();
+  }
+
+  public Command setElevatorResetSpeed() {
+    return Commands.runOnce(
+        () -> {
+          elevatorMotor.set(ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED);
+        });
+  }
+
+  public boolean elevatorStalled() {
+    return Math.abs(elevatorEncoder.getVelocity()) < ElevatorConstants.ELEVATOR_STALL_VELOCITY;
+  }
+
+  public Command resetElevatorEncoder() {
+    return Commands.runOnce(
+        () -> {
+          elevatorEncoder.setPosition(0);
+        });
   }
 
   /**

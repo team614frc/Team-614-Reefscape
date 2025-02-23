@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degrees;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -55,6 +53,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     pivotPIDControl();
+
+    SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
+    SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
   }
 
   private double getArmAngleRadians() {
@@ -80,21 +81,21 @@ public class IntakePivotSubsystem extends SubsystemBase {
   public Command pivotDown() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(IntakeConstants.PIVOT_MIN.in(Degrees));
+          pid.setGoal(IntakeConstants.PIVOT_DOWN);
         });
   }
 
   public Command pivotIdle() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(IntakeConstants.PIVOT_MAX.in(Degrees));
+          pid.setGoal(IntakeConstants.PIVOT_UP);
         });
   }
 
   public Command pivotAlgae() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(IntakeConstants.PIVOT_ALGAE.in(Degrees));
+          pid.setGoal(IntakeConstants.PIVOT_ALGAE);
         });
   }
 }

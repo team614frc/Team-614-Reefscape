@@ -245,6 +245,14 @@ public class RobotContainer {
                     rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
                     canal.slow())));
     codriverXbox
+        .start()
+        .onTrue(
+            Commands.sequence(
+                elevatorArm.setElevatorResetSpeed(),
+                Commands.waitUntil(elevatorArm::elevatorStalled),
+                Commands.waitSeconds(0.25),
+                elevatorArm.resetElevatorEncoder()));
+    codriverXbox
         .leftBumper()
         .onTrue(
             Commands.sequence(
