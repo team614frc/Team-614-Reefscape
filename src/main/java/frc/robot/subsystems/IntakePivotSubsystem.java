@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
 
 import com.revrobotics.RelativeEncoder;
@@ -16,7 +15,6 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -55,7 +53,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    pivotPIDControl();
+  }
 
   private double getArmAngleRadians() {
     return Units.rotationsToRadians(intakePivotEncoder.getPosition());
@@ -84,20 +84,17 @@ public class IntakePivotSubsystem extends SubsystemBase {
         });
   }
 
-  public Command pivotUp() {
+  public Command pivotIdle() {
     return Commands.runOnce(
         () -> {
           pid.setGoal(IntakeConstants.PIVOT_MAX.in(Degrees));
         });
   }
 
-  public double getMeasurement() {
-    return getPosition().in(Degrees);
-  }
-
-  public Angle getPosition() {
-    var position = intakePivotMotor.getEncoder().getPosition();
-    return Degree.of(
-        position / IntakeConstants.GEAR_RATIO * IntakeConstants.FULL_CIRCLE.in(Degrees));
+  public Command pivotAlgae() {
+    return Commands.runOnce(
+        () -> {
+          pid.setGoal(IntakeConstants.PIVOT_ALGAE.in(Degrees));
+        });
   }
 }

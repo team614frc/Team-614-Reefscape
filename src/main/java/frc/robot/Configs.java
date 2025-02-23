@@ -13,20 +13,15 @@ public final class Configs {
     public static final SparkFlexConfig ARM_CONFIG = new SparkFlexConfig();
 
     static {
-      // Basic settings of elevator motor
       ELEVATOR_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .inverted(true)
-          .smartCurrentLimit(
-              (int)
-                  Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(
-                      Amp)); // .voltageCompensation(12);
+          .smartCurrentLimit((int) Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(Amp));
 
       ARM_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .inverted(true)
-          .smartCurrentLimit(
-              (int) ArmConstants.ARM_CURRENT_LIMIT.in(Amp)); // .voltageCompensation(12);
+          .smartCurrentLimit((int) ArmConstants.ARM_CURRENT_LIMIT.in(Amp));
     }
   }
 

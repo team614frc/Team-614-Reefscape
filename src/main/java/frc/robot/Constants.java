@@ -30,7 +30,7 @@ public final class Constants {
   public static final Matter CHASSIS =
       new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS.in(Kilogram));
   public static final Time LOOP_TIME = Seconds.of(0.13); // s, 20ms + 110ms sprk max velocity lag
-  public static final LinearVelocity MAX_SPEED = FeetPerSecond.of(14.5);
+  public static final LinearVelocity MAX_SPEED = FeetPerSecond.of(17.5);
 
   public static final class DrivebaseConstants {
     // Hold time on motor brakes when disabled.
@@ -57,11 +57,10 @@ public final class Constants {
     public static final double GEAR_RATIO = 60;
     public static final Angle PIVOT_MAX = Degrees.of(20);
     public static final Angle PIVOT_MIN = Degrees.of(105);
+    public static final Angle PIVOT_ALGAE = Degrees.of(0);
     public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final int VELOCITY_COMPONENT = 0;
-    public static final Angle FULL_CIRCLE = Degrees.of(360);
     public static final double PIVOT_MAX_VELOCITY = 2;
     public static final double PIVOT_MAX_ACCELERATION = 0.4;
     public static final double PIVOT_FEEDFORWARD_OFFSET = 0;
@@ -69,7 +68,7 @@ public final class Constants {
 
   public static class EndEffectorConstants {
     public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(80);
-    public static final double OUTTAKE_SPEED = -0.2;
+    public static final double OUTTAKE_SPEED = -0.1;
     public static final double INTAKE_SPEED = 0.05;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
@@ -106,24 +105,21 @@ public final class Constants {
     // public static final double ELEVATOR_IDLE_SETPOINT = 0.74;
     public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
     public static final double ELEVATOR_L1_SETPOINT = 0;
-    public static final double ELEVATOR_L2_SETPOINT = 0.74;
+    public static final double ELEVATOR_L2_SETPOINT = 0.05;
     public static final double ELEVATOR_L3_SETPOINT = 6.19;
     public static final double ELEVATOR_L4_SETPOINT = 0;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
     public static final double ELEVATOR_MAX_VELOCITY = 20;
     public static final double ELEVATOR_MAX_ACCELERATION = 50;
-    public static final double ELEVATOR_LOOP_ERROR = 0;
-    public static final double ELEVATOR_MIN_RANGE = -1;
-    public static final double ELEVATOR_MAX_RANGE = 1;
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
-    public static final Angle ELEVATOR_STARTING_ANGLE = Degrees.of(180);
+    public static final Angle ELEVATOR_SIM_STARTING_ANGLE = Degrees.of(180);
     public static final double ELEVATOR_TOLERANCE = 0.1;
   }
 
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
     public static final Current ARM_CURRENT_LIMIT = Amp.of(80);
-    public static final double kP = 1.5;
+    public static final double kP = 2;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 0;
@@ -132,11 +128,11 @@ public final class Constants {
     public static final double kA = 0;
     public static final double ARM_HOVER_SETPOINT = 0.03;
     public static final double ARM_INTAKE_SETPOINT = 0.03;
-    // public static final double ARM_IDLE_SETPOINT = 0.529;
+    public static final double ARM_PUSH_SETPOINT = 0.465;
     public static final double ARM_IDLE_SETPOINT = 0.5;
     public static final double ARM_L1_SETPOINT = 0;
-    public static final double ARM_L2_SETPOINT = 0.440;
-    public static final double ARM_L3_SETPOINT = 0.440;
+    public static final double ARM_L2_SETPOINT = 0.420;
+    public static final double ARM_L3_SETPOINT = 0.420;
     public static final double ARM_L4_SETPOINT = 0;
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
     public static final int ARM_ZERO_ENCODER = 0;
@@ -170,7 +166,6 @@ public final class Constants {
     public static final int ELEVATOR_MECH2D_X = 25;
     public static final int ELEVATOR_MECH2D_Y = 0;
     public static final int SIM_MOTOR_COUNT = 1;
-    public static final int LIMIT_SWITCH_ZERO = 0;
     public static final Time SIM_UPDATE_TIME = Second.of(0.02);
     public static final Angle ELEVATOR_ACCOUNT = Degrees.of(90);
     public static final Time ONE_MINUTE = Seconds.of(60);
@@ -178,7 +173,6 @@ public final class Constants {
   }
 
   public static final class ClimberConstants {
-    // Hold time on motor brakes when disabled.
     public static final int CLIMBER_MOTOR = 27;
     public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(80);
     public static final double CLIMB_SPEED = 0.4;
@@ -193,7 +187,7 @@ public final class Constants {
     public static final int CODRIVER_PORT = 1;
     public static final double RUMBLE_REST = 0;
     public static final double RUMBLE_SPEED = 1;
-    public static final double RUMBLE_DURATION = 0.5;
+    public static final double RUMBLE_DURATION = 0.75;
   }
 
   public static final class LEDConstants {

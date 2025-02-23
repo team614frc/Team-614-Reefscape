@@ -59,13 +59,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
         });
   }
 
-  public Command stall() {
-    return Commands.runOnce(
-        () -> {
-          set(EndEffectorConstants.STALL_SPEED);
-        });
-  }
-
   public boolean hasGamePiece() {
     double velocity = endEffectorMotor.getEncoder().getVelocity();
     double output = endEffectorMotor.get();
