@@ -32,11 +32,17 @@ public final class Constants {
   public static final Matter CHASSIS =
       new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS.in(Kilogram));
   public static final Time LOOP_TIME = Seconds.of(0.13); // s, 20ms + 110ms sprk max velocity lag
-  public static final LinearVelocity MAX_SPEED = FeetPerSecond.of(14.5);
+  public static final LinearVelocity MAX_SPEED = FeetPerSecond.of(17.5);
 
   public static final class DrivebaseConstants {
     // Hold time on motor brakes when disabled.
     public static final Time WHEEL_LOCK_TIME = Seconds.of(10);
+    public static final double AUTO_TRANSLATION_kP = 5.0;
+    public static final double AUTO_TRANSLATION_kI = 0.0;
+    public static final double AUTO_TRANSLATION_kD = 0.0;
+    public static final double AUTO_ROTATION_kP = 1.0;
+    public static final double AUTO_ROTATION_kI = 0.0;
+    public static final double AUTO_ROTATION_kD = 0.0;
   }
 
   public static final class IntakeConstants {

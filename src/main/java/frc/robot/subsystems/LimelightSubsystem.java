@@ -5,9 +5,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
 import java.util.Optional;
 import limelight.Limelight;
-import limelight.estimator.*;
-import limelight.structures.*;
-import limelight.structures.LimelightSettings.LEDMode;
+import limelight.networktables.*;
+import limelight.networktables.LimelightSettings.LEDMode;
 
 public class LimelightSubsystem extends SubsystemBase {
   private final Limelight limelight;
@@ -18,7 +17,7 @@ public class LimelightSubsystem extends SubsystemBase {
   public LimelightSubsystem() {
     limelight = new Limelight("limelight-april");
     limelight
-        .settingsBuilder()
+        .getSettings()
         .withLimelightLEDMode(LEDMode.PipelineControl)
         .withCameraOffset(FieldConstants.Offsets.CAMERA_OFFSET)
         .save();
@@ -35,7 +34,7 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   public void updateSettings(Orientation3d orientation3d) {
-    limelight.settingsBuilder().withRobotOrientation(orientation3d).save();
+    limelight.getSettings().withRobotOrientation(orientation3d).save();
   }
 
   public boolean hasTarget() {
