@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AllianceFlipUtil;
 import frc.robot.Constants;
@@ -366,6 +367,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // updatePosition(limelight.getVisionEstimate());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
+    SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
   }
 
   public void updatePosition(Optional<PoseEstimate> visionEstimate) {
@@ -405,6 +407,12 @@ public class SwerveSubsystem extends SubsystemBase {
             .toPose2d();
     path = AllianceFlipUtil.apply(path);
     return driveToPose(path);
+  }
+
+  public boolean isFieldCentric = true;
+
+  public Command flipFieldAndRobotRelative() {
+    return Commands.runOnce(() -> isFieldCentric = !isFieldCentric);
   }
 
   /**

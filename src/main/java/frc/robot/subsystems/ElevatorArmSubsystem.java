@@ -187,14 +187,18 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   }
 
   public Command setElevatorResetSpeed() {
-    return Commands.runOnce(
+    return Commands.runEnd(
         () -> {
           elevatorMotor.set(ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED);
+        },
+        () -> {
+          elevatorMotor.set(ElevatorConstants.ELEVATOR_STOP_SPEED);
         });
   }
 
   public boolean elevatorStalled() {
-    return Math.abs(elevatorEncoder.getVelocity()) < ElevatorConstants.ELEVATOR_STALL_VELOCITY;
+    return Math.abs(elevatorEncoder.getVelocity()) < ElevatorConstants.ELEVATOR_STALL_VELOCITY
+        && elevatorMotor.get() == -0.05;
   }
 
   public Command resetElevatorEncoder() {
@@ -300,6 +304,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Target Position", elevatorSetpoint);
     SmartDashboard.putNumber("Elevator Actual Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator Output", elevatorMotor.get());
+    SmartDashboard.putBoolean("Elevator Stalled", elevatorStalled());
+    SmartDashboard.putNumber("Elevator Velocity", elevatorEncoder.getVelocity());
 
     if (RobotBase.isSimulation()) {
       // Update mechanism2d

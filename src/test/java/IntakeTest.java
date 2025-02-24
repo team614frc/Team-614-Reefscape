@@ -1,4 +1,4 @@
-/* import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.revrobotics.sim.SparkFlexSim;
 import edu.wpi.first.hal.HAL;
@@ -72,4 +72,3 @@ class IntakeTest {
     assertEquals(Constants.IntakeConstants.INTAKE_REST_SPEED, intake.getMotor().get(), DELTA);
   }
 }
-*/

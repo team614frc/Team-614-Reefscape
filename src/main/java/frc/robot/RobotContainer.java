@@ -73,13 +73,17 @@ public class RobotContainer {
               drivebase.getSwerveDrive(),
               () -> -driverXbox.getLeftY(),
               () -> -driverXbox.getLeftX())
-          .withControllerRotationAxis(() -> driverXbox.getRawAxis(2))
+          .withControllerRotationAxis(() -> driverXbox.getRawAxis(4))
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(1)
           .allianceRelativeControl(true);
 
   Command driveFieldOrientedAngularVelocitySim =
       drivebase.driveFieldOriented(driveAngularVelocitySim);
+
+  SwerveInputStream driveRobotOriented =
+      driveAngularVelocitySim.copy().robotRelative(true).allianceRelativeControl(false);
+  Command driveRobotOrientedAngularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
 
   private final Command rumble(double power, double duration) {
     return Commands.runOnce(
@@ -95,6 +99,17 @@ public class RobotContainer {
                   .getHID()
                   .setRumble(RumbleType.kBothRumble, OperatorConstants.RUMBLE_REST);
             });
+  }
+
+  private Command toggleDriveMode() {
+    return Commands.either(
+        Commands.parallel(
+            (drivebase.driveFieldOriented(driveRobotOriented)),
+            drivebase.flipFieldAndRobotRelative()),
+        Commands.parallel(
+            drivebase.driveFieldOriented(driveAngularVelocitySim),
+            drivebase.flipFieldAndRobotRelative()),
+        () -> drivebase.isFieldCentric);
   }
 
   private final Command autoOuttakeCoral =
@@ -202,6 +217,7 @@ public class RobotContainer {
     //     .whileTrue(
     //         Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT)));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
+    driverXbox.back().onTrue(toggleDriveMode());
     driverXbox.a().whileTrue(climber.reverseClimb());
     driverXbox.y().whileTrue(climber.climb());
     driverXbox.x().whileTrue(intake.intakeGamepiece());
@@ -246,12 +262,14 @@ public class RobotContainer {
                     canal.slow())));
     codriverXbox
         .start()
-        .onTrue(
+        .whileTrue(
             Commands.sequence(
                 elevatorArm.setElevatorResetSpeed(),
+                Commands.waitSeconds(1),
                 Commands.waitUntil(elevatorArm::elevatorStalled),
                 Commands.waitSeconds(0.25),
-                elevatorArm.resetElevatorEncoder()));
+                elevatorArm.resetElevatorEncoder(),
+                rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION)));
     codriverXbox
         .leftBumper()
         .onTrue(
