@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.CanalSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -139,7 +138,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorL2),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmL2)),
-          () -> elevatorArm.armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET);
+          () -> elevatorArm.armSetpointComparison());
 
   private final Command autoL3 =
       Commands.either(
@@ -153,7 +152,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorL3),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmL3)),
-          () -> elevatorArm.armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET);
+          () -> elevatorArm.armSetpointComparison());
 
   private final Command autoHover =
       Commands.sequence(
@@ -302,7 +301,7 @@ public class RobotContainer {
                     elevatorArm.setSetpoint(Setpoint.kElevatorL2),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL2)),
-                () -> elevatorArm.armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET));
+                () -> elevatorArm.armSetpointComparison()));
     codriverXbox
         .rightTrigger()
         .onTrue(
@@ -319,7 +318,7 @@ public class RobotContainer {
                     elevatorArm.setSetpoint(Setpoint.kElevatorL3),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL3)),
-                () -> elevatorArm.armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET));
+                () -> elevatorArm.armSetpointComparison()));
 
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation()

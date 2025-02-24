@@ -89,8 +89,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
       new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kV, ArmConstants.kA);
 
   // Default Current Target
-  public double elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
-  public double armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
+  private double elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
+  private double armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
 
   // Simulation setup and variables
   private DCMotor elevatorMotorModel =
@@ -198,7 +198,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   public boolean elevatorStalled() {
     return Math.abs(elevatorEncoder.getVelocity()) < ElevatorConstants.ELEVATOR_STALL_VELOCITY
-        && elevatorMotor.get() == -0.05;
+        && elevatorMotor.get() == ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED;
+  }
+
+  public boolean armSetpointComparison() {
+    return armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET;
   }
 
   public Command resetElevatorEncoder() {
