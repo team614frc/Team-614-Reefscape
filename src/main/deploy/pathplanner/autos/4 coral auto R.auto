@@ -7,49 +7,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1 coral path L"
+            "pathName": "1 coral path R"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2 coral path B"
+            "pathName": "2 coral path R"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2 coral path 2 B"
+            "pathName": "2 coral path 2 R"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3 coral path B"
+            "pathName": "3 coral path R"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3 coral path 2 B"
+            "pathName": "3 coral path 2 R"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4 coral path B"
+            "pathName": "4 coral path R"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4 coral path 2 B"
+            "pathName": "4 coral path 2 R"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "optimized left autos",
+  "folder": "right autos",
   "choreoAuto": false
 }

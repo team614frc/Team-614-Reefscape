@@ -9,7 +9,12 @@
     "1 coral paths",
     "Test Paths"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "test autos",
+    "left autos",
+    "optimized left autos",
+    "right autos"
+  ],
   "defaultMaxVel": 5.0,
   "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 540.0,

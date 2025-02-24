@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1 coral path B"
+            "pathName": "1 coral path L"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "optimized left autos",
   "choreoAuto": false
 }

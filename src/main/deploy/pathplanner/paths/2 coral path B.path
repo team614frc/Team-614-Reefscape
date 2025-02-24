@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.810999999999999,
-        "y": 4.22
+        "x": 5.889000000000001,
+        "y": 3.8397499999999996
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.4935,
-        "y": 1.928749999999999
+        "x": 6.571500000000002,
+        "y": 1.5484999999999989
       },
       "isLocked": false,
-      "linkedName": "PATHS_B_POINT_1"
+      "linkedName": "PATHS_L_POINT_0"
     },
     {
       "anchor": {
@@ -48,7 +48,7 @@
   "folder": "2 coral paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 178.97455562093646
   },
   "useDefaultConstraints": true
 }

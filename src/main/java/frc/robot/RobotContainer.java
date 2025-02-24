@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -182,12 +181,12 @@ public class RobotContainer {
 
     // canal.setDefaultCommand(canal.intake());
 
-    NamedCommands.registerCommand("L2", autoL2);
-    NamedCommands.registerCommand("L3", autoL3);
-    NamedCommands.registerCommand("Canal Intake", autoIntake);
-    NamedCommands.registerCommand("Score Coral", autoOuttakeCoral);
-    NamedCommands.registerCommand("Hover Canal", autoHover);
-    NamedCommands.registerCommand("Idle Setpoint", autoIdle);
+    // NamedCommands.registerCommand("L2", autoL2);
+    // NamedCommands.registerCommand("L3", autoL3);
+    // NamedCommands.registerCommand("Canal Intake", autoIntake);
+    // NamedCommands.registerCommand("Score Coral", autoOuttakeCoral);
+    // NamedCommands.registerCommand("Hover Canal", autoHover);
+    // NamedCommands.registerCommand("Idle Setpoint", autoIdle);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();

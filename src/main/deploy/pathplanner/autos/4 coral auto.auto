@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1 coral path A"
+                  "pathName": "1 coral path L"
                 }
               },
               {
@@ -165,6 +165,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "left autos",
   "choreoAuto": false
 }
