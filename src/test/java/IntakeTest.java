@@ -49,7 +49,7 @@ class IntakeTest {
     Command command = intake.outtakeGamepiece();
 
     command.initialize();
-    assertEquals(Constants.IntakeConstants.OUTTAKE_SPEED, intake.getMotor().get(), DELTA);
+    assertEquals(Constants.IntakeConstants.OUTTAKE_REST_SPEED, intake.getMotor().get(), DELTA);
 
     command.execute();
     assertEquals(Constants.IntakeConstants.OUTTAKE_SPEED, intake.getMotor().get(), DELTA);
