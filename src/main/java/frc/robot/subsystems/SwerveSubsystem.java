@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AllianceFlipUtil;
 import frc.robot.Constants;
+import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Direction;
 import java.io.File;
@@ -149,11 +150,16 @@ public class SwerveSubsystem extends SubsystemBase {
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive
               // trains
-              new PIDConstants(5.0, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(1, 0.0, 0.0)
+              new PIDConstants(
+                  DrivebaseConstants.AUTO_TRANSLATION_kP,
+                  DrivebaseConstants.AUTO_TRANSLATION_kI,
+                  DrivebaseConstants.AUTO_TRANSLATION_kD),
               // Rotation PID constants
-              ),
+              new PIDConstants(
+                  DrivebaseConstants.AUTO_ROTATION_kP,
+                  DrivebaseConstants.AUTO_ROTATION_kI,
+                  DrivebaseConstants.AUTO_ROTATION_kD)),
           config,
           // The robot configuration
           () -> {

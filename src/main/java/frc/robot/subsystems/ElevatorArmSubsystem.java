@@ -257,7 +257,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         );
   }
 
-  // /** Get the current drawn by each simulation physics model */
+  /** Get the current drawn by each simulation physics model */
   public double getSimulationCurrentDraw() {
     return elevatorSim.getCurrentDrawAmps() + armSim.getCurrentDrawAmps();
   }
