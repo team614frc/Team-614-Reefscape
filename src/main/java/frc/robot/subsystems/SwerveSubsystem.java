@@ -29,13 +29,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AllianceFlipUtil;
 import frc.robot.Constants;
+import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Direction;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import limelight.estimator.PoseEstimate;
+import limelight.networktables.PoseEstimate;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
@@ -85,9 +86,6 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setModuleEncoderAutoSynchronize(
         false, 1); // Enable if you want to resynchronize your absolute encoders and motor encoders
     // periodically when they are not moving.
-    // swerveDrive
-    // .pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder
-    // and push the offsets onto it. Throws warning if not possible
     setupPathPlanner();
     // limelight = new LimelightSubsystem();
   }
@@ -144,11 +142,16 @@ public class SwerveSubsystem extends SubsystemBase {
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive
               // trains
-              new PIDConstants(5.0, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
+              new PIDConstants(
+                  DrivebaseConstants.AUTO_TRANSLATION_kP,
+                  DrivebaseConstants.AUTO_TRANSLATION_kI,
+                  DrivebaseConstants.AUTO_TRANSLATION_kD),
               // Rotation PID constants
-              ),
+              new PIDConstants(
+                  DrivebaseConstants.AUTO_ROTATION_kP,
+                  DrivebaseConstants.AUTO_ROTATION_kI,
+                  DrivebaseConstants.AUTO_ROTATION_kD)),
           config,
           // The robot configuration
           () -> {
