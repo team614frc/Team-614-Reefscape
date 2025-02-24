@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1 coral path"
+                  "pathName": "1 coral path A"
                 }
               },
               {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2 coral path"
+                  "pathName": "2 coral path A"
                 }
               }
             ]
@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2 coral path 2"
+                  "pathName": "2 coral path 2 A"
                 }
               },
               {
@@ -86,7 +86,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3 coral path"
+                  "pathName": "3 coral path A"
                 }
               }
             ]
@@ -99,7 +99,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3 coral path 2"
+                  "pathName": "3 coral path 2 A"
                 }
               },
               {

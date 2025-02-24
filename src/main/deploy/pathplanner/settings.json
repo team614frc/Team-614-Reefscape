@@ -5,10 +5,12 @@
   "pathFolders": [
     "2 coral paths",
     "3 coral paths",
-    "4 coral paths"
+    "4 coral paths",
+    "1 coral paths",
+    "Test Paths"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 0.5,
+  "defaultMaxVel": 5.0,
   "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
