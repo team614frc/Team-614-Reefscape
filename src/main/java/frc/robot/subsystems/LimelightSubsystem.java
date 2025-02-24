@@ -45,6 +45,5 @@ public class LimelightSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("Sees AprilTag", hasTarget());
     SmartDashboard.putNumber("AprilTag ID", getID());
-    
   }
 }

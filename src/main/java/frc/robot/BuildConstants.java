@@ -1,7 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 /** Automatically generated file containing build version information. */
 public final class BuildConstants {
   public static final String MAVEN_GROUP = "";
@@ -15,10 +13,5 @@ public final class BuildConstants {
   public static final long BUILD_UNIX_TIME = 1740170659594L;
   public static final int DIRTY = 1;
 
-
-
-  private BuildConstants() {
-    
-   
-  }
+  private BuildConstants() {}
 }
