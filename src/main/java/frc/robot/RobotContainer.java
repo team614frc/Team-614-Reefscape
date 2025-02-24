@@ -175,6 +175,12 @@ public class RobotContainer {
           Commands.waitUntil(elevatorArm::reachedSetpoint),
           elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
 
+  private final Command driveLeftReef =
+      Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT));
+
+  private final Command driveRightReef =
+      Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT));
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -208,14 +214,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // driverXbox
-    //     .x()
-    //     .whileTrue(
-    //         Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT)));
-    // driverXbox
-    //     .b()
-    //     .whileTrue(
-    //         Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT)));
+    driverXbox.x().whileTrue(driveLeftReef);
+    driverXbox.b().whileTrue(driveRightReef);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode());
     driverXbox.a().whileTrue(climber.reverseClimb());
