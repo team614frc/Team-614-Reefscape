@@ -20,7 +20,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   public EndEffectorSubsystem() {
     endEffectorMotor.configure(
-        Configs.EndEffectorSubsystem.END_EFFECTOR_CONFIG,
+        Configs.EndEffectorConfig.END_EFFECTOR_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
@@ -31,6 +31,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("End Effector Motor Output", endEffectorMotor.get());
     SmartDashboard.putBoolean("End Effector Has Game Piece", hasGamePiece());
+  }
+
+  public SparkFlex getMotor() {
+    return endEffectorMotor;
   }
 
   // Set the power level for the end effector motor

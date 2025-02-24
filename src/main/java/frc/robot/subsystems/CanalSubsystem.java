@@ -25,7 +25,7 @@ public class CanalSubsystem extends SubsystemBase {
   /** Creates a new CanalSubsystem. */
   public CanalSubsystem() {
     canalMotor.configure(
-        Configs.CanalSubsystem.CANAL_CONFIG,
+        Configs.CanalConfig.CANAL_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
@@ -51,6 +51,10 @@ public class CanalSubsystem extends SubsystemBase {
 
   public void set(double speed) {
     canalMotor.set(speed);
+  }
+
+  public SparkFlex getMotor() {
+    return canalMotor;
   }
 
   public Command intake() {

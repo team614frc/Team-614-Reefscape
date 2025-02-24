@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Configs.ClimberSubsystem;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
@@ -105,8 +105,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.a().onTrue(elevatorArm.setSetpointCommand(Setpoint.kL3));
-    driverXbox.x().onTrue(elevatorArm.setSetpointCommand(Setpoint.kIdleSetpoint));
+    driverXbox.a().onTrue(elevatorArm.setSetpoint(Setpoint.kL2));
+    driverXbox.x().onTrue(elevatorArm.setSetpoint(Setpoint.kIdleSetpoint));
     driverXbox.b().whileTrue(intake.intakeGamepiece());
     driverXbox.y().onTrue(Commands.none());
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));

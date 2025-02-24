@@ -21,9 +21,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
     intakeMotor.configure(
-        Configs.IntakeSubsystem.INTAKE_CONFIG,
+        Configs.IntakeConfig.INTAKE_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+  }
+
+  public SparkFlex getMotor() {
+    return intakeMotor;
   }
 
   @Override
@@ -38,9 +42,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command intakeGamepiece() {
-    return Commands.runOnce(
+    return Commands.runEnd(
         () -> {
           set(Constants.IntakeConstants.INTAKE_SPEED);
+        },
+        () -> {
+          set(Constants.IntakeConstants.INTAKE_REST_SPEED);
         });
   }
 
