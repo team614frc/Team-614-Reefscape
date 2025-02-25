@@ -23,7 +23,7 @@ public class CanalSubsystem extends SubsystemBase {
       new SparkFlex(CanalConstants.CANAL_MOTOR, MotorType.kBrushless);
 
   private final LaserCan laserCan = new LaserCan(5);
-  private LaserCan.Measurement distance = laserCan.getMeasurement();
+  private LaserCan.Measurement distance;
 
   /** Creates a new CanalSubsystem. */
   public CanalSubsystem() {
@@ -44,17 +44,18 @@ public class CanalSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     super.periodic();
 
     distance = laserCan.getMeasurement();
 
+    if (distance != null) {
+      SmartDashboard.putNumber("LaserCAN Distance", distance.distance_mm);
+    } else {
+      SmartDashboard.putString("LaserCAN Distance", "No Data");
+    }
+
     SmartDashboard.putNumber("Canal Motor Output", canalMotor.get());
     SmartDashboard.putBoolean("Game Piece Detection", gamePieceDetected());
-
-    if (!RobotBase.isSimulation()) {
-      SmartDashboard.putNumber("LaserCAN Distance", distance.distance_mm);
-    }
   }
 
   public void set(double speed) {
