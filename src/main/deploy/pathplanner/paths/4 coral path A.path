@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.5111967794759826,
-        "y": 0.6780942958515277
+        "x": 1.6621268593067686,
+        "y": 0.6511015113264181
       },
       "prevControl": {
-        "x": 0.7346927026473805,
-        "y": 0.20449815775109165
+        "x": 0.8856227824781665,
+        "y": 0.1775053732259821
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PATHS_A_POINT_6"
+      "linkedName": "PATHS_A_POINT_2"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 58.56980004373212
+    "rotation": 53.16545920219069
   },
   "reversed": false,
   "folder": "4 coral paths",
