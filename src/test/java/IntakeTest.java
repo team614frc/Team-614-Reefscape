@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.revrobotics.sim.SparkFlexSim;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 import org.junit.jupiter.api.AfterEach;
@@ -10,42 +11,64 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class IntakeTest {
-  private static final double DELTA = 1e-2; // acceptable deviation range
+  private static final double DELTA = 1e-2;
   private IntakeSubsystem intake;
   private SparkFlexSim simMotor;
 
-  @BeforeEach // this method will run before each test
+  @BeforeEach
   void setup() {
-    assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
-    intake = new IntakeSubsystem(); // Inject mocked motor into subsystem
+    assert HAL.initialize(500, 0);
+    intake = new IntakeSubsystem();
 
-    simMotor = new SparkFlexSim(intake.getMotor(), DCMotor.getNeoVortex(1)); // Simulate motor
+    simMotor = new SparkFlexSim(intake.getMotor(), DCMotor.getNeoVortex(1));
     simMotor.enable();
   }
 
-  @AfterEach // this method will run after each test
+  @AfterEach
   void shutdown() throws Exception {
     simMotor.disable();
     intake.getMotor().close();
   }
 
-  @Test // marks this method as a test
+  @Test
   void intakeGamepieceTest() {
-    // executing the command
-    intake.intakeGamepiece().execute();
-    // When the command is executed we are getting the speed at the subsystem
+    Command command = intake.intakeGamepiece();
+
+    command.initialize();
+    assertEquals(Constants.IntakeConstants.INTAKE_REST_SPEED, intake.getMotor().get(), DELTA);
+
+    command.execute();
     assertEquals(Constants.IntakeConstants.INTAKE_SPEED, intake.getMotor().get(), DELTA);
+
+    command.end(false);
+    assertEquals(Constants.IntakeConstants.INTAKE_REST_SPEED, intake.getMotor().get(), DELTA);
   }
 
   @Test
-  void pukeGamepieceTest() {
-    intake.pukeGamepiece().execute();
+  void outtakeGamepieceTest() {
+    Command command = intake.outtakeGamepiece();
+
+    command.initialize();
+    assertEquals(Constants.IntakeConstants.OUTTAKE_REST_SPEED, intake.getMotor().get(), DELTA);
+
+    command.execute();
     assertEquals(Constants.IntakeConstants.OUTTAKE_SPEED, intake.getMotor().get(), DELTA);
+
+    command.end(false);
+    assertEquals(Constants.IntakeConstants.OUTTAKE_REST_SPEED, intake.getMotor().get(), DELTA);
   }
 
   @Test
   void stopIntakeTest() {
-    intake.stopIntake().execute();
-    assertEquals(0.0, intake.getMotor().get(), DELTA);
+    Command command = intake.stopIntake();
+
+    command.initialize();
+    assertEquals(Constants.IntakeConstants.INTAKE_REST_SPEED, intake.getMotor().get(), DELTA);
+
+    command.execute();
+    assertEquals(Constants.IntakeConstants.INTAKE_REST_SPEED, intake.getMotor().get(), DELTA);
+
+    command.end(false);
+    assertEquals(Constants.IntakeConstants.INTAKE_REST_SPEED, intake.getMotor().get(), DELTA);
   }
 }

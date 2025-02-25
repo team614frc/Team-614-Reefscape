@@ -1,15 +1,10 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Amp;
-import static edu.wpi.first.units.Units.Minute;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.Second;
 
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ElevatorConstants;
 
 public final class Configs {
 
@@ -18,36 +13,15 @@ public final class Configs {
     public static final SparkFlexConfig ARM_CONFIG = new SparkFlexConfig();
 
     static {
-      // Basic settings of elevator motor
       ELEVATOR_CONFIG
           .idleMode(IdleMode.kBrake)
           .inverted(true)
-          .smartCurrentLimit(
-              (int)
-                  Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(
-                      Amp)); // .voltageCompensation(12);
-      ELEVATOR_CONFIG
-          .closedLoop
-          .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-          // PID Values for position control
-          .pidf(
-              ElevatorConstants.ELEVATOR_P_VALUE,
-              0,
-              ElevatorConstants.ELEVATOR_D_VALUE,
-              ElevatorConstants.ELEVATOR_F_VALUE)
-          .outputRange(ElevatorConstants.ELEVATOR_MIN_RANGE, ElevatorConstants.ELEVATOR_MAX_RANGE)
-          .maxMotion
-          // Set MAXMotion parameters for position control
-          .maxVelocity(ElevatorConstants.ELEVATOR_MAX_VELOCITY.in(Rotations.per(Minute)))
-          .maxAcceleration(
-              ElevatorConstants.ELEVATOR_MAX_ACCELERATION.in(Rotations.per(Minute).per(Second)))
-          .allowedClosedLoopError(ElevatorConstants.ELEVATOR_LOOP_ERROR);
+          .smartCurrentLimit((int) Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(Amp));
 
       ARM_CONFIG
           .idleMode(IdleMode.kBrake)
           .inverted(true)
-          .smartCurrentLimit(
-              (int) ArmConstants.ARM_CURRENT_LIMIT.in(Amp)); // .voltageCompensation(12);
+          .smartCurrentLimit((int) ArmConstants.ARM_CURRENT_LIMIT.in(Amp));
     }
   }
 
@@ -68,6 +42,7 @@ public final class Configs {
     static {
       INTAKE_CONFIG
           .idleMode(IdleMode.kCoast)
+          .inverted(true)
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
     }
   }
@@ -77,7 +52,7 @@ public final class Configs {
 
     static {
       INTAKE_PIVOT_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_PIVOT_CURRENT_LIMIT.in(Amp));
     }
   }
@@ -98,7 +73,8 @@ public final class Configs {
 
     static {
       CLIMBER_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
+          .inverted(true)
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
     }
   }
