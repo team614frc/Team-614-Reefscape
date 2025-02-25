@@ -207,6 +207,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     return armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET;
   }
 
+  public boolean checkL3() {
+    return armSetpoint == ArmConstants.ARM_L3_SETPOINT
+        && elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
+  }
+
   public Command resetElevatorEncoder() {
     return Commands.runOnce(
         () -> {

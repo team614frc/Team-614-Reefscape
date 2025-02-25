@@ -198,7 +198,7 @@ public final class Constants {
     public static final int CODRIVER_PORT = 1;
     public static final double RUMBLE_REST = 0;
     public static final double RUMBLE_SPEED = 1;
-    public static final double RUMBLE_DURATION = 0.75;
+    public static final double RUMBLE_DURATION = 1;
   }
 
   public static final class LEDConstants {
