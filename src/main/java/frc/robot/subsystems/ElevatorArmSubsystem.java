@@ -55,7 +55,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kElevatorL3,
     kL3,
     kL4,
-    kPushArm;
+    kPushArm,
+    kScoreArm,
+    kElevatorOuttake;
   }
 
   // Elevator Motor
@@ -90,7 +92,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   // Default Current Target
   private double elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
-  private double armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
+  private double armSetpoint = ArmConstants.ARM_START_SETPOINT;
 
   // Simulation setup and variables
   private DCMotor elevatorMotorModel =
@@ -294,6 +296,12 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               break;
             case kPushArm:
               armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
+              break;
+            case kScoreArm:
+              armSetpoint = ArmConstants.ARM_SCORE_SETPOINT;
+              break;
+            case kElevatorOuttake:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_OUTTAKE_SETPOINT;
               break;
           }
         });

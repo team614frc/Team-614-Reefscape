@@ -121,7 +121,7 @@ public class RobotContainer {
           elevatorArm.setSetpoint(Setpoint.kArmHover),
           endEffector.intake(),
           Commands.waitUntil(canal::gamePieceDetected),
-          Commands.waitSeconds(0.5),
+          Commands.waitSeconds(1),
           elevatorArm.setSetpoint(Setpoint.kIntake),
           Commands.waitUntil(elevatorArm::reachedSetpoint),
           elevatorArm.setSetpoint(Setpoint.kHover));
@@ -229,10 +229,14 @@ public class RobotContainer {
         .onTrue(
             Commands.sequence(
                 endEffector.outtake(),
-                elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
+                elevatorArm.setSetpoint(Setpoint.kScoreArm),
                 Commands.waitUntil(elevatorArm::reachedSetpoint),
-                endEffector.stop(),
-                elevatorArm.setSetpoint(Setpoint.kArmIdle)));
+                elevatorArm.setSetpoint(Setpoint.kArmL3),
+                elevatorArm.setSetpoint(Setpoint.kElevatorOuttake),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
+                elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                endEffector.stop()));
 
     // codriverXbox
     //     .b()
@@ -277,6 +281,7 @@ public class RobotContainer {
             Commands.sequence(
                 elevatorArm.setSetpoint(Setpoint.kArmIdle),
                 Commands.waitUntil(elevatorArm::reachedSetpoint),
+                endEffector.stop(),
                 elevatorArm.setSetpoint(Setpoint.kElevatorIdle)));
     codriverXbox
         .rightBumper()

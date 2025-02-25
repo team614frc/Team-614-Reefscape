@@ -88,7 +88,7 @@ public final class Constants {
     public static final int CANAL_MOTOR = 23;
     public static final Current CANAL_CURRENT_LIMIT = Amp.of(80);
     public static final double OUTTAKE_SPEED = 0;
-    public static final double INTAKE_SPEED = 0.15;
+    public static final double INTAKE_SPEED = 0.125;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final int CANAL_REST_SPEED = 0;
@@ -110,9 +110,10 @@ public final class Constants {
     public static final double ELEVATOR_INTAKE_SETPOINT = 3.74;
     public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
     public static final double ELEVATOR_L1_SETPOINT = 0;
-    public static final double ELEVATOR_L2_SETPOINT = 0.05;
+    public static final double ELEVATOR_L2_SETPOINT = 0.4;
     public static final double ELEVATOR_L3_SETPOINT = 6.19;
     public static final double ELEVATOR_L4_SETPOINT = 0;
+    public static final double ELEVATOR_OUTTAKE_SETPOINT = 5;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
     public static final double ELEVATOR_MAX_VELOCITY = 20;
     public static final double ELEVATOR_MAX_ACCELERATION = 50;
@@ -127,7 +128,7 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int ARM_MOTOR = 21;
     public static final Current ARM_CURRENT_LIMIT = Amp.of(80);
-    public static final double kP = 2;
+    public static final double kP = 4;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 0;
@@ -137,11 +138,13 @@ public final class Constants {
     public static final double ARM_HOVER_SETPOINT = 0.03;
     public static final double ARM_INTAKE_SETPOINT = 0.03;
     public static final double ARM_PUSH_SETPOINT = 0.465;
-    public static final double ARM_IDLE_SETPOINT = 0.5;
+    public static final double ARM_IDLE_SETPOINT = 0.49;
+    public static final double ARM_START_SETPOINT = 0.5;
     public static final double ARM_L1_SETPOINT = 0;
-    public static final double ARM_L2_SETPOINT = 0.420;
-    public static final double ARM_L3_SETPOINT = 0.420;
+    public static final double ARM_L2_SETPOINT = 0.465;
+    public static final double ARM_L3_SETPOINT = 0.465;
     public static final double ARM_L4_SETPOINT = 0;
+    public static final double ARM_SCORE_SETPOINT = 0.390;
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
     public static final int ARM_ZERO_ENCODER = 0;
     public static final double ARM_MAX_VELOCITY = 4;
