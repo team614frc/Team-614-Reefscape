@@ -4,32 +4,35 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Radians;
-
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakePivotSubsystem extends SubsystemBase {
   private final SparkFlex intakePivotMotor =
-      new SparkFlex(Constants.IntakeConstants.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
+      new SparkFlex(IntakeConstants.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
+  private RelativeEncoder intakePivotEncoder = intakePivotMotor.getEncoder();
 
-  private final PIDController pidController =
-      new PIDController(
-          IntakeConstants.PIVOT_kP, IntakeConstants.PIVOT_kI, IntakeConstants.PIVOT_kD);
+  private final ProfiledPIDController pid =
+      new ProfiledPIDController(
+          IntakeConstants.PIVOT_kP,
+          IntakeConstants.PIVOT_kI,
+          IntakeConstants.PIVOT_kD,
+          new TrapezoidProfile.Constraints(
+              Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_VELOCITY),
+              Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_ACCELERATION)));
 
   private final ArmFeedforward feedforward =
       new ArmFeedforward(
@@ -40,54 +43,59 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   public IntakePivotSubsystem() {
     intakePivotMotor.configure(
-        Configs.IntakePivotSubsystem.INTAKE_PIVOT_CONFIG,
+        Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+
+    intakePivotEncoder.setPosition(0);
   }
 
   @Override
   public void periodic() {
-    double output = pidController.calculate(getMeasurement());
-    useOutput(output);
+    pivotPIDControl();
+
+    SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
+    SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
   }
 
-  public void useOutput(double output) {
-    double feed =
-        feedforward.calculate(
-            getPosition().in(Radians), IntakeConstants.VELOCITY_COMPONENT); // No velocity component
-    intakePivotMotor.set(output + feed);
-    SmartDashboard.putNumber("Pivot PID output", output);
+  private double getArmAngleRadians() {
+    return Units.rotationsToRadians(intakePivotEncoder.getPosition());
   }
 
-  public boolean atGoal(Angle goal, Angle threshold) {
-    return Math.abs(getMeasurement() - goal.in(Radians)) < threshold.in(Radians);
-  }
+  public Command pivotPIDControl() {
+    return run(
+        () -> {
+          double armFeedforwardVoltage =
+              feedforward.calculate(
+                  pid.getSetpoint().position
+                      - Units.rotationsToRadians(IntakeConstants.PIVOT_FEEDFORWARD_OFFSET),
+                  pid.getSetpoint().velocity);
+          SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", armFeedforwardVoltage);
 
-  public void set(double speed) {
-    intakePivotMotor.set(speed);
+          double pidOutput = pid.calculate(getArmAngleRadians(), pid.getGoal());
+
+          intakePivotMotor.setVoltage(pidOutput + armFeedforwardVoltage);
+        });
   }
 
   public Command pivotDown() {
     return Commands.runOnce(
         () -> {
-          pidController.setSetpoint(IntakeConstants.PIVOT_MIN.in(Degrees));
+          pid.setGoal(IntakeConstants.PIVOT_DOWN);
         });
   }
 
-  public Command pivotUp() {
+  public Command pivotIdle() {
     return Commands.runOnce(
         () -> {
-          pidController.setSetpoint(IntakeConstants.PIVOT_MAX.in(Degrees));
+          pid.setGoal(IntakeConstants.PIVOT_UP);
         });
   }
 
-  public double getMeasurement() {
-    return getPosition().in(Degrees);
-  }
-
-  public Angle getPosition() {
-    var position = intakePivotMotor.getEncoder().getPosition();
-    return Degree.of(
-        position / IntakeConstants.GEAR_RATIO * IntakeConstants.FULL_CIRCLE.in(Degrees));
+  public Command pivotAlgae() {
+    return Commands.runOnce(
+        () -> {
+          pid.setGoal(IntakeConstants.PIVOT_ALGAE);
+        });
   }
 }
