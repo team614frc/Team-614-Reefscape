@@ -235,9 +235,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         armPid.calculate(getArmAngleRadians(), Units.rotationsToRadians(armSetpoint));
     double elevatorPidOutput = elevatorPid.calculate(getElevatorPosition(), elevatorSetpoint);
 
-    armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
+    // armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
 
-    elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
+    // elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
   }
 
   /**

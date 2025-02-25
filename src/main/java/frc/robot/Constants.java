@@ -53,22 +53,22 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
 
-    public static final double PIVOT_kP = 0.1;
+    public static final double PIVOT_kP = 1;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
     public static final double PIVOT_kS = 0;
-    public static final double PIVOT_kG = 0;
+    public static final double PIVOT_kG = 0.525;
     public static final double PIVOT_kV = 0;
     public static final double PIVOT_kA = 0;
     public static final double GEAR_RATIO = 60;
-    public static final double PIVOT_UP = 0;
-    public static final double PIVOT_DOWN = 105;
+    public static final double PIVOT_UP = -0.05;
+    public static final double PIVOT_DOWN = -2;
     public static final double PIVOT_ALGAE = 0;
     public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final double PIVOT_MAX_VELOCITY = 2;
-    public static final double PIVOT_MAX_ACCELERATION = 0.4;
+    public static final double PIVOT_MAX_VELOCITY = 8;
+    public static final double PIVOT_MAX_ACCELERATION = 3;
     public static final double PIVOT_FEEDFORWARD_OFFSET = 0;
   }
 

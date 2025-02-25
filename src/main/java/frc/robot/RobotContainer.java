@@ -259,6 +259,8 @@ public class RobotContainer {
                     elevatorArm.setSetpoint(Setpoint.kArmIdle),
                     endEffector.stop()),
                 () -> elevatorArm.checkL3()));
+    codriverXbox.a().onTrue(intakePivot.pivotDown());
+    codriverXbox.y().onTrue(intakePivot.pivotIdle());
 
     codriverXbox
         .x()
@@ -281,6 +283,7 @@ public class RobotContainer {
                 Commands.waitUntil(elevatorArm::reachedSetpoint),
                 canal.stop(),
                 elevatorArm.setSetpoint(Setpoint.kArmHover)));
+    codriverXbox.b().whileTrue(canal.outtake());
     codriverXbox
         .start()
         .whileTrue(

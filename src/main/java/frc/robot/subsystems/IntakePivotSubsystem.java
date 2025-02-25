@@ -48,6 +48,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
         PersistMode.kPersistParameters);
 
     intakePivotEncoder.setPosition(0);
+    pid.setGoal(0.05);
   }
 
   @Override
@@ -56,39 +57,38 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
     SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
+    SmartDashboard.putNumber(
+        "Pivot Position Radians", Units.rotationsToRadians(intakePivotEncoder.getPosition()));
   }
 
   private double getArmAngleRadians() {
     return Units.rotationsToRadians(intakePivotEncoder.getPosition());
   }
 
-  public Command pivotPIDControl() {
-    return run(
-        () -> {
-          double armFeedforwardVoltage =
-              feedforward.calculate(
-                  pid.getSetpoint().position
-                      - Units.rotationsToRadians(IntakeConstants.PIVOT_FEEDFORWARD_OFFSET),
-                  pid.getSetpoint().velocity);
-          SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", armFeedforwardVoltage);
+  public void pivotPIDControl() {
+    double armFeedforwardVoltage =
+        feedforward.calculate(
+            pid.getSetpoint().position
+                - Units.rotationsToRadians(IntakeConstants.PIVOT_FEEDFORWARD_OFFSET),
+            pid.getSetpoint().velocity);
+    SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", armFeedforwardVoltage);
 
-          double pidOutput = pid.calculate(getArmAngleRadians(), pid.getGoal());
+    double pidOutput = pid.calculate(getArmAngleRadians(), pid.getGoal());
 
-          intakePivotMotor.setVoltage(pidOutput + armFeedforwardVoltage);
-        });
+    intakePivotMotor.setVoltage(pidOutput + armFeedforwardVoltage);
   }
 
   public Command pivotDown() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(IntakeConstants.PIVOT_DOWN);
+          pid.setGoal(Units.rotationsToRadians(IntakeConstants.PIVOT_DOWN));
         });
   }
 
   public Command pivotIdle() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(IntakeConstants.PIVOT_UP);
+          pid.setGoal(Units.rotationsToRadians(IntakeConstants.PIVOT_UP));
         });
   }
 
