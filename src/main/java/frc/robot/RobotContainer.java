@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,14 +14,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.CanalSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -39,8 +36,6 @@ public class RobotContainer {
   private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
   private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
-  private final CanalSubsystem canal = new CanalSubsystem();
-  private final LEDSubsystem led = new LEDSubsystem();
 
   private final SendableChooser<Command> autoChooser;
 
@@ -53,7 +48,7 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
-  private final SwerveInputStream driveAngularVelocity =
+  SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
               drivebase.getSwerveDrive(), () -> driverXbox.getLeftY(), () -> driverXbox.getLeftX())
           .withControllerRotationAxis(() -> -driverXbox.getRightX())
@@ -61,132 +56,23 @@ public class RobotContainer {
           .scaleTranslation(1)
           .allianceRelativeControl(true);
 
-  private final Command driveFieldOrientedAnglularVelocity =
-      drivebase.driveFieldOriented(driveAngularVelocity);
+  Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
 
-  private final SwerveInputStream driveAngularVelocitySim =
+  SwerveInputStream driveAngularVelocitySim =
       SwerveInputStream.of(
               drivebase.getSwerveDrive(), () -> driverXbox.getLeftY(), () -> driverXbox.getLeftX())
-          .withControllerRotationAxis(() -> driverXbox.getRawAxis(4))
+          .withControllerRotationAxis(() -> driverXbox.getRawAxis(2))
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(1)
           .allianceRelativeControl(true);
 
-  private final Command driveFieldOrientedAngularVelocitySim =
+  Command driveFieldOrientedAngularVelocitySim =
       drivebase.driveFieldOriented(driveAngularVelocitySim);
-
-  private final SwerveInputStream driveRobotOriented =
-      driveAngularVelocitySim.copy().robotRelative(true).allianceRelativeControl(false);
-
-  private final Command rumble(double power, double duration) {
-    return Commands.runOnce(
-            () -> {
-              driverXbox.getHID().setRumble(RumbleType.kBothRumble, power);
-              codriverXbox.getHID().setRumble(RumbleType.kBothRumble, power);
-            })
-        .andThen(Commands.waitSeconds(duration))
-        .andThen(
-            () -> {
-              driverXbox.getHID().setRumble(RumbleType.kBothRumble, OperatorConstants.RUMBLE_REST);
-              codriverXbox
-                  .getHID()
-                  .setRumble(RumbleType.kBothRumble, OperatorConstants.RUMBLE_REST);
-            });
-  }
-
-  private final Command toggleDriveMode =
-      Commands.either(
-          Commands.parallel(
-              drivebase.driveFieldOriented(driveRobotOriented),
-              drivebase.flipFieldAndRobotRelative()),
-          Commands.parallel(
-              drivebase.driveFieldOriented(driveAngularVelocitySim),
-              drivebase.flipFieldAndRobotRelative()),
-          () -> drivebase.isFieldCentric);
-
-  private final Command autoOuttakeCoral =
-      Commands.sequence(
-          endEffector.outtake(),
-          elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          endEffector.stop(),
-          elevatorArm.setSetpoint(Setpoint.kArmIdle));
-
-  private final Command autoIntake =
-      Commands.sequence(
-          canal.intake(),
-          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kArmHover),
-          endEffector.intake(),
-          Commands.waitUntil(canal::gamePieceDetected),
-          Commands.waitSeconds(0.5),
-          elevatorArm.setSetpoint(Setpoint.kIntake),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kHover));
-
-  private final Command autoL2 =
-      Commands.either(
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL2)),
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kPushArm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL2)),
-          () -> elevatorArm.armSetpointComparison());
-
-  private final Command autoL3 =
-      Commands.either(
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL3)),
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kPushArm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL3)),
-          () -> elevatorArm.armSetpointComparison());
-
-  private final Command autoHover =
-      Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kPushArm),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kArmHover));
-
-  private final Command autoIdle =
-      Commands.sequence(
-          led.setBasicPattern(),
-          elevatorArm.setSetpoint(Setpoint.kArmIdle),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
-
-  private final Command driveLeftReef =
-      Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT));
-
-  private final Command driveRightReef =
-      Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-
-    // canal.setDefaultCommand(canal.intake());
-
-    // NamedCommands.registerCommand("L2", autoL2);
-    // NamedCommands.registerCommand("L3", autoL3);
-    // NamedCommands.registerCommand("Canal Intake", autoIntake);
-    // NamedCommands.registerCommand("Score Coral", autoOuttakeCoral);
-    // NamedCommands.registerCommand("Hover Canal", autoHover);
-    // NamedCommands.registerCommand("Idle Setpoint", autoIdle);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -215,117 +101,33 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.x().whileTrue(driveLeftReef);
-    driverXbox.b().whileTrue(driveRightReef);
+    driverXbox.a().onTrue(elevatorArm.setSetpoint(Setpoint.kL2));
+    driverXbox.x().onTrue(elevatorArm.setSetpoint(Setpoint.kIdleSetpoint));
+    driverXbox.b().whileTrue(intake.intakeGamepiece());
+    driverXbox.y().onTrue(Commands.none());
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
-    driverXbox.back().onTrue(toggleDriveMode);
-    driverXbox.a().whileTrue(climber.reverseClimb());
-    driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
-    driverXbox.x().whileTrue(intake.intakeGamepiece());
-    driverXbox
-        .leftTrigger()
-        .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
-        .onFalse(intakePivot.pivotIdle());
-    driverXbox.rightTrigger().whileTrue(intake.outtakeGamepiece());
+    driverXbox.back().onTrue(Commands.none());
+    driverXbox.leftTrigger().onTrue(Commands.none());
+    driverXbox.rightTrigger().onTrue(endEffector.outtake());
     driverXbox
         .leftBumper()
-        .whileTrue(Commands.parallel(intakePivot.pivotAlgae(), intake.outtakeGamepiece()))
-        .onFalse(intakePivot.pivotIdle());
-    driverXbox
-        .rightBumper()
-        .onTrue(
-            Commands.sequence(
-                endEffector.outtake(),
-                elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-                Commands.waitUntil(elevatorArm::reachedSetpoint),
-                endEffector.stop(),
-                elevatorArm.setSetpoint(Setpoint.kArmIdle)));
-
-    // codriverXbox
-    //     .b()
-    //     .onTrue(
-    //         Commands.sequence(
-    //             new ParallelCommandGroup(
-    //                 elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
-    //             Commands.waitUntil(elevatorArm::reachedSetpoint),
-    //             elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-    //             Commands.waitUntil(elevatorArm::reachedSetpoint),
-    //             canal.stop(),
-    //             elevatorArm.setSetpoint(Setpoint.kArmHover)));
-    codriverXbox
-        .x()
-        .onTrue(
-            Commands.sequence(
-                canal.intake(),
-                Commands.waitUntil(canal::gamePieceDetected),
-                Commands.parallel(
-                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                    canal.slow()),
-                Commands.waitSeconds(0.5),
-                Commands.parallel(elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
-                Commands.waitUntil(elevatorArm::reachedSetpoint),
-                elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                Commands.waitUntil(elevatorArm::reachedSetpoint),
-                canal.stop(),
-                elevatorArm.setSetpoint(Setpoint.kArmHover)));
-    codriverXbox
-        .start()
         .whileTrue(
-            Commands.sequence(
-                elevatorArm.setElevatorResetSpeed(),
-                Commands.waitSeconds(1),
-                Commands.waitUntil(elevatorArm::elevatorStalled),
-                Commands.waitSeconds(0.25),
-                elevatorArm.resetElevatorEncoder(),
-                rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION)));
-    codriverXbox
-        .leftBumper()
-        .onTrue(
-            Commands.sequence(
-                elevatorArm.setSetpoint(Setpoint.kArmIdle),
-                Commands.waitUntil(elevatorArm::reachedSetpoint),
-                elevatorArm.setSetpoint(Setpoint.kElevatorIdle)));
-    codriverXbox
+            Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT)));
+    driverXbox
         .rightBumper()
-        .onTrue(
-            Commands.sequence(
-                elevatorArm.setSetpoint(Setpoint.kPushArm),
-                Commands.waitUntil(elevatorArm::reachedSetpoint),
-                elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                Commands.waitUntil(elevatorArm::reachedSetpoint),
-                elevatorArm.setSetpoint(Setpoint.kArmHover)));
-    codriverXbox
-        .leftTrigger()
-        .onTrue(
-            Commands.either(
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmL2)),
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kPushArm),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmL2)),
-                () -> elevatorArm.armSetpointComparison()));
-    codriverXbox
-        .rightTrigger()
-        .onTrue(
-            Commands.either(
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kPushArm),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmL3)),
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kPushArm),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmL3)),
-                () -> elevatorArm.armSetpointComparison()));
+        .whileTrue(
+            Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT)));
+
+    codriverXbox.a().onTrue(Commands.none());
+    codriverXbox.x().onTrue(Commands.none());
+    codriverXbox.b().onTrue(Commands.none());
+    codriverXbox.y().onTrue(Commands.none());
+    codriverXbox.start().onTrue(Commands.none());
+    codriverXbox.back().onTrue(Commands.none());
+    codriverXbox.leftBumper().onTrue(Commands.none());
+    codriverXbox.rightBumper().onTrue(Commands.none());
+    codriverXbox.leftTrigger().onTrue(Commands.none());
+    codriverXbox.rightTrigger().onTrue(Commands.none());
 
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation()

@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.9975,
-        "y": 5.195
+        "x": 4.00725,
+        "y": 5.302249999999999
       },
       "prevControl": {
-        "x": 3.8392802316744743,
-        "y": 5.388562664041951
+        "x": 3.8490302316744742,
+        "y": 5.495812664041949
       },
       "nextControl": null,
       "isLocked": false,
@@ -35,14 +35,14 @@
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 2.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxAngularVelocity": 5400.0,
+    "maxAngularAcceleration": 7200.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -57.20046872738086
+    "rotation": -57.200468727380866
   },
   "reversed": false,
   "folder": "2 coral paths",

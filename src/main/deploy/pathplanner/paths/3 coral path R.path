@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9975,
-        "y": 5.195
+        "x": 4.00725,
+        "y": 5.302249999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.209999749312794,
-        "y": 5.063303923589198
+        "x": 4.403727789776711,
+        "y": 4.937879114678305
       },
       "isLocked": false,
       "linkedName": "PATHS_R_POINT_2"
     },
     {
       "anchor": {
-        "x": 1.6575,
-        "y": 7.42775
+        "x": 1.72575,
+        "y": 7.379
       },
       "prevControl": {
-        "x": 1.4855523832161572,
-        "y": 7.6092273183688715
+        "x": 1.5330542107703908,
+        "y": 7.538274394719233
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PATHS_R_POINT_3"
+      "linkedName": "PATHS_R_POINT_1"
     }
   ],
   "rotationTargets": [],
@@ -35,20 +35,20 @@
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 2.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxAngularVelocity": 5400.0,
+    "maxAngularAcceleration": 7200.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.46232220802559
+    "rotation": -48.65222278030626
   },
   "reversed": false,
   "folder": "3 coral paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -57.20046872738086
+    "rotation": -57.200468727380866
   },
   "useDefaultConstraints": true
 }

@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.4722500000000003,
-        "y": 0.6417499999999996
+        "x": 1.6621268593067686,
+        "y": 0.6511015113264181
       },
       "prevControl": {
-        "x": 0.695745923171398,
-        "y": 0.1681538618995631
+        "x": 0.8856227824781664,
+        "y": 0.17750537322598164
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PATHS_A_POINT_4"
+      "linkedName": "PATHS_A_POINT_2"
     }
   ],
   "rotationTargets": [],
@@ -35,14 +35,14 @@
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 2.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxAngularVelocity": 5400.0,
+    "maxAngularAcceleration": 7200.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 50.135373961252064
+    "rotation": 53.16545920219069
   },
   "reversed": false,
   "folder": "3 coral paths",
