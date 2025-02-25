@@ -122,7 +122,7 @@ public final class Constants {
     public static final double ELEVATOR_TOLERANCE = 0.1;
     public static final double ELEVATOR_SLOW_DOWN_SPEED = -0.05;
     public static final double ELEVATOR_STALL_VELOCITY = 0.1;
-    public static final int ELEVATOR_STOP_SPEED = 0;
+    public static final double ELEVATOR_STOP_SPEED = 0;
   }
 
   public static final class ArmConstants {
