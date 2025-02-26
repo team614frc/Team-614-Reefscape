@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
@@ -17,6 +18,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
@@ -36,6 +38,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import limelight.networktables.PoseEstimate;
+import limelight.networktables.AngularVelocity3d;
+import limelight.networktables.Orientation3d;
 import limelight.networktables.PoseEstimate;
 import limelight.networktables.AngularVelocity3d;
 import limelight.networktables.Orientation3d;
@@ -368,6 +373,10 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public ChassisSpeeds getRobotVelocity() {
     return swerveDrive.getRobotVelocity();
+  }
+  
+  public Orientation3d getOrientation3d() {
+    return (new Orientation3d(SwerveDrive.getGyro().getRotation3d(), new AngularVelocity3d(DegreesPerSecond.of(0), DegreesPerSecond.of(0), SwerveDrive.getGyro().getYawAngularVelocity())));
   }
 
   public void addVisionReading(Pose2d pose2d) {
