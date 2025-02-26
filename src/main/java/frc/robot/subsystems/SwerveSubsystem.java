@@ -376,7 +376,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
   
   public Orientation3d getOrientation3d() {
-    return (new Orientation3d(SwerveDrive.getGyro().getRotation3d(), new AngularVelocity3d(DegreesPerSecond.of(0), DegreesPerSecond.of(0), SwerveDrive.getGyro().getYawAngularVelocity())));
+    return (new Orientation3d(swerveDrive.getGyroRotation3d(), new AngularVelocity3d(DegreesPerSecond.of(0), DegreesPerSecond.of(0), swerveDrive.getGyro().getYawAngularVelocity())));
   }
 
   public void addVisionReading(Pose2d pose2d) {
@@ -417,10 +417,6 @@ public class SwerveSubsystem extends SubsystemBase {
             addVisionReading(poseEstimate.pose.toPose2d());
           }
         });
-  }
-
-  public Orientation3d getOrientation3d() {
-    return new Orientation3d(swerveDrive.getGyroRotation3d(),new AngularVelocity3d(null, null, swerveDrive.getGyro().getYawAngularVelocity()));
   }
   
   public int findReefID() {
