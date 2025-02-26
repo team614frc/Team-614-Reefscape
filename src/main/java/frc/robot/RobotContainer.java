@@ -21,8 +21,6 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.IntakePivotSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
@@ -35,8 +33,8 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final IntakeSubsystem intake = new IntakeSubsystem();
-  private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
+  //   private final IntakeSubsystem intake = new IntakeSubsystem();
+  //   private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
   private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
   private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
@@ -232,17 +230,17 @@ public class RobotContainer {
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
     driverXbox.a().whileTrue(climber.reverseClimb());
-    driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
-    driverXbox.x().whileTrue(intake.intakeGamepiece());
-    driverXbox
-        .leftTrigger()
-        .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
-        .onFalse(intakePivot.pivotIdle());
-    driverXbox.rightTrigger().whileTrue(intake.outtakeGamepiece());
-    driverXbox
-        .leftBumper()
-        .whileTrue(Commands.parallel(intakePivot.pivotAlgae(), intake.outtakeGamepiece()))
-        .onFalse(intakePivot.pivotIdle());
+    // driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
+    // driverXbox.x().whileTrue(intake.intakeGamepiece());
+    // driverXbox
+    //     .leftTrigger()
+    //     .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
+    //     .onFalse(intakePivot.pivotIdle());
+    // driverXbox.rightTrigger().whileTrue(intake.outtakeGamepiece());
+    // driverXbox
+    //     .leftBumper()
+    //     .whileTrue(Commands.parallel(intakePivot.pivotAlgae(), intake.outtakeGamepiece()))
+    //     .onFalse(intakePivot.pivotIdle());
     driverXbox
         .rightBumper()
         .onTrue(
