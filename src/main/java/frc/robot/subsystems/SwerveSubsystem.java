@@ -103,7 +103,7 @@ public class SwerveSubsystem extends SubsystemBase {
             driveCfg,
             controllerCfg,
             Constants.MAX_SPEED.in(MetersPerSecond),
-            new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
+            new Pose2d(new Translation2d(Meter.of(1), Meter.of(4)), Rotation2d.fromDegrees(0)));
     // limelight = new LimelightSubsystem();
   }
 
