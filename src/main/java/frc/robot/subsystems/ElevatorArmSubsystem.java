@@ -13,10 +13,8 @@ import static edu.wpi.first.units.Units.Seconds;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -24,6 +22,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -32,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ArmConstants;
@@ -40,27 +40,45 @@ import frc.robot.Constants.SimulationRobotConstants;
 
 public class ElevatorArmSubsystem extends SubsystemBase {
   public enum Setpoint {
+    kArmIdle,
+    kElevatorIdle,
+    kArmHover,
+    kElevatorHover,
     kHover,
     kIntake,
     kIdleSetpoint,
     kL1,
     kL2,
+    kArmL2,
+    kElevatorL2,
+    kArmL3,
+    kElevatorL3,
     kL3,
-    kL4;
+    kL4,
+    kPushArm,
+    kScoreArm,
+    kElevatorOuttake;
   }
 
   // Elevator Motor
   private SparkFlex elevatorMotor =
       new SparkFlex(ElevatorConstants.ELEVATOR_MOTOR, MotorType.kBrushless);
-  private SparkClosedLoopController elevatorClosedLoopController =
-      elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
+
+  private final ProfiledPIDController elevatorPid =
+      new ProfiledPIDController(
+          ElevatorConstants.kP,
+          ElevatorConstants.kI,
+          ElevatorConstants.kD,
+          new TrapezoidProfile.Constraints(
+              ElevatorConstants.ELEVATOR_MAX_VELOCITY,
+              ElevatorConstants.ELEVATOR_MAX_ACCELERATION));
 
   // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
-  private final SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
+  private SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
 
-  private final ProfiledPIDController pid =
+  private final ProfiledPIDController armPid =
       new ProfiledPIDController(
           ArmConstants.kP,
           ArmConstants.kI,
@@ -74,7 +92,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   // Default Current Target
   private double elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
-  private double armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
+  private double armSetpoint = ArmConstants.ARM_START_SETPOINT;
 
   // Simulation setup and variables
   private DCMotor elevatorMotorModel =
@@ -146,7 +164,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    // Resets elevator encoder position to 0
     elevatorEncoder.setPosition(0);
 
     // Display mechanism2d
@@ -167,6 +184,41 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     return Units.rotationsToRadians(armEncoder.getPosition());
   }
 
+  private double getElevatorPosition() {
+    return elevatorEncoder.getPosition();
+  }
+
+  public Command setElevatorResetSpeed() {
+    return Commands.runEnd(
+        () -> {
+          elevatorMotor.set(ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED);
+        },
+        () -> {
+          elevatorMotor.set(ElevatorConstants.ELEVATOR_STOP_SPEED);
+        });
+  }
+
+  public boolean elevatorStalled() {
+    return Math.abs(elevatorEncoder.getVelocity()) < ElevatorConstants.ELEVATOR_STALL_VELOCITY
+        && elevatorMotor.get() == ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED;
+  }
+
+  public boolean armSetpointComparison() {
+    return armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET;
+  }
+
+  public boolean checkL3() {
+    return armSetpoint == ArmConstants.ARM_L3_SETPOINT
+        && elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
+  }
+
+  public Command resetElevatorEncoder() {
+    return Commands.runOnce(
+        () -> {
+          elevatorEncoder.setPosition(0);
+        });
+  }
+
   /**
    * Drive the arm and elevator motors to their respective setpoints. The elevator will use REV
    * MAXMotion position control which will allow for a smooth acceleration and deceleration of the
@@ -175,16 +227,17 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   private void moveToSetpoint() {
     double armFeedforwardVoltage =
         armFeedforward.calculate(
-            pid.getSetpoint().position
+            armPid.getSetpoint().position
                 - Units.rotationsToRadians(ArmConstants.ARM_FEEDFORWARD_OFFSET),
-            pid.getSetpoint().velocity);
-    SmartDashboard.putNumber("Arm Feed Forward", armFeedforwardVoltage);
+            armPid.getSetpoint().velocity);
 
-    double pidOutput = pid.calculate(getArmAngleRadians(), Units.rotationsToRadians(armSetpoint));
+    double armPidOutput =
+        armPid.calculate(getArmAngleRadians(), Units.rotationsToRadians(armSetpoint));
+    double elevatorPidOutput = elevatorPid.calculate(getElevatorPosition(), elevatorSetpoint);
 
-    armMotor.setVoltage(pidOutput + armFeedforwardVoltage);
+    armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
 
-    elevatorClosedLoopController.setReference(elevatorSetpoint, ControlType.kPosition);
+    elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
   }
 
   /**
@@ -195,6 +248,17 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     return this.runOnce(
         () -> {
           switch (setpoint) {
+            case kArmIdle:
+              armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
+              break;
+            case kElevatorIdle:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
+              break;
+            case kArmHover:
+              armSetpoint = ArmConstants.ARM_HOVER_SETPOINT;
+              break;
+            case kElevatorHover:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
             case kHover:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
               armSetpoint = ArmConstants.ARM_HOVER_SETPOINT;
@@ -204,7 +268,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               armSetpoint = ArmConstants.ARM_INTAKE_SETPOINT;
               break;
             case kIdleSetpoint:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_SETPOINT;
               armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
               break;
             case kL1:
@@ -215,13 +279,34 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_SETPOINT;
               armSetpoint = ArmConstants.ARM_L2_SETPOINT;
               break;
+            case kElevatorL2:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_SETPOINT;
+              break;
+            case kArmL2:
+              armSetpoint = ArmConstants.ARM_L2_SETPOINT;
+              break;
             case kL3:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
+              armSetpoint = ArmConstants.ARM_L3_SETPOINT;
+              break;
+            case kElevatorL3:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
+              break;
+            case kArmL3:
               armSetpoint = ArmConstants.ARM_L3_SETPOINT;
               break;
             case kL4:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_L4_SETPOINT;
               armSetpoint = ArmConstants.ARM_L4_SETPOINT;
+              break;
+            case kPushArm:
+              armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
+              break;
+            case kScoreArm:
+              armSetpoint = ArmConstants.ARM_SCORE_SETPOINT;
+              break;
+            case kElevatorOuttake:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_OUTTAKE_SETPOINT;
               break;
           }
         });
@@ -229,32 +314,37 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     moveToSetpoint();
+
     // Display subsystem values
     SmartDashboard.putNumber("Arm Target Position", armSetpoint);
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Target Position", elevatorSetpoint);
     SmartDashboard.putNumber("Elevator Actual Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator Output", elevatorMotor.get());
+    SmartDashboard.putBoolean("Elevator Stalled", elevatorStalled());
+    SmartDashboard.putNumber("Elevator Velocity", elevatorEncoder.getVelocity());
 
-    // Update mechanism2d
-    elevatorMech2d.setLength(
-        SimulationRobotConstants.PIXELS_PER_METER
-                * SimulationRobotConstants.MIN_ELEVATOR_HEIGHT.in(Meter)
-            + SimulationRobotConstants.PIXELS_PER_METER
-                * (elevatorEncoder.getPosition() / SimulationRobotConstants.ELEVATOR_GEARING)
-                * (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter)
-                    * SimulationRobotConstants.DRUM_CIRCUMFERENCE.in(Meter)
-                    * Math.PI));
-    armMech2d.setAngle(
-        ElevatorConstants.ELEVATOR_STARTING_ANGLE.in(Degrees)
-            - ( // mirror the angles so they display in the correct direction
-            Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS)
-                + Units.rotationsToDegrees(
-                    armEncoder.getPosition() / SimulationRobotConstants.ARM_REDUCTION))
-            - SimulationRobotConstants.ELEVATOR_ACCOUNT.in(
-                Degrees) // subtract 90 degrees to account for the elevator
-        );
+    if (RobotBase.isSimulation()) {
+      // Update mechanism2d
+      elevatorMech2d.setLength(
+          SimulationRobotConstants.PIXELS_PER_METER
+                  * SimulationRobotConstants.MIN_ELEVATOR_HEIGHT.in(Meter)
+              + SimulationRobotConstants.PIXELS_PER_METER
+                  * (elevatorEncoder.getPosition() / SimulationRobotConstants.ELEVATOR_GEARING)
+                  * (SimulationRobotConstants.ELEVATOR_DRUM_RADIUS.in(Meter)
+                      * SimulationRobotConstants.DRUM_CIRCUMFERENCE.in(Meter)
+                      * Math.PI));
+      armMech2d.setAngle(
+          ElevatorConstants.ELEVATOR_SIM_STARTING_ANGLE.in(Degrees)
+              - ( // mirror the angles so they display in the correct direction
+              Units.radiansToDegrees(SimulationRobotConstants.MIN_ANGLE_RADS)
+                  + Units.rotationsToDegrees(
+                      armEncoder.getPosition() / SimulationRobotConstants.ARM_REDUCTION))
+              - SimulationRobotConstants.ELEVATOR_ACCOUNT.in(
+                  Degrees) // subtract 90 degrees to account for the elevator
+          );
+    }
   }
 
   // /** Get the current drawn by each simulation physics model */

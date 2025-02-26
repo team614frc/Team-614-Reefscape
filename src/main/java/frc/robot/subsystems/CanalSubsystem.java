@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -21,6 +22,7 @@ public class CanalSubsystem extends SubsystemBase {
       new SparkFlex(CanalConstants.CANAL_MOTOR, MotorType.kBrushless);
 
   private final LaserCan laserCan = new LaserCan(5);
+  private LaserCan.Measurement distance;
 
   /** Creates a new CanalSubsystem. */
   public CanalSubsystem() {
@@ -28,25 +30,31 @@ public class CanalSubsystem extends SubsystemBase {
         Configs.CanalConfig.CANAL_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+
+    // Initialize LaserCan settings
+    try {
+      laserCan.setRangingMode(LaserCan.RangingMode.SHORT);
+      laserCan.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
+      laserCan.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
+    } catch (ConfigurationFailedException e) {
+      System.out.println("Configuration failed! " + e);
+    }
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     super.periodic();
 
-    SmartDashboard.putNumber("Canal Motor Output", canalMotor.get());
+    distance = laserCan.getMeasurement();
 
-    LaserCan.Measurement measurement = laserCan.getMeasurement();
-
-    if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-      System.out.println("The target is " + measurement.distance_mm + "mm away!");
+    if (distance != null) {
+      SmartDashboard.putNumber("LaserCAN Distance", distance.distance_mm);
     } else {
-      System.out.println(
-          "Oh no! The target is out of range, or we can't get a reliable measurement!");
-      // You can still use distance_mm in here, if you're ok tolerating a clamped value or an
-      // unreliable measurement.
+      SmartDashboard.putString("LaserCAN Distance", "No Data");
     }
+
+    SmartDashboard.putNumber("Canal Motor Output", canalMotor.get());
+    SmartDashboard.putBoolean("Game Piece Detection", gamePieceDetected());
   }
 
   public void set(double speed) {
@@ -58,12 +66,17 @@ public class CanalSubsystem extends SubsystemBase {
   }
 
   public Command intake() {
-    return Commands.runEnd(
+    return Commands.runOnce(
         () -> {
           set(CanalConstants.INTAKE_SPEED);
         },
+        this);
+  }
+
+  public Command slow() {
+    return Commands.runOnce(
         () -> {
-          set(CanalConstants.INTAKE_REST_SPEED);
+          set(CanalConstants.CANAL_SLOW_SPEED);
         });
   }
 
@@ -75,5 +88,18 @@ public class CanalSubsystem extends SubsystemBase {
         () -> {
           set(CanalConstants.OUTTAKE_REST_SPEED);
         });
+  }
+
+  public Command stop() {
+    return Commands.runOnce(
+        () -> {
+          set(CanalConstants.CANAL_REST_SPEED);
+        });
+  }
+
+  public boolean gamePieceDetected() {
+    return (distance != null
+        && distance.distance_mm < CanalConstants.LASER_MAX_DISTANCE
+        && distance.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
   }
 }
