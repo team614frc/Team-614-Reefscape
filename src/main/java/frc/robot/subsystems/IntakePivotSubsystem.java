@@ -25,6 +25,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
       new SparkFlex(IntakeConstants.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
   private RelativeEncoder intakePivotEncoder = intakePivotMotor.getEncoder();
 
+  private double pivotSetpoint = IntakeConstants.PIVOT_UP;
+
   private final ProfiledPIDController pid =
       new ProfiledPIDController(
           IntakeConstants.PIVOT_kP,
@@ -48,7 +50,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
         PersistMode.kPersistParameters);
 
     intakePivotEncoder.setPosition(0);
-    pid.setGoal(0.05);
   }
 
   @Override
@@ -65,7 +66,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
     return Units.rotationsToRadians(intakePivotEncoder.getPosition());
   }
 
-  public void pivotPIDControl() {
+  private void pivotPIDControl() {
     double armFeedforwardVoltage =
         feedforward.calculate(
             pid.getSetpoint().position
@@ -73,9 +74,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
             pid.getSetpoint().velocity);
     SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", armFeedforwardVoltage);
 
-    double pidOutput = pid.calculate(getArmAngleRadians(), pid.getGoal());
+    double pidOutput = pid.calculate(getArmAngleRadians(), Units.rotationsToRadians(pivotSetpoint));
 
-    intakePivotMotor.setVoltage(pidOutput + armFeedforwardVoltage);
+    // intakePivotMotor.setVoltage(pidOutput + armFeedforwardVoltage);
   }
 
   public Command pivotDown() {

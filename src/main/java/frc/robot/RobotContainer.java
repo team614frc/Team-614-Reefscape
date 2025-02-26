@@ -109,7 +109,7 @@ public class RobotContainer {
       Commands.either(
           Commands.sequence(
               endEffector.outtake(),
-              elevatorArm.setSetpoint(Setpoint.kScoreArm),
+              elevatorArm.setSetpoint(Setpoint.kScoreL3Arm),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmL3),
               elevatorArm.setSetpoint(Setpoint.kElevatorOuttake),
@@ -119,7 +119,7 @@ public class RobotContainer {
               endEffector.stop()),
           Commands.sequence(
               endEffector.outtake(),
-              elevatorArm.setSetpoint(Setpoint.kScoreArm),
+              elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmL2),
               elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
@@ -241,22 +241,25 @@ public class RobotContainer {
             Commands.either(
                 Commands.sequence(
                     endEffector.outtake(),
-                    elevatorArm.setSetpoint(Setpoint.kScoreArm),
+                    elevatorArm.setSetpoint(Setpoint.kScoreL3Arm),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL3),
                     elevatorArm.setSetpoint(Setpoint.kElevatorOuttake),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
                     elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     endEffector.stop()),
                 Commands.sequence(
+                    elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     endEffector.outtake(),
-                    elevatorArm.setSetpoint(Setpoint.kScoreArm),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL2),
                     elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     endEffector.stop()),
                 () -> elevatorArm.checkL3()));
     codriverXbox.a().onTrue(intakePivot.pivotDown());

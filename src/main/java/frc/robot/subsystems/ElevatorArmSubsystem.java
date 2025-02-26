@@ -56,7 +56,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kL3,
     kL4,
     kPushArm,
-    kScoreArm,
+    kScoreL3Arm,
+    kScoreL2Arm,
     kElevatorOuttake;
   }
 
@@ -235,9 +236,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         armPid.calculate(getArmAngleRadians(), Units.rotationsToRadians(armSetpoint));
     double elevatorPidOutput = elevatorPid.calculate(getElevatorPosition(), elevatorSetpoint);
 
-    // armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
+    armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
 
-    // elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
+    elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
   }
 
   /**
@@ -302,8 +303,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             case kPushArm:
               armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
               break;
-            case kScoreArm:
-              armSetpoint = ArmConstants.ARM_SCORE_SETPOINT;
+            case kScoreL3Arm:
+              armSetpoint = ArmConstants.ARM_L3SCORE_SETPOINT;
+              break;
+            case kScoreL2Arm:
+              armSetpoint = ArmConstants.ARM_L2SCORE_SETPOINT;
               break;
             case kElevatorOuttake:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_OUTTAKE_SETPOINT;
