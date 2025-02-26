@@ -52,32 +52,43 @@ public class IntakePivotSubsystem extends SubsystemBase {
     intakePivotEncoder.setPosition(0);
   }
 
+  private double getArmAngleRadians() {
+    return intakePivotEncoder.getPosition();
+  }
+
   @Override
   public void periodic() {
-    pivotPIDControl();
+    // pivotPIDControl();
 
-    SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
-    SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
-    SmartDashboard.putNumber(
-        "Pivot Position Radians", Units.rotationsToRadians(intakePivotEncoder.getPosition()));
-  }
-
-  private double getArmAngleRadians() {
-    return Units.rotationsToRadians(intakePivotEncoder.getPosition());
-  }
-
-  private void pivotPIDControl() {
     double armFeedforwardVoltage =
         feedforward.calculate(
             pid.getSetpoint().position
-                - Units.rotationsToRadians(IntakeConstants.PIVOT_FEEDFORWARD_OFFSET),
+                - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET,
             pid.getSetpoint().velocity);
-    SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", armFeedforwardVoltage);
+    SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", pivotSetpoint);
 
-    double pidOutput = pid.calculate(getArmAngleRadians(), Units.rotationsToRadians(pivotSetpoint));
+    double pidOutput = pid.calculate(getArmAngleRadians(), pivotSetpoint);
 
-    // intakePivotMotor.setVoltage(pidOutput + armFeedforwardVoltage);
+    intakePivotMotor.setVoltage(pidOutput + armFeedforwardVoltage);
+
+    SmartDashboard.putNumber("Get Setpoint", pid.getSetpoint().position);
+    SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
+    SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
   }
+
+
+  // private void pivotPIDControl() {
+  //   // double armFeedforwardVoltage =
+  //   //     feedforward.calculate(
+  //   //         pid.getSetpoint().position
+  //   //             - Units.rotationsToRadians(IntakeConstants.PIVOT_FEEDFORWARD_OFFSET),
+  //   //         pid.getSetpoint().velocity);
+  //   // SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", pid.getGoal().position);
+
+  //   double pidOutput = pid.calculate(getArmAngleRadians(), pid.getGoal());
+
+  //   // intakePivotMotor.setVoltage(pidOutput + armFeedforwardVoltage);
+  // }
 
   public Command pivotDown() {
     return Commands.runOnce(
@@ -96,7 +107,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
   public Command pivotAlgae() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(IntakeConstants.PIVOT_ALGAE);
+          pid.setGoal(Units.rotationsToRadians(IntakeConstants.PIVOT_ALGAE));
         });
   }
 }

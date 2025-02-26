@@ -213,6 +213,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         && elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
   }
 
+  public boolean checkHover() {
+    return armSetpoint == ArmConstants.ARM_HOVER_SETPOINT
+        && elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
+  }
+
   public Command resetElevatorEncoder() {
     return Commands.runOnce(
         () -> {
@@ -236,9 +241,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         armPid.calculate(getArmAngleRadians(), Units.rotationsToRadians(armSetpoint));
     double elevatorPidOutput = elevatorPid.calculate(getElevatorPosition(), elevatorSetpoint);
 
-    armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
+    // armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
 
-    elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
+    // elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
   }
 
   /**
