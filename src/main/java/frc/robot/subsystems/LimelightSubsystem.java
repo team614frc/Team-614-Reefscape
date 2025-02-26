@@ -9,12 +9,13 @@ import limelight.networktables.*;
 import limelight.networktables.LimelightSettings.LEDMode;
 
 public class LimelightSubsystem extends SubsystemBase {
-  private final Limelight limelight = new Limelight("limelight-april");
+  private Limelight limelight;
 
   private LimelightPoseEstimator poseEstimator;
   private LimelightTargetData limelightTargetData;
 
-  public LimelightSubsystem() {
+  public LimelightSubsystem(String name) {
+    Limelight limelight = new Limelight(name);
     limelight
         .getSettings()
         .withLimelightLEDMode(LEDMode.PipelineControl)

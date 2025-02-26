@@ -36,9 +36,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import limelight.estimator.PoseEstimate;
-import limelight.structures.AngularVelocity3d;
-import limelight.structures.Orientation3d;
+import limelight.networktables.PoseEstimate;
+import limelight.networktables.AngularVelocity3d;
+import limelight.networktables.Orientation3d;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -53,7 +53,9 @@ public class SwerveSubsystem extends SubsystemBase {
   /** Swerve drive object. */
   private final SwerveDrive swerveDrive;
 
-  // private final LimelightSubsystem limelight;
+  private LimelightSubsystem limelightFront;
+
+  private LimelightSubsystem limelightBack;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -74,6 +76,11 @@ public class SwerveSubsystem extends SubsystemBase {
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
       // angleConversionFactor, driveConversionFactor);
+      if(Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT)
+      limelightFront = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_FRONT_NAME);
+      if(Constants.DrivebaseConstants.USE_LIMELIGHT_BACK)
+      limelightBack = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_BACK_NAME);
+
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -369,7 +376,17 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    limelight.updateSettings(getOrientation3d());
+    if(Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT)
+    {
+    limelightFront.updateSettings(getOrientation3d());
+    updatePosition(limelightFront.getVisionEstimate());
+    }
+    if(Constants.DrivebaseConstants.USE_LIMELIGHT_BACK)
+    {
+      limelightBack.updateSettings(getOrientation3d());
+      updatePosition(limelightBack.getVisionEstimate());
+
+    }
     SmartDashboard.putNumber("Closest AprilTagID", findReefID());
     // updatePosition(limelight.getVisionEstimate());
     SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
@@ -393,6 +410,10 @@ public class SwerveSubsystem extends SubsystemBase {
         });
   }
 
+  public Orientation3d getOrientation3d() {
+    return new Orientation3d(swerveDrive.getGyroRotation3d(),new AngularVelocity3d(null, null, swerveDrive.getGyro().getYawAngularVelocity()));
+  }
+  
   public int findReefID() {
     Optional<Alliance> ally = DriverStation.getAlliance();
     int index;
