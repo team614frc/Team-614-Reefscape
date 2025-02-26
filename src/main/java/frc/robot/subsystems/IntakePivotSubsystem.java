@@ -65,7 +65,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
             pid.getSetpoint().position
                 - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET,
             pid.getSetpoint().velocity);
-    SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", pivotSetpoint);
+    SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", armFeedforwardVoltage);
 
     double pidOutput = pid.calculate(getArmAngleRadians(), pivotSetpoint);
 
@@ -93,21 +93,21 @@ public class IntakePivotSubsystem extends SubsystemBase {
   public Command pivotDown() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(Units.rotationsToRadians(IntakeConstants.PIVOT_DOWN));
+          pivotSetpoint = IntakeConstants.PIVOT_DOWN;
         });
   }
 
   public Command pivotIdle() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(Units.rotationsToRadians(IntakeConstants.PIVOT_UP));
+          pivotSetpoint = IntakeConstants.PIVOT_UP;
         });
   }
 
   public Command pivotAlgae() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(Units.rotationsToRadians(IntakeConstants.PIVOT_ALGAE));
+          pivotSetpoint = IntakeConstants.PIVOT_ALGAE;
         });
   }
 }
