@@ -9,6 +9,12 @@
           "data": {
             "pathName": "Branch Left FrontLeft Side"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L2"
+          }
         }
       ]
     }
