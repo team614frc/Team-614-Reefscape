@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1 coral path L1"
+            "pathName": "FRONT_#1"
           }
         },
         {
@@ -20,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Front",
   "choreoAuto": false
 }

@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Branch Left FrontRight Side"
+                  "pathName": "FRONT_RIGHT_#1"
                 }
               },
               {
@@ -33,6 +33,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "FrontRight",
   "choreoAuto": false
 }
