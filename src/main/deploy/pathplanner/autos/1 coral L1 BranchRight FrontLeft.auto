@@ -5,19 +5,13 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "autoOuttakeCoral"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Branch Left FrontLeft Side"
+                  "pathName": "Branch Right FrontRight Side"
                 }
               },
               {
@@ -27,6 +21,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoOuttakeCoral"
           }
         }
       ]
