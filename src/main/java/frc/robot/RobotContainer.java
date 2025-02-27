@@ -208,8 +208,6 @@ public class RobotContainer {
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-    // NamedCommands.registerCommand("intakeCoral", intakeAndPivot());
-    // NamedCommands.registerCommand("outtakeCoral", outtakeCoral());
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putString("Maven Name", BuildConstants.MAVEN_NAME);
     SmartDashboard.putString("Version", BuildConstants.VERSION);
