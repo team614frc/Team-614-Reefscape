@@ -88,12 +88,6 @@ public class SwerveSubsystem extends SubsystemBase {
     // limelight = new LimelightSubsystem();
   }
 
-  /**
-   * Construct the swerve drive.
-   *
-   * @param driveCfg SwerveDriveConfiguration for the swerve.
-   * @param controllerCfg Swerve Controller.
-   */
   @Override
   public void simulationPeriodic() {}
 
