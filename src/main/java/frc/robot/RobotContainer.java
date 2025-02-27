@@ -145,10 +145,8 @@ public class RobotContainer {
           canal.stop(),
           elevatorArm.setSetpoint(Setpoint.kArmHover));
 
-  private final Command autoL1Outtake = Commands.sequence(
-    intake.outtakeGamepiece(),
-    Commands.waitSeconds(0.25),
-    intake.stopIntake());
+  private final Command autoL1Outtake =
+      Commands.sequence(intake.outtakeGamepiece(), Commands.waitSeconds(0.25), intake.stopIntake());
 
   private final Command autoL2 =
       Commands.either(
