@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.762,
-  "robotLength": 0.8255,
+  "robotWidth": 0.95,
+  "robotLength": 0.95,
   "holonomicMode": true,
   "pathFolders": [
     "1 coral paths",
@@ -15,8 +15,8 @@
     "optimized left autos",
     "right autos"
   ],
-  "defaultMaxVel": 5.0,
-  "defaultMaxAccel": 5.0,
+  "defaultMaxVel": 0.5,
+  "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 5400.0,
   "defaultMaxAngAccel": 7200.0,
   "defaultNominalVoltage": 12.0,

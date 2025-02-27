@@ -21,6 +21,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
@@ -33,7 +34,7 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  //   private final IntakeSubsystem intake = new IntakeSubsystem();
+  private final IntakeSubsystem intake = new IntakeSubsystem();
   //   private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
   private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
   private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
@@ -144,6 +145,11 @@ public class RobotContainer {
           canal.stop(),
           elevatorArm.setSetpoint(Setpoint.kArmHover));
 
+  private final Command autoL1Outtake = Commands.sequence(
+    intake.outtakeGamepiece(),
+    Commands.waitSeconds(0.25),
+    intake.stopIntake());
+
   private final Command autoL2 =
       Commands.either(
           Commands.sequence(
@@ -192,6 +198,7 @@ public class RobotContainer {
 
     // canal.setDefaultCommand(canal.intake());
 
+    NamedCommands.registerCommand("L1", autoL1Outtake);
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("Canal Intake", autoIntake);
