@@ -207,6 +207,12 @@ public class RobotContainer {
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putNumber("Git Revision", BuildConstants.GIT_REVISION);
+    SmartDashboard.putString("Git Sha", BuildConstants.GIT_SHA);
+    SmartDashboard.putString("Git Date", BuildConstants.GIT_DATE);
+    SmartDashboard.putString("Git Branch", BuildConstants.GIT_BRANCH);
+    SmartDashboard.putString("Build Date", BuildConstants.BUILD_DATE);
+    SmartDashboard.putString("Version", BuildConstants.VERSION);
   }
 
   /**
