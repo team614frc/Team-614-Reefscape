@@ -55,20 +55,24 @@ public class IntakePivotSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // pivotPIDControl();
-
-    double pidOutput = pid.calculate(intakePivotEncoder.getPosition(), pivotSetpoint);
-
     double armFeedforwardVoltage =
         feedforward.calculate(
-            Units.rotationsToRadians(pid.getSetpoint().position) + Units.rotationsToRadians(IntakeConstants.PIVOT_FEEDFORWARD_OFFSET),
+            (pid.getSetpoint().position - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET) * 0.254,
             pid.getSetpoint().velocity);
-    SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", armFeedforwardVoltage);
 
-    intakePivotMotor.setVoltage(pidOutput + armFeedforwardVoltage);
+    double armPidOutput =
+        pid.calculate(
+            Units.rotationsToRadians(intakePivotEncoder.getPosition()),
+            Units.rotationsToRadians(pivotSetpoint));
+
+    intakePivotMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
+
+    // System.out.println(armFeedforwardVoltage);
 
     SmartDashboard.putNumber("Get Setpoint", pid.getSetpoint().position);
     SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
     SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot FF", armFeedforwardVoltage);
   }
 
   // private void pivotPIDControl() {
