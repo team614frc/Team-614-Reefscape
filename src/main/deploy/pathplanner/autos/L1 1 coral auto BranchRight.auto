@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1 coral path R"
+            "pathName": "Branch Left FrontRight Side"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "2 coral path R"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2 coral path 2 R"
+            "name": "L1"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "right autos",
+  "folder": null,
   "choreoAuto": false
 }

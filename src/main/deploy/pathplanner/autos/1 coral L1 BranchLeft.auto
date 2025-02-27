@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Rotational Test Path"
+            "pathName": "Branch Left FrontLeft Side"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "test autos",
+  "folder": null,
   "choreoAuto": false
 }

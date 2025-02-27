@@ -3,18 +3,9 @@
   "robotLength": 0.95,
   "holonomicMode": true,
   "pathFolders": [
-    "1 coral paths",
-    "2 coral paths",
-    "3 coral paths",
-    "4 coral paths",
-    "Test Paths"
+    "New Folder"
   ],
-  "autoFolders": [
-    "test autos",
-    "left autos",
-    "optimized left autos",
-    "right autos"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 0.5,
   "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 5400.0,
