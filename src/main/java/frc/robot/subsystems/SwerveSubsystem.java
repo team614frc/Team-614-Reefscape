@@ -96,16 +96,6 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param driveCfg SwerveDriveConfiguration for the swerve.
    * @param controllerCfg Swerve Controller.
    */
-  public SwerveSubsystem(
-      SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
-    swerveDrive =
-        new SwerveDrive(
-            driveCfg,
-            controllerCfg,
-            Constants.MAX_SPEED.in(MetersPerSecond),
-            new Pose2d(new Translation2d(Meter.of(1), Meter.of(4)), Rotation2d.fromDegrees(0)));
-    // limelight = new LimelightSubsystem();
-  }
 
   @Override
   public void simulationPeriodic() {}
