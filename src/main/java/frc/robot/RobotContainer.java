@@ -180,6 +180,8 @@ public class RobotContainer {
           elevatorArm.setSetpoint(Setpoint.kArmIdle),
           Commands.waitUntil(elevatorArm::reachedSetpoint),
           elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
+  private final Command L1Outtake = Commands.parallel(intake.outtakeGamepiece());
+  private final Command stopIntake = Commands.parallel(intake.stopIntake());
 
   private final Command driveLeftReef =
       Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT));
@@ -194,6 +196,8 @@ public class RobotContainer {
 
     // canal.setDefaultCommand(canal.intake());
 
+    NamedCommands.registerCommand("L1", L1Outtake);
+    NamedCommands.registerCommand("Stop Ground Intake", stopIntake);
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("Canal Intake", autoIntake);

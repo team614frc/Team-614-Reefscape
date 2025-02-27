@@ -86,6 +86,7 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setModuleEncoderAutoSynchronize(
         false, 1); // Enable if you want to resynchronize your absolute encoders and motor encoders
     // periodically when they are not moving.
+    swerveDrive.setChassisDiscretization(true, 0.02);
     setupPathPlanner();
     // limelight = new LimelightSubsystem();
   }
