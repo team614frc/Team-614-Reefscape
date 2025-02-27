@@ -275,7 +275,22 @@ public class RobotContainer {
     codriverXbox.a().onTrue(intakePivot.pivotDown());
     codriverXbox.b().onTrue(intakePivot.pivotAlgae());
     codriverXbox.y().onTrue(intakePivot.pivotIdle());
-
+    // codriverXbox
+    //     .a()
+    //     .whileTrue(
+    //         Commands.sequence(
+    //             elevatorArm.setSetivotoint(Setpoint.kOuttakeElevatorAlgae),
+    //             Commands.waitUntil(elevatorArm::reachedSetpoint),
+    //             endEffector.punchAlgae(),
+    //             elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));
+    // codriverXbox
+    //     .y()
+    //     .whileTrue(
+    //         Commands.sequence(
+    //             elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+    //             Commands.waitUntil(elevatorArm::reachedSetpoint),
+    //             endEffector.punchAlgae(),
+    //             elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));
     codriverXbox
         .x()
         .onTrue(

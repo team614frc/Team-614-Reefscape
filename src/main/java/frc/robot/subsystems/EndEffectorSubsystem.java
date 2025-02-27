@@ -51,6 +51,16 @@ public class EndEffectorSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> set(EndEffectorConstants.OUTTAKE_SPEED));
   }
 
+  public Command punchAlgae() {
+    return Commands.runEnd(
+        () -> {
+          set(EndEffectorConstants.OUTTAKE_ALGAE);
+        },
+        () -> {
+          set(EndEffectorConstants.OUTTAKE_REST_SPEED);
+        });
+  }
+
   // Command to deactivate the end effector (e.g., stop gripping or releasing)
   public Command stop() {
     return Commands.runOnce(
