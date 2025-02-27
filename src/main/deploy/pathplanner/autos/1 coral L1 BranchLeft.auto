@@ -5,15 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Branch Left FrontLeft Side"
+            "name": "autoOuttakeCoral"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "L2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Branch Left FrontLeft Side"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L2"
+                }
+              }
+            ]
           }
         }
       ]
