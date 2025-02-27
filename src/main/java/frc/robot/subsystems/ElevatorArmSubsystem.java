@@ -243,6 +243,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
     armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
 
+    SmartDashboard.putNumber("Arm FF", armFeedforwardVoltage);
+
     elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
   }
 
@@ -309,10 +311,10 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
               break;
             case kScoreL3Arm:
-              armSetpoint = ArmConstants.ARM_L3SCORE_SETPOINT;
+              armSetpoint = ArmConstants.ARM_L3_SCORE_SETPOINT;
               break;
             case kScoreL2Arm:
-              armSetpoint = ArmConstants.ARM_L2SCORE_SETPOINT;
+              armSetpoint = ArmConstants.ARM_L2_SCORE_SETPOINT;
               break;
             case kElevatorOuttake:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_OUTTAKE_SETPOINT;

@@ -40,9 +40,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
           IntakeConstants.PIVOT_kG,
           IntakeConstants.PIVOT_kV,
           IntakeConstants.PIVOT_kA);
-      
-  private double pivotSetpoint = IntakeConstants.PIVOT_UP;
 
+  private double pivotSetpoint = IntakeConstants.PIVOT_UP;
 
   public IntakePivotSubsystem() {
     intakePivotMotor.configure(
@@ -52,7 +51,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     intakePivotEncoder.setPosition(0);
   }
-  
+
   private double getPivotAngleRadians() {
     return Units.rotationsToRadians(intakePivotEncoder.getPosition());
   }
@@ -60,14 +59,17 @@ public class IntakePivotSubsystem extends SubsystemBase {
   private void pivotPIDControl() {
     double armFeedforwardVoltage =
         feedforward.calculate(
-            pid.getSetpoint().position
-                - Units.rotationsToRadians(IntakeConstants.PIVOT_FEEDFORWARD_OFFSET),
+            (Units.radiansToRotations(pid.getSetpoint().position)
+                    - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET)
+                * 0.254,
             pid.getSetpoint().velocity);
 
     double pivotPidOutput =
         pid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(pivotSetpoint));
 
     intakePivotMotor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
+
+    SmartDashboard.putNumber("Pivot FF", armFeedforwardVoltage);
   }
 
   @Override
