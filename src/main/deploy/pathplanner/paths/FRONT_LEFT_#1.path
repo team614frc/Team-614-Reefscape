@@ -12,7 +12,7 @@
         "y": 2.621297764602555
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "FRONT_LEFT_#0"
     },
     {
       "anchor": {
@@ -48,7 +48,7 @@
   "folder": "FrontLeft",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

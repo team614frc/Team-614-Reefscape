@@ -53,7 +53,7 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
 
-    public static final double PIVOT_kP = 0.6;
+    public static final double PIVOT_kP = 0.4;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0.01;
     public static final double PIVOT_kS = 0;

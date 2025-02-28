@@ -118,7 +118,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kArmIdle),
               endEffector.stop()),
           Commands.sequence(
-              endEffector.outtake(),
+              endEffector.outtake().withTimeout(1),
               elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmL2),
@@ -197,7 +197,7 @@ public class RobotContainer {
 
     // canal.setDefaultCommand(canal.intake());
 
-    NamedCommands.registerCommand("L1", autoL1());
+    NamedCommands.registerCommand("L1", autoL1);
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
