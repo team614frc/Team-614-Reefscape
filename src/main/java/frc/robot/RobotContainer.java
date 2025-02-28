@@ -279,7 +279,7 @@ public class RobotContainer {
     //     .a()
     //     .whileTrue(
     //         Commands.sequence(
-    //             elevatorArm.setSetivotoint(Setpoint.kOuttakeElevatorAlgae),
+    //             elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
     //             Commands.waitUntil(elevatorArm::reachedSetpoint),
     //             endEffector.punchAlgae(),
     //             elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));
