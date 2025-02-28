@@ -53,31 +53,32 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
 
-    public static final double PIVOT_kP = 0.1;
+    public static final double PIVOT_kP = 0.6;
     public static final double PIVOT_kI = 0;
-    public static final double PIVOT_kD = 0;
+    public static final double PIVOT_kD = 0.01;
     public static final double PIVOT_kS = 0;
-    public static final double PIVOT_kG = 0;
+    public static final double PIVOT_kG = 0.5;
     public static final double PIVOT_kV = 0;
     public static final double PIVOT_kA = 0;
     public static final double GEAR_RATIO = 60;
-    public static final double PIVOT_UP = 0;
-    public static final double PIVOT_DOWN = 105;
-    public static final double PIVOT_ALGAE = 0;
+    public static final double PIVOT_UP = -0.9;
+    public static final double PIVOT_DOWN = -6.9;
+    public static final double PIVOT_ALGAE = -3.4;
     public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final double PIVOT_MAX_VELOCITY = 2;
-    public static final double PIVOT_MAX_ACCELERATION = 0.4;
-    public static final double PIVOT_FEEDFORWARD_OFFSET = 0;
+    public static final double PIVOT_MAX_VELOCITY = 4;
+    public static final double PIVOT_MAX_ACCELERATION = 5;
+    public static final double PIVOT_FEEDFORWARD_OFFSET = -6.3;
   }
 
   public static class EndEffectorConstants {
     public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(80);
-    public static final double OUTTAKE_SPEED = -0.1;
+    public static final double OUTTAKE_SPEED = -0.35;
     public static final double INTAKE_SPEED = 0.05;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
+    public static final double OUTTAKE_ALGAE = -0.5;
     public static final int END_EFFECTOR_MOTOR = 25;
     public static final double END_EFFECTOR_MIN_OUTPUT = 0.15;
     public static final Angle END_EFFECTOR_MIN_RPM = Rotations.of(50);
@@ -141,10 +142,11 @@ public final class Constants {
     public static final double ARM_IDLE_SETPOINT = 0.49;
     public static final double ARM_START_SETPOINT = 0.5;
     public static final double ARM_L1_SETPOINT = 0;
-    public static final double ARM_L2_SETPOINT = 0.465;
+    public static final double ARM_L2_SETPOINT = 0.455;
     public static final double ARM_L3_SETPOINT = 0.465;
     public static final double ARM_L4_SETPOINT = 0;
-    public static final double ARM_SCORE_SETPOINT = 0.390;
+    public static final double ARM_L3_SCORE_SETPOINT = 0.390;
+    public static final double ARM_L2_SCORE_SETPOINT = 0.380;
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
     public static final int ARM_ZERO_ENCODER = 0;
     public static final double ARM_MAX_VELOCITY = 4;
@@ -186,8 +188,8 @@ public final class Constants {
   public static final class ClimberConstants {
     public static final int CLIMBER_MOTOR = 27;
     public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(80);
-    public static final double CLIMB_SPEED = 0.4;
-    public static final double REVERSE_CLIMB_SPEED = -0.4;
+    public static final double CLIMB_SPEED = 0.5;
+    public static final double REVERSE_CLIMB_SPEED = -0.5;
     public static final double CLIMB_REST_SPEED = 0;
   }
 
@@ -198,7 +200,7 @@ public final class Constants {
     public static final int CODRIVER_PORT = 1;
     public static final double RUMBLE_REST = 0;
     public static final double RUMBLE_SPEED = 1;
-    public static final double RUMBLE_DURATION = 1;
+    public static final double RUMBLE_DURATION = 0.75;
   }
 
   public static final class LEDConstants {
