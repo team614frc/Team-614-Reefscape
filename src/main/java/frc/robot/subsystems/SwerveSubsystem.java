@@ -369,8 +369,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     // limelight.updateSettings(getOrientation3d());
     // updatePosition(limelight.getVisionEstimate());
-    SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
-    SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
+    // SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
+    // SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
     SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
   }
 

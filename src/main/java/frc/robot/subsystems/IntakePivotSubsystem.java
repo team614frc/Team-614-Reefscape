@@ -82,7 +82,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
     pivotPIDControl();
 
     SmartDashboard.putData(pid);
-    SmartDashboard.putNumber("Pivot Setpoint", pid.getSetpoint().position);
     SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
     SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
   }
