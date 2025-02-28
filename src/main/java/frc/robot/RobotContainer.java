@@ -108,27 +108,30 @@ public class RobotContainer {
   private final Command autoOuttakeCoral =
       Commands.either(
           Commands.sequence(
-              endEffector.outtake(),
               elevatorArm.setSetpoint(Setpoint.kScoreL3Arm),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
+              endEffector.outtake(),
               elevatorArm.setSetpoint(Setpoint.kArmL3),
               elevatorArm.setSetpoint(Setpoint.kElevatorOuttake),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
               elevatorArm.setSetpoint(Setpoint.kArmIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
               endEffector.stop()),
           Commands.sequence(
-              endEffector.outtake().withTimeout(1),
               elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              endEffector.outtake(),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmL2),
               elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
               endEffector.stop()),
           () -> elevatorArm.checkL3());
 
-  private final Command autoIntake =
+  private final Command autoCanalIntake =
       Commands.sequence(
           elevatorArm.setSetpoint(Setpoint.kPushArm),
           Commands.waitUntil(elevatorArm::reachedSetpoint),
@@ -177,18 +180,27 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kArmL3)),
           () -> elevatorArm.armSetpointComparison());
 
-  private final Command autoIdle =
+  private final Command autoElevatorArmIdle =
       Commands.sequence(
           led.setBasicPattern(),
           elevatorArm.setSetpoint(Setpoint.kArmIdle),
           Commands.waitUntil(elevatorArm::reachedSetpoint),
           elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
 
-  private final Command driveLeftReef =
-      Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT));
+  private final Command autoIntakeDownAndIntake =
+      Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece());
 
-  private final Command driveRightReef =
-      Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT));
+  private final Command autoIntakeUp =
+      Commands.sequence(
+          intakePivot.pivotIntakeAlgae(),
+          Commands.waitUntil(intakePivot::reachedSetpoint),
+          intakePivot.pivotIdle());
+
+  //   private final Command driveLeftReef =
+  //       Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT));
+
+  //   private final Command driveRightReef =
+  //       Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -201,9 +213,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
-    NamedCommands.registerCommand("Canal Intake", autoIntake);
+    NamedCommands.registerCommand("Canal Intake", autoCanalIntake);
     NamedCommands.registerCommand("Score Coral", autoOuttakeCoral);
-    NamedCommands.registerCommand("Idle Setpoint", autoIdle);
+    NamedCommands.registerCommand("Idle Setpoint", autoElevatorArmIdle);
+    NamedCommands.registerCommand("Intake Down", autoIntakeDownAndIntake);
+    NamedCommands.registerCommand("Intake Up", autoIntakeUp);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -229,8 +243,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.x().whileTrue(driveLeftReef);
-    driverXbox.b().whileTrue(driveRightReef);
+    // driverXbox.x().whileTrue(driveLeftReef);
+    // driverXbox.b().whileTrue(driveRightReef);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
     driverXbox.a().whileTrue(climber.reverseClimb());
@@ -238,14 +252,22 @@ public class RobotContainer {
     driverXbox
         .leftTrigger()
         .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
-        .onFalse(intakePivot.pivotIdle());
-    driverXbox
-        .leftBumper()
-        .whileTrue(Commands.parallel(intakePivot.pivotIdle(), intake.intakeGamepiece()))
-        .onFalse(intakePivot.pivotIdle());
+        .onFalse(
+            Commands.sequence(
+                intakePivot.pivotIntakeAlgae(),
+                Commands.waitUntil(intakePivot::reachedSetpoint),
+                intakePivot.pivotIdle()));
     driverXbox
         .rightTrigger()
-        .whileTrue(Commands.parallel(intakePivot.pivotAlgae(), intake.outtakeGamepiece()))
+        .whileTrue(Commands.parallel(intakePivot.pivotIdle(), intake.outtakeGamepiece()))
+        .onFalse(intakePivot.pivotIdle());
+    driverXbox
+        .x()
+        .whileTrue(Commands.parallel(intakePivot.pivotIntakeAlgae(), intake.outtakeGamepiece()))
+        .onFalse(intakePivot.pivotOuttakeAlgae());
+    driverXbox
+        .b()
+        .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.intakeGamepiece()))
         .onFalse(intakePivot.pivotIdle());
     driverXbox
         .rightBumper()
@@ -274,25 +296,23 @@ public class RobotContainer {
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     endEffector.stop()),
                 () -> elevatorArm.checkL3()));
-    codriverXbox.a().onTrue(intakePivot.pivotDown());
-    codriverXbox.b().onTrue(intakePivot.pivotAlgae());
-    codriverXbox.y().onTrue(intakePivot.pivotIdle());
-    // codriverXbox
-    //     .a()
-    //     .whileTrue(
-    //         Commands.sequence(
-    //             elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
-    //             Commands.waitUntil(elevatorArm::reachedSetpoint),
-    //             endEffector.punchAlgae(),
-    //             elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));
-    // codriverXbox
-    //     .y()
-    //     .whileTrue(
-    //         Commands.sequence(
-    //             elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
-    //             Commands.waitUntil(elevatorArm::reachedSetpoint),
-    //             endEffector.punchAlgae(),
-    //             elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));
+
+    codriverXbox
+        .a()
+        .whileTrue(
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                endEffector.punchAlgae(),
+                elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL2)));
+    codriverXbox
+        .y()
+        .whileTrue(
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                endEffector.punchAlgae(),
+                elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));
     codriverXbox
         .x()
         .onTrue(
@@ -305,9 +325,8 @@ public class RobotContainer {
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmHover),
                     Commands.waitUntil(canal::gamePieceDetected),
-                    Commands.parallel(
-                        rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                        canal.slow()),
+                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
+                    canal.slow(),
                     Commands.waitSeconds(0.65),
                     Commands.parallel(
                         elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),

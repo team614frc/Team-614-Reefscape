@@ -63,13 +63,15 @@ public final class Constants {
     public static final double GEAR_RATIO = 60;
     public static final double PIVOT_UP = -0.9;
     public static final double PIVOT_DOWN = -6.9;
-    public static final double PIVOT_ALGAE = -3.4;
+    public static final double PIVOT_INTAKE_ALGAE = -3.4;
+    public static final double PIVOT_OUTTAKE_ALGAE = -2.6;
     public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
     public static final double PIVOT_MAX_VELOCITY = 4;
     public static final double PIVOT_MAX_ACCELERATION = 5;
     public static final double PIVOT_FEEDFORWARD_OFFSET = -6.3;
+    public static final double PIVOT_TOLERANCE = 0.75;
   }
 
   public static class EndEffectorConstants {

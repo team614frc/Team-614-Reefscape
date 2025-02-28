@@ -53,7 +53,6 @@ public class CanalSubsystem extends SubsystemBase {
       SmartDashboard.putString("LaserCAN Distance", "No Data");
     }
 
-    SmartDashboard.putNumber("Canal Motor Output", canalMotor.get());
     SmartDashboard.putBoolean("Game Piece Detection", gamePieceDetected());
   }
 
