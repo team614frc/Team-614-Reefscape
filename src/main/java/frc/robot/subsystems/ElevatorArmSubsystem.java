@@ -56,8 +56,12 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kL3,
     kL4,
     kPushArm,
-    kScoreArm,
-    kElevatorOuttake;
+    kScoreL3Arm,
+    kScoreL2Arm,
+    kElevatorOuttake,
+    kOuttakeElevatorAlgae,
+    kOuttakeArmAlgaeL2,
+    kOuttakeArmAlgaeL3;
   }
 
   // Elevator Motor
@@ -212,6 +216,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         && elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
   }
 
+  public boolean checkHover() {
+    return armSetpoint == ArmConstants.ARM_HOVER_SETPOINT
+        && elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
+  }
+
   public Command resetElevatorEncoder() {
     return Commands.runOnce(
         () -> {
@@ -236,6 +245,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     double elevatorPidOutput = elevatorPid.calculate(getElevatorPosition(), elevatorSetpoint);
 
     armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
+
+    SmartDashboard.putNumber("Arm FF", armFeedforwardVoltage);
 
     elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
   }
@@ -302,11 +313,23 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             case kPushArm:
               armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
               break;
-            case kScoreArm:
-              armSetpoint = ArmConstants.ARM_SCORE_SETPOINT;
+            case kScoreL3Arm:
+              armSetpoint = ArmConstants.ARM_L3_SCORE_SETPOINT;
+              break;
+            case kScoreL2Arm:
+              armSetpoint = ArmConstants.ARM_L2_SCORE_SETPOINT;
               break;
             case kElevatorOuttake:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_OUTTAKE_SETPOINT;
+              break;
+            case kOuttakeElevatorAlgae:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
+              break;
+            case kOuttakeArmAlgaeL2:
+              armSetpoint = ArmConstants.ARM_FEEDFORWARD_OFFSET;
+              break;
+            case kOuttakeArmAlgaeL3:
+              armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
               break;
           }
         });
