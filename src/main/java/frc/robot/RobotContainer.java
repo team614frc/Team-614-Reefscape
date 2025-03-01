@@ -97,10 +97,10 @@ public class RobotContainer {
 
   private final Command toggleDriveMode =
       Commands.either(
-          Commands.parallel(
+          Commands.sequence(
               drivebase.driveFieldOriented(driveRobotOriented),
               drivebase.flipFieldAndRobotRelative()),
-          Commands.parallel(
+          Commands.sequence(
               drivebase.driveFieldOriented(driveAngularVelocitySim),
               drivebase.flipFieldAndRobotRelative()),
           () -> drivebase.isFieldCentric);
@@ -245,7 +245,7 @@ public class RobotContainer {
     // driverXbox.b().whileTrue(driveRightReef);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
-    driverXbox.a().whileTrue(climber.reverseClimb());
+    driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
     driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
     driverXbox
         .leftTrigger()
@@ -257,8 +257,7 @@ public class RobotContainer {
                 intakePivot.pivotIdle()));
     driverXbox
         .rightTrigger()
-        .whileTrue(Commands.parallel(intakePivot.pivotIdle(), intake.outtakeGamepiece()))
-        .onFalse(intakePivot.pivotIdle());
+        .whileTrue(Commands.parallel(intakePivot.pivotIdle(), intake.outtakeGamepiece()));
     driverXbox
         .x()
         .whileTrue(Commands.parallel(intakePivot.pivotIntakeAlgae(), intake.outtakeGamepiece()))
@@ -294,10 +293,9 @@ public class RobotContainer {
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     endEffector.stop()),
                 () -> elevatorArm.checkL3()));
-
     driverXbox
         .leftBumper()
-        .onTrue(
+        .whileTrue(
             Commands.either(
                 Commands.parallel(
                     elevatorArm.setSetpoint(Setpoint.kPuke), canal.fast(), endEffector.outtake()),
@@ -310,10 +308,12 @@ public class RobotContainer {
             Commands.either(
                 Commands.parallel(
                     elevatorArm.setSetpoint(Setpoint.kArmHover), canal.stop(), endEffector.stop()),
-                Commands.parallel(
-                    elevatorArm.setSetpoint(Setpoint.kIdleSetpoint),
+                Commands.sequence(
                     canal.stop(),
-                    endEffector.stop()),
+                    endEffector.stop(),
+                    elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
+                    elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
                 () -> elevatorArm.checkPuke()));
 
     codriverXbox
@@ -337,6 +337,7 @@ public class RobotContainer {
         .onTrue(
             Commands.either(
                 Commands.sequence(
+                    canal.intake(),
                     Commands.waitUntil(canal::gamePieceDetected),
                     Commands.parallel(
                         rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),

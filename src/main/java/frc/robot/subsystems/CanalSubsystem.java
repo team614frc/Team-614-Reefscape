@@ -68,8 +68,7 @@ public class CanalSubsystem extends SubsystemBase {
     return Commands.runOnce(
         () -> {
           set(CanalConstants.INTAKE_SPEED);
-        },
-        this);
+        });
   }
 
   public Command slow() {
