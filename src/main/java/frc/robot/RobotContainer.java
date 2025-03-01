@@ -295,6 +295,27 @@ public class RobotContainer {
                     endEffector.stop()),
                 () -> elevatorArm.checkL3()));
 
+    driverXbox
+        .leftBumper()
+        .onTrue(
+            Commands.either(
+                Commands.parallel(
+                    elevatorArm.setSetpoint(Setpoint.kPuke), canal.fast(), endEffector.outtake()),
+                Commands.parallel(
+                    elevatorArm.setSetpoint(Setpoint.kPushArm),
+                    canal.fast(),
+                    endEffector.outtake()),
+                () -> elevatorArm.checkHover()))
+        .onFalse(
+            Commands.either(
+                Commands.parallel(
+                    elevatorArm.setSetpoint(Setpoint.kArmHover), canal.stop(), endEffector.stop()),
+                Commands.parallel(
+                    elevatorArm.setSetpoint(Setpoint.kIdleSetpoint),
+                    canal.stop(),
+                    endEffector.stop()),
+                () -> elevatorArm.checkPuke()));
+
     codriverXbox
         .a()
         .whileTrue(
@@ -316,15 +337,10 @@ public class RobotContainer {
         .onTrue(
             Commands.either(
                 Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kPushArm),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    canal.intake(),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmHover),
                     Commands.waitUntil(canal::gamePieceDetected),
-                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                    canal.slow(),
+                    Commands.parallel(
+                        rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
+                        canal.slow()),
                     Commands.waitSeconds(0.65),
                     Commands.parallel(
                         elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
@@ -335,10 +351,15 @@ public class RobotContainer {
                     canal.stop(),
                     elevatorArm.setSetpoint(Setpoint.kArmHover)),
                 Commands.sequence(
+                    elevatorArm.setSetpoint(Setpoint.kPushArm),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
+                    canal.intake(),
+                    elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
+                    elevatorArm.setSetpoint(Setpoint.kArmHover),
                     Commands.waitUntil(canal::gamePieceDetected),
-                    Commands.parallel(
-                        rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                        canal.slow()),
+                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
+                    canal.slow(),
                     Commands.waitSeconds(0.65),
                     Commands.parallel(
                         elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),

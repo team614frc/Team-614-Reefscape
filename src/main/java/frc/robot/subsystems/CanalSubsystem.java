@@ -79,6 +79,13 @@ public class CanalSubsystem extends SubsystemBase {
         });
   }
 
+  public Command fast() {
+    return Commands.runOnce(
+        () -> {
+          set(CanalConstants.CANAL_FAST_SPEED);
+        });
+  }
+
   public Command outtake() {
     return Commands.runEnd(
         () -> {

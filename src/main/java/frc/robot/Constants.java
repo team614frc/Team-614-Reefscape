@@ -94,6 +94,7 @@ public final class Constants {
     public static final double INTAKE_SPEED = 0.125;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
+    public static final double CANAL_FAST_SPEED = 0.3;
     public static final int CANAL_REST_SPEED = 0;
     public static final double CANAL_SLOW_SPEED = 0.025;
     public static final int LASER_MAX_DISTANCE = 180;
@@ -150,6 +151,7 @@ public final class Constants {
     public static final double ARM_L3_SCORE_SETPOINT = 0.390;
     public static final double ARM_L2_SCORE_SETPOINT = 0.380;
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
+    public static final double ARM_PUKE_SETPOINT = 0.175;
     public static final int ARM_ZERO_ENCODER = 0;
     public static final double ARM_MAX_VELOCITY = 4;
     public static final double ARM_MAX_ACCELERATION = 1;
