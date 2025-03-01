@@ -397,7 +397,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public boolean isFieldCentric = true;
 
   public Command flipFieldAndRobotRelative() {
-    return Commands.runOnce(() -> isFieldCentric = !isFieldCentric);
+    return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
   }
 
   /**

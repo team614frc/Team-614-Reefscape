@@ -61,7 +61,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kElevatorOuttake,
     kOuttakeElevatorAlgae,
     kOuttakeArmAlgaeL2,
-    kOuttakeArmAlgaeL3;
+    kOuttakeArmAlgaeL3,
+    kPuke;
   }
 
   // Elevator Motor
@@ -216,6 +217,10 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         && elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
   }
 
+  public boolean checkPuke() {
+    return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT;
+  }
+
   public boolean checkHover() {
     return armSetpoint == ArmConstants.ARM_HOVER_SETPOINT
         && elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
@@ -330,6 +335,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               break;
             case kOuttakeArmAlgaeL3:
               armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
+              break;
+            case kPuke:
+              armSetpoint = ArmConstants.ARM_PUKE_SETPOINT;
               break;
           }
         });
