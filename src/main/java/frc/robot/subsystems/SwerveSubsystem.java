@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
@@ -22,6 +23,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +38,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import limelight.networktables.AngularVelocity3d;
+import limelight.networktables.Orientation3d;
 import limelight.networktables.PoseEstimate;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -50,7 +54,9 @@ public class SwerveSubsystem extends SubsystemBase {
   /** Swerve drive object. */
   private final SwerveDrive swerveDrive;
 
-  // private final LimelightSubsystem limelight;
+  private LimelightSubsystem limelightFront;
+
+  private LimelightSubsystem limelightBack;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -71,6 +77,11 @@ public class SwerveSubsystem extends SubsystemBase {
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
       // angleConversionFactor, driveConversionFactor);
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT)
+        limelightFront = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_FRONT_NAME);
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK)
+        limelightBack = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_BACK_NAME);
+
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -88,7 +99,6 @@ public class SwerveSubsystem extends SubsystemBase {
     // periodically when they are not moving.
     swerveDrive.setChassisDiscretization(true, 0.02);
     setupPathPlanner();
-    // limelight = new LimelightSubsystem();
   }
 
   /**
@@ -105,7 +115,6 @@ public class SwerveSubsystem extends SubsystemBase {
             controllerCfg,
             Constants.MAX_SPEED.in(MetersPerSecond),
             new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
-    // limelight = new LimelightSubsystem();
   }
 
   @Override
@@ -361,14 +370,31 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive.getRobotVelocity();
   }
 
+  public Orientation3d getOrientation3d() {
+    return (new Orientation3d(
+        swerveDrive.getGyroRotation3d(),
+        new AngularVelocity3d(
+            DegreesPerSecond.of(0),
+            DegreesPerSecond.of(0),
+            swerveDrive.getGyro().getYawAngularVelocity())));
+  }
+
   public void addVisionReading(Pose2d pose2d) {
     swerveDrive.addVisionMeasurement(pose2d, Timer.getFPGATimestamp());
   }
 
   @Override
   public void periodic() {
-    // limelight.updateSettings(getOrientation3d());
-    // updatePosition(limelight.getVisionEstimate());
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
+      limelightFront.updateSettings(getOrientation3d());
+      updatePosition(limelightFront.getVisionEstimate());
+    }
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK) {
+      limelightBack.updateSettings(getOrientation3d());
+      updatePosition(limelightBack.getVisionEstimate());
+    }
+    SmartDashboard.putNumber("Closest AprilTagID", findReefID());
+    SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
     SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
@@ -390,15 +416,22 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public int findReefID() {
-    int index =
-        FieldConstants.Reef.CENTER_FACES.indexOf(
-            swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES));
     Optional<Alliance> ally = DriverStation.getAlliance();
-    List<Integer> apriltags =
-        (ally.get() == Alliance.Red)
-            ? FieldConstants.Reef.CENTER_FACES_RED_IDS
-            : FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
-    int AprilTagID = apriltags.get(index);
+    int index;
+    int AprilTagID;
+    List<Integer> apriltags;
+    if (RobotBase.isReal() && ally.isEmpty() && ally.get() == Alliance.Red) {
+      index =
+          FieldConstants.Reef.CENTER_FACES_RED.indexOf(
+              swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES_RED));
+      apriltags = FieldConstants.Reef.CENTER_FACES_RED_IDS;
+    } else {
+      index =
+          FieldConstants.Reef.CENTER_FACES_BLUE.indexOf(
+              swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES_BLUE));
+      apriltags = FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
+    }
+    AprilTagID = apriltags.get(index);
     return AprilTagID;
   }
 
