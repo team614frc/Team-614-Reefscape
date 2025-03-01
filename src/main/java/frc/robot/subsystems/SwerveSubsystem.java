@@ -87,7 +87,7 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setChassisDiscretization(true, 0.02);
     setupPathPlanner();
     // limelight = new LimelightSubsystem();
-    //RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
+    // RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
   }
 
   @Override
