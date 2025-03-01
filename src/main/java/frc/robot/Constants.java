@@ -35,10 +35,10 @@ public final class Constants {
   public static final class DrivebaseConstants {
     // Hold time on motor brakes when disabled.
     public static final Time WHEEL_LOCK_TIME = Seconds.of(10);
-    public static final double AUTO_TRANSLATION_kP = 5.0;
+    public static final double AUTO_TRANSLATION_kP = 2;
     public static final double AUTO_TRANSLATION_kI = 0.0;
     public static final double AUTO_TRANSLATION_kD = 0.0;
-    public static final double AUTO_ROTATION_kP = 1.0;
+    public static final double AUTO_ROTATION_kP = 6;
     public static final double AUTO_ROTATION_kI = 0.0;
     public static final double AUTO_ROTATION_kD = 0.0;
   }
@@ -53,7 +53,7 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
 
-    public static final double PIVOT_kP = 0.6;
+    public static final double PIVOT_kP = 0.4;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0.01;
     public static final double PIVOT_kS = 0;

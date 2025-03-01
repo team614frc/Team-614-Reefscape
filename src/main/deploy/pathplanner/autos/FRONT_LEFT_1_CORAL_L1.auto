@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Linear Test Path"
+            "pathName": "FRONT_LEFT_#0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L1"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "FrontLeft",
   "choreoAuto": false
 }

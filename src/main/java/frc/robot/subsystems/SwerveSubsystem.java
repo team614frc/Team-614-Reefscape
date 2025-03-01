@@ -39,8 +39,6 @@ import java.util.function.Supplier;
 import limelight.networktables.PoseEstimate;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
-import swervelib.parser.SwerveControllerConfiguration;
-import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
@@ -75,7 +73,7 @@ public class SwerveSubsystem extends SubsystemBase {
       throw new RuntimeException(e);
     }
     swerveDrive.setHeadingCorrection(
-        false); // Heading correction should only be used while controlling the robot via angle.
+        true); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(
         false); // !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for
     // simulations since it causes discrepancies not seen in real life.
@@ -89,23 +87,7 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setChassisDiscretization(true, 0.02);
     setupPathPlanner();
     // limelight = new LimelightSubsystem();
-  }
-
-  /**
-   * Construct the swerve drive.
-   *
-   * @param driveCfg SwerveDriveConfiguration for the swerve.
-   * @param controllerCfg Swerve Controller.
-   */
-  public SwerveSubsystem(
-      SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
-    swerveDrive =
-        new SwerveDrive(
-            driveCfg,
-            controllerCfg,
-            Constants.MAX_SPEED.in(MetersPerSecond),
-            new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
-    // limelight = new LimelightSubsystem();
+    // RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
   }
 
   @Override

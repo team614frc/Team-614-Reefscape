@@ -149,6 +149,9 @@ public class RobotContainer {
           canal.stop(),
           elevatorArm.setSetpoint(Setpoint.kArmHover));
 
+  private final Command autoL1 =
+      Commands.sequence(intake.outtakeGamepiece(), Commands.waitSeconds(0.25), intake.stopIntake());
+
   private final Command autoL2 =
       Commands.either(
           Commands.sequence(
@@ -206,7 +209,7 @@ public class RobotContainer {
 
     // canal.setDefaultCommand(canal.intake());
 
-    NamedCommands.registerCommand("L1", intake.outtakeGamepiece());
+    NamedCommands.registerCommand("L1", autoL1);
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
@@ -221,7 +224,6 @@ public class RobotContainer {
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putNumber("Git Revision", BuildConstants.GIT_REVISION);
     SmartDashboard.putString("Git Sha", BuildConstants.GIT_SHA);
@@ -339,9 +341,8 @@ public class RobotContainer {
                 Commands.sequence(
                     canal.intake(),
                     Commands.waitUntil(canal::gamePieceDetected),
-                    Commands.parallel(
-                        rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                        canal.slow()),
+                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
+                    canal.slow(),
                     Commands.waitSeconds(0.65),
                     Commands.parallel(
                         elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
