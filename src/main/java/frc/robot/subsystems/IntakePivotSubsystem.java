@@ -52,6 +52,11 @@ public class IntakePivotSubsystem extends SubsystemBase {
     intakePivotEncoder.setPosition(0);
   }
 
+  public boolean reachedSetpoint() {
+    return Math.abs(intakePivotEncoder.getPosition() - pivotSetpoint)
+        <= IntakeConstants.PIVOT_TOLERANCE;
+  }
+
   private double getPivotAngleRadians() {
     return Units.rotationsToRadians(intakePivotEncoder.getPosition());
   }
@@ -77,7 +82,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
     pivotPIDControl();
 
     SmartDashboard.putData(pid);
-    SmartDashboard.putNumber("Pivot Setpoint", pid.getSetpoint().position);
     SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
     SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
   }
@@ -96,10 +100,17 @@ public class IntakePivotSubsystem extends SubsystemBase {
         });
   }
 
-  public Command pivotAlgae() {
+  public Command pivotIntakeAlgae() {
     return Commands.runOnce(
         () -> {
-          pivotSetpoint = IntakeConstants.PIVOT_ALGAE;
+          pivotSetpoint = IntakeConstants.PIVOT_INTAKE_ALGAE;
+        });
+  }
+
+  public Command pivotOuttakeAlgae() {
+    return Commands.runOnce(
+        () -> {
+          pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
         });
   }
 }

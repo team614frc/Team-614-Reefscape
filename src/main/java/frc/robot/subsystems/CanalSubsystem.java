@@ -53,7 +53,6 @@ public class CanalSubsystem extends SubsystemBase {
       SmartDashboard.putString("LaserCAN Distance", "No Data");
     }
 
-    SmartDashboard.putNumber("Canal Motor Output", canalMotor.get());
     SmartDashboard.putBoolean("Game Piece Detection", gamePieceDetected());
   }
 
@@ -69,14 +68,20 @@ public class CanalSubsystem extends SubsystemBase {
     return Commands.runOnce(
         () -> {
           set(CanalConstants.INTAKE_SPEED);
-        },
-        this);
+        });
   }
 
   public Command slow() {
     return Commands.runOnce(
         () -> {
           set(CanalConstants.CANAL_SLOW_SPEED);
+        });
+  }
+
+  public Command fast() {
+    return Commands.runOnce(
+        () -> {
+          set(CanalConstants.CANAL_FAST_SPEED);
         });
   }
 

@@ -61,7 +61,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kElevatorOuttake,
     kOuttakeElevatorAlgae,
     kOuttakeArmAlgaeL2,
-    kOuttakeArmAlgaeL3;
+    kOuttakeArmAlgaeL3,
+    kPuke;
   }
 
   // Elevator Motor
@@ -216,6 +217,10 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         && elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
   }
 
+  public boolean checkPuke() {
+    return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT;
+  }
+
   public boolean checkHover() {
     return armSetpoint == ArmConstants.ARM_HOVER_SETPOINT
         && elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
@@ -331,6 +336,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             case kOuttakeArmAlgaeL3:
               armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
               break;
+            case kPuke:
+              armSetpoint = ArmConstants.ARM_PUKE_SETPOINT;
+              break;
           }
         });
   }
@@ -344,7 +352,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Target Position", elevatorSetpoint);
     SmartDashboard.putNumber("Elevator Actual Position", elevatorEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator Output", elevatorMotor.get());
     SmartDashboard.putBoolean("Elevator Stalled", elevatorStalled());
     SmartDashboard.putNumber("Elevator Velocity", elevatorEncoder.getVelocity());
 
