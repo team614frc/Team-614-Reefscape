@@ -42,7 +42,7 @@ public final class Configs {
 
     static {
       INTAKE_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .inverted(true)
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
     }
@@ -63,7 +63,7 @@ public final class Configs {
 
     static {
       CANAL_CONFIG
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .inverted(true)
           .smartCurrentLimit((int) Constants.CanalConstants.CANAL_CURRENT_LIMIT.in(Amp));
     }

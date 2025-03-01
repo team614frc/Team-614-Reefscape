@@ -85,13 +85,10 @@ public class CanalSubsystem extends SubsystemBase {
         });
   }
 
-  public Command outtake() {
-    return Commands.runEnd(
+  public Command backwards() {
+    return Commands.runOnce(
         () -> {
-          set(CanalConstants.OUTTAKE_SPEED);
-        },
-        () -> {
-          set(CanalConstants.OUTTAKE_REST_SPEED);
+          set(CanalConstants.BACKWARDS_SPEED);
         });
   }
 

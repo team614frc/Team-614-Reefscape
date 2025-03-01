@@ -51,12 +51,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
   }
 
   public Command punchAlgae() {
-    return Commands.runEnd(
+    return Commands.runOnce(
         () -> {
           set(EndEffectorConstants.OUTTAKE_ALGAE);
-        },
-        () -> {
-          set(EndEffectorConstants.OUTTAKE_REST_SPEED);
         });
   }
 

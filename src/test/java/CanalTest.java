@@ -44,17 +44,17 @@ class CanalTest {
     assertEquals(Constants.CanalConstants.INTAKE_SPEED, canal.getMotor().get(), DELTA);
   }
 
-  @Test
-  void outtakeTest() {
-    Command command = canal.outtake();
+  // @Test
+  // void outtakeTest() {
+  //   Command command = canal.outtake();
 
-    command.initialize();
-    assertEquals(Constants.CanalConstants.OUTTAKE_SPEED, canal.getMotor().get(), DELTA);
+  //   command.initialize();
+  //   assertEquals(Constants.CanalConstants.OUTTAKE_SPEED, canal.getMotor().get(), DELTA);
 
-    command.execute();
-    assertEquals(Constants.CanalConstants.OUTTAKE_SPEED, canal.getMotor().get(), DELTA);
+  //   command.execute();
+  //   assertEquals(Constants.CanalConstants.OUTTAKE_SPEED, canal.getMotor().get(), DELTA);
 
-    command.end(false);
-    assertEquals(Constants.CanalConstants.OUTTAKE_REST_SPEED, canal.getMotor().get(), DELTA);
-  }
+  //   command.end(false);
+  //   assertEquals(Constants.CanalConstants.OUTTAKE_REST_SPEED, canal.getMotor().get(), DELTA);
+  // }
 }
