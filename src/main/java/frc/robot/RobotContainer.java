@@ -165,7 +165,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorL2),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmL2)),
-          () -> elevatorArm.armSetpointComparison());
+          () -> !elevatorArm.checkHover());
 
   private final Command autoL3 =
       Commands.either(
@@ -179,7 +179,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorL3),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmL3)),
-          () -> elevatorArm.armSetpointComparison());
+          () -> !elevatorArm.checkHover());
 
   private final Command autoElevatorArmIdle =
       Commands.sequence(
@@ -356,14 +356,15 @@ public class RobotContainer {
                     elevatorArm.setSetpoint(Setpoint.kPushArm),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     canal.intake(),
+                    // intake.intakeGamepiece(),
                     elevatorArm.setSetpoint(Setpoint.kElevatorHover),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmHover),
                     Commands.waitUntil(canal::gamePieceDetected),
                     Commands.parallel(
                         rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                        canal.slow()),
-                    Commands.waitSeconds(0.75),
+                        canal.slow()), // intake.stopIntake()),
+                    Commands.waitSeconds(0.5),
                     Commands.parallel(
                         elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
@@ -406,7 +407,7 @@ public class RobotContainer {
                     elevatorArm.setSetpoint(Setpoint.kElevatorL2),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL2)),
-                () -> elevatorArm.armSetpointComparison()));
+                () -> !elevatorArm.checkHover()));
     codriverXbox
         .rightTrigger()
         .onTrue(
@@ -423,7 +424,7 @@ public class RobotContainer {
                     elevatorArm.setSetpoint(Setpoint.kElevatorL3),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL3)),
-                () -> elevatorArm.armSetpointComparison()));
+                () -> !elevatorArm.checkHover()));
 
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation()

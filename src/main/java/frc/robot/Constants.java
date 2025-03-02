@@ -48,7 +48,7 @@ public final class Constants {
     public static final int INTAKE_PIVOT_MOTOR = 26;
     public static final Current INTAKE_CURRENT_LIMIT = Amp.of(80);
     public static final Current INTAKE_PIVOT_CURRENT_LIMIT = Amp.of(40);
-    public static final double OUTTAKE_SPEED = -0.3;
+    public static final double OUTTAKE_SPEED = -0.2;
     public static final double INTAKE_SPEED = 0.3;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
@@ -145,8 +145,8 @@ public final class Constants {
     public static final double ARM_IDLE_SETPOINT = 0.49;
     public static final double ARM_START_SETPOINT = 0.5;
     public static final double ARM_L1_SETPOINT = 0;
-    public static final double ARM_L2_SETPOINT = 0.455;
-    public static final double ARM_L3_SETPOINT = 0.465;
+    public static final double ARM_L2_SETPOINT = 0.465;
+    public static final double ARM_L3_SETPOINT = 0.475;
     public static final double ARM_L4_SETPOINT = 0;
     public static final double ARM_L3_SCORE_SETPOINT = 0.390;
     public static final double ARM_L2_SCORE_SETPOINT = 0.380;

@@ -208,10 +208,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         && elevatorMotor.get() == ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED;
   }
 
-  public boolean armSetpointComparison() {
-    return armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET;
-  }
-
   public boolean checkL3() {
     return armSetpoint == ArmConstants.ARM_L3_SETPOINT
         && elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
