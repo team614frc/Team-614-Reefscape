@@ -212,21 +212,23 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     boolean a = armSetpoint == ArmConstants.ARM_L3_SETPOINT;
     boolean b = Math.abs(armEncoder.getPosition() - ArmConstants.ARM_L3_SETPOINT) <= 0.1;
     boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
-    boolean d = Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_L3_SETPOINT) <= 0.1;
+    boolean d =
+        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_L3_SETPOINT) <= 0.1;
 
     return (a || b) && (c || d);
   }
 
   public boolean checkPuke() {
-    return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT || 
-      Math.abs(armEncoder.getPosition() - ArmConstants.ARM_PUKE_SETPOINT) <= 0.1;
+    return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT
+        || Math.abs(armEncoder.getPosition() - ArmConstants.ARM_PUKE_SETPOINT) <= 0.1;
   }
 
   public boolean checkHover() {
     boolean a = armSetpoint == ArmConstants.ARM_HOVER_SETPOINT;
     boolean b = Math.abs(armEncoder.getPosition() - ArmConstants.ARM_HOVER_SETPOINT) <= 0.1;
     boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
-    boolean d = Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_HOVER_SETPOINT) <= 0.1;
+    boolean d =
+        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_HOVER_SETPOINT) <= 0.1;
 
     return (a || b) && (c || d);
   }

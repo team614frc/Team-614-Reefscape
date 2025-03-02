@@ -51,7 +51,7 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.CODRIVER_PORT);
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase =
+  public final SwerveSubsystem drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
   private final SwerveInputStream driveAngularVelocity =
