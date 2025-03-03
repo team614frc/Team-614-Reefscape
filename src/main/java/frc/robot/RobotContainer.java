@@ -46,12 +46,13 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  final CommandXboxController driverXbox = new CommandXboxController(OperatorConstants.DRIVER_PORT);
-  final CommandXboxController codriverXbox =
+  private final CommandXboxController driverXbox =
+      new CommandXboxController(OperatorConstants.DRIVER_PORT);
+  private final CommandXboxController codriverXbox =
       new CommandXboxController(OperatorConstants.CODRIVER_PORT);
 
   // The robot's subsystems and commands are defined here...
-  protected final SwerveSubsystem drivebase =
+  final SwerveSubsystem drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
   private final SwerveInputStream driveAngularVelocity =
