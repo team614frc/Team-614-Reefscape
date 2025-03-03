@@ -208,22 +208,36 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         && elevatorMotor.get() == ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED;
   }
 
-  public boolean armSetpointComparison() {
-    return armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET;
-  }
-
   public boolean checkL3() {
-    return armSetpoint == ArmConstants.ARM_L3_SETPOINT
-        && elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
+    boolean a = armSetpoint == ArmConstants.ARM_L3_SETPOINT;
+    boolean b =
+        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_L3_SETPOINT)
+            <= ArmConstants.ARM_TOLERANCE;
+    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
+    boolean d =
+        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_L3_SETPOINT)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE;
+
+    return (a || b) && (c || d);
   }
 
   public boolean checkPuke() {
-    return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT;
+    return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT
+        || Math.abs(armEncoder.getPosition() - ArmConstants.ARM_PUKE_SETPOINT)
+            <= ArmConstants.ARM_TOLERANCE;
   }
 
   public boolean checkHover() {
-    return armSetpoint == ArmConstants.ARM_HOVER_SETPOINT
-        && elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
+    boolean a = armSetpoint == ArmConstants.ARM_HOVER_SETPOINT;
+    boolean b =
+        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_HOVER_SETPOINT)
+            <= ArmConstants.ARM_TOLERANCE;
+    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
+    boolean d =
+        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_HOVER_SETPOINT)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE;
+
+    return (a || b) && (c || d);
   }
 
   public Command resetElevatorEncoder() {

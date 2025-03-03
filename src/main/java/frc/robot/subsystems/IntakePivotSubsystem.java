@@ -41,7 +41,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
           IntakeConstants.PIVOT_kV,
           IntakeConstants.PIVOT_kA);
 
-  private double pivotSetpoint = IntakeConstants.PIVOT_UP;
+  private double pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
 
   public IntakePivotSubsystem() {
     intakePivotMotor.configure(

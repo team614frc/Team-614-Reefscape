@@ -274,7 +274,9 @@ public class SwerveSubsystem extends SubsystemBase {
    * <p>If red alliance rotate the robot 180 after the drviebase zero command
    */
   public void zeroGyroWithAlliance() {
-    if (isRedAlliance()) {
+    // We changed to !isRedAlliance after testing because blue and red are inverted when run with
+    // the boolean isRedAlliance()
+    if (!isRedAlliance()) {
       zeroGyro();
       // Set the pose 180 degrees
       resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));

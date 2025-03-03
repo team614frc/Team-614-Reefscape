@@ -91,6 +91,8 @@ public class Robot extends TimedRobot {
     } else {
       CommandScheduler.getInstance().cancelAll();
     }
+
+    m_robotContainer.drivebase.zeroGyroWithAlliance();
     m_robotContainer.setDriveMode();
   }
 
