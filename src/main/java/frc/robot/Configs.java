@@ -8,16 +8,21 @@ import frc.robot.Constants.ArmConstants;
 
 public final class Configs {
 
-  public static final class ElevatorArmConfig {
+  public static final class ElevatorConfig {
     public static final SparkFlexConfig ELEVATOR_CONFIG = new SparkFlexConfig();
-    public static final SparkFlexConfig ARM_CONFIG = new SparkFlexConfig();
 
     static {
       ELEVATOR_CONFIG
           .idleMode(IdleMode.kBrake)
           .inverted(true)
           .smartCurrentLimit((int) Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(Amp));
+    }
+  }
 
+  public static final class ArmConfig {
+    public static final SparkFlexConfig ARM_CONFIG = new SparkFlexConfig();
+
+    static {
       ARM_CONFIG
           .idleMode(IdleMode.kBrake)
           .inverted(true)
