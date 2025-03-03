@@ -392,7 +392,10 @@ public class RobotContainer {
                 Commands.waitUntil(elevatorArm::reachedSetpoint),
                 endEffector.stop(),
                 elevatorArm.setSetpoint(Setpoint.kElevatorIdle)));
-    codriverXbox.rightBumper().onTrue(Commands.none());
+    codriverXbox
+        .rightBumper()
+        .whileTrue(
+            Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.fastOuttakeGamepiece()));
     codriverXbox
         .leftTrigger()
         .onTrue(
