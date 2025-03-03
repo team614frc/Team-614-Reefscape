@@ -15,6 +15,24 @@
           "data": {
             "name": "L1"
           }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoIntakeUp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FRONT_#2"
+          }
         }
       ]
     }

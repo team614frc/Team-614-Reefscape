@@ -210,25 +210,32 @@ public class ElevatorArmSubsystem extends SubsystemBase {
 
   public boolean checkL3() {
     boolean a = armSetpoint == ArmConstants.ARM_L3_SETPOINT;
-    boolean b = Math.abs(armEncoder.getPosition() - ArmConstants.ARM_L3_SETPOINT) <= 0.1;
+    boolean b =
+        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_L3_SETPOINT)
+            <= ArmConstants.ARM_TOLERANCE;
     boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
     boolean d =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_L3_SETPOINT) <= 0.1;
+        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_L3_SETPOINT)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE;
 
     return (a || b) && (c || d);
   }
 
   public boolean checkPuke() {
     return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT
-        || Math.abs(armEncoder.getPosition() - ArmConstants.ARM_PUKE_SETPOINT) <= 0.1;
+        || Math.abs(armEncoder.getPosition() - ArmConstants.ARM_PUKE_SETPOINT)
+            <= ArmConstants.ARM_TOLERANCE;
   }
 
   public boolean checkHover() {
     boolean a = armSetpoint == ArmConstants.ARM_HOVER_SETPOINT;
-    boolean b = Math.abs(armEncoder.getPosition() - ArmConstants.ARM_HOVER_SETPOINT) <= 0.1;
+    boolean b =
+        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_HOVER_SETPOINT)
+            <= ArmConstants.ARM_TOLERANCE;
     boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
     boolean d =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_HOVER_SETPOINT) <= 0.1;
+        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_HOVER_SETPOINT)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE;
 
     return (a || b) && (c || d);
   }
