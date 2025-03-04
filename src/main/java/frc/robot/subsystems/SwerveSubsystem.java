@@ -419,7 +419,7 @@ public class SwerveSubsystem extends SubsystemBase {
     int index;
     int AprilTagID;
     List<Integer> apriltags;
-    if (RobotBase.isReal() && ally.isEmpty() && ally.get() == Alliance.Red) {
+    if (ally.isEmpty() || ally.get() == Alliance.Red) {
       index =
           FieldConstants.Reef.CENTER_FACES_RED.indexOf(
               swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES_RED));

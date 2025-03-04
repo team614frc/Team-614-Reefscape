@@ -97,9 +97,11 @@ public class FieldConstants {
     public static final List<Pose2d> CENTER_FACES_RED = new ArrayList<>(5);
 
     static {
-      for (int i = 0; i < CENTER_FACES_RED.size(); i++) {
-        CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(i)));
-      }
+      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(0)));
+      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(1)));
+      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(2)));
+      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(3)));
+      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(4)));
     }
 
     public static final List<Integer> CENTER_FACES_RED_IDS = List.of(7, 6, 11, 10, 9, 8);
