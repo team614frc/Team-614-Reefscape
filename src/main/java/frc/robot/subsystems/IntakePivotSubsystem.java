@@ -52,7 +52,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
     intakePivotEncoder.setPosition(0);
   }
 
-  public boolean reachedSetpoint() {
+  public boolean atSetpoint() {
     return Math.abs(intakePivotEncoder.getPosition() - pivotSetpoint)
         <= IntakeConstants.PIVOT_TOLERANCE;
   }
@@ -90,27 +90,31 @@ public class IntakePivotSubsystem extends SubsystemBase {
     return Commands.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_DOWN;
-        });
+        },
+        this);
   }
 
   public Command pivotIdle() {
     return Commands.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_UP;
-        });
+        },
+        this);
   }
 
   public Command pivotIntakeAlgae() {
     return Commands.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_INTAKE_ALGAE;
-        });
+        },
+        this);
   }
 
   public Command pivotOuttakeAlgae() {
     return Commands.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
-        });
+        },
+        this);
   }
 }

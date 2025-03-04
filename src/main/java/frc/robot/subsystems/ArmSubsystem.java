@@ -21,16 +21,16 @@ import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
   public enum ArmSetpoint {
-    kArmIdle,
-    kArmHover,
-    kArmL2,
-    kArmL3,
-    kPushArm,
-    kScoreL3Arm,
-    kScoreL2Arm,
-    kOuttakeArmAlgaeL2,
-    kOuttakeArmAlgaeL3,
-    kPukeArm;
+    armIdle,
+    armHover,
+    armL2,
+    armL3,
+    pushArm,
+    scoreL3Arm,
+    scoreL2Arm,
+    outtakeArmAlgaeL2,
+    outtakeArmAlgaeL3,
+    pukeArm;
   }
 
   // Arm Motor
@@ -54,14 +54,13 @@ public class ArmSubsystem extends SubsystemBase {
 
   /** Creates a new ElevatorArmSubsystem. */
   public ArmSubsystem() {
-
     armMotor.configure(
         Configs.ArmConfig.ARM_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
 
-  public boolean reachedSetpoint() {
+  public boolean atSetpoint() {
     return Math.abs(armEncoder.getPosition() - armSetpoint) <= ArmConstants.ARM_TOLERANCE;
   }
 
@@ -97,7 +96,7 @@ public class ArmSubsystem extends SubsystemBase {
    * Drive the arm motor to their respective setpoint. The Arm will use PIDController and
    * ArmFeedforward from WPILib.
    */
-  private void moveToSetpoint() {
+  private void runPID() {
     double armFeedforwardVoltage =
         armFeedforward.calculate(
             armPid.getSetpoint().position
@@ -120,34 +119,34 @@ public class ArmSubsystem extends SubsystemBase {
     return this.runOnce(
         () -> {
           switch (setpoint) {
-            case kArmIdle:
+            case armIdle:
               armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
               break;
-            case kArmHover:
+            case armHover:
               armSetpoint = ArmConstants.ARM_HOVER_SETPOINT;
               break;
-            case kArmL2:
+            case armL2:
               armSetpoint = ArmConstants.ARM_L2_SETPOINT;
               break;
-            case kArmL3:
+            case armL3:
               armSetpoint = ArmConstants.ARM_L3_SETPOINT;
               break;
-            case kPushArm:
+            case pushArm:
               armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
               break;
-            case kScoreL3Arm:
+            case scoreL3Arm:
               armSetpoint = ArmConstants.ARM_L3_SCORE_SETPOINT;
               break;
-            case kScoreL2Arm:
+            case scoreL2Arm:
               armSetpoint = ArmConstants.ARM_L2_SCORE_SETPOINT;
               break;
-            case kOuttakeArmAlgaeL2:
+            case outtakeArmAlgaeL2:
               armSetpoint = ArmConstants.ARM_FEEDFORWARD_OFFSET;
               break;
-            case kOuttakeArmAlgaeL3:
+            case outtakeArmAlgaeL3:
               armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
               break;
-            case kPukeArm:
+            case pukeArm:
               armSetpoint = ArmConstants.ARM_PUKE_SETPOINT;
               break;
           }
@@ -156,7 +155,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    moveToSetpoint();
+    runPID();
 
     SmartDashboard.putNumber("Arm Target Position", armSetpoint);
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());

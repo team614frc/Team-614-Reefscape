@@ -68,35 +68,40 @@ public class CanalSubsystem extends SubsystemBase {
     return Commands.runOnce(
         () -> {
           set(CanalConstants.INTAKE_SPEED);
-        });
+        },
+        this);
   }
 
   public Command slow() {
     return Commands.runOnce(
         () -> {
           set(CanalConstants.CANAL_SLOW_SPEED);
-        });
+        },
+        this);
   }
 
   public Command fast() {
     return Commands.runOnce(
         () -> {
           set(CanalConstants.CANAL_FAST_SPEED);
-        });
+        },
+        this);
   }
 
   public Command backwards() {
     return Commands.runOnce(
         () -> {
           set(CanalConstants.BACKWARDS_SPEED);
-        });
+        },
+        this);
   }
 
   public Command stop() {
     return Commands.runOnce(
         () -> {
           set(CanalConstants.CANAL_REST_SPEED);
-        });
+        },
+        this);
   }
 
   public boolean gamePieceDetected() {

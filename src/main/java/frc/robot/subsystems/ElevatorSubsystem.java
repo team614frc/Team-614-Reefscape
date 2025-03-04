@@ -20,13 +20,13 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
   public enum ElevatorSetpoint {
-    kElevatorIdle,
-    kElevatorHover,
-    kElevatorL2,
-    kElevatorL3,
-    kElevatorOuttake,
-    kOuttakeElevatorAlgae,
-    kElevatorIntake;
+    elevatorIdle,
+    elevatorHover,
+    elevatorL2,
+    elevatorL3,
+    elevatorOuttake,
+    outtakeElevatorAlgae,
+    elevatorIntake;
   }
 
   // Elevator Motor
@@ -48,7 +48,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Creates a new ElevatorArmSubsystem. */
   public ElevatorSubsystem() {
-
     elevatorMotor.configure(
         Configs.ElevatorConfig.ELEVATOR_CONFIG,
         ResetMode.kResetSafeParameters,
@@ -57,26 +56,23 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorEncoder.setPosition(0);
   }
 
-  public boolean reachedSetpoint() {
+  public boolean atSetpoint() {
     return Math.abs(elevatorEncoder.getPosition() - elevatorSetpoint)
         <= ElevatorConstants.ELEVATOR_TOLERANCE;
   }
 
-  private double getElevatorPosition() {
+  private double getPosition() {
     return elevatorEncoder.getPosition();
   }
 
-  public Command setElevatorResetSpeed() {
+  public Command descendSlowly() {
     return Commands.runEnd(
-        () -> {
-          elevatorMotor.set(ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED);
-        },
-        () -> {
-          elevatorMotor.set(ElevatorConstants.ELEVATOR_STOP_SPEED);
-        });
+        () -> elevatorMotor.set(ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED),
+        () -> elevatorMotor.set(ElevatorConstants.ELEVATOR_STOP_SPEED),
+        this);
   }
 
-  public boolean elevatorStalled() {
+  public boolean isStalled() {
     return Math.abs(elevatorEncoder.getVelocity()) < ElevatorConstants.ELEVATOR_STALL_VELOCITY
         && elevatorMotor.get() == ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED;
   }
@@ -99,19 +95,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     return (c || d);
   }
 
-  public Command resetElevatorEncoder() {
-    return Commands.runOnce(
-        () -> {
-          elevatorEncoder.setPosition(0);
-        });
+  public Command resetEncoder() {
+    return Commands.runOnce(() -> elevatorEncoder.setPosition(0), this);
   }
 
   /**
    * Drive the elevator motor to their respective setpoint. The elevator will use raw PIDController
    * from WPILib.
    */
-  private void moveToSetpoint() {
-    double elevatorPidOutput = elevatorPid.calculate(getElevatorPosition(), elevatorSetpoint);
+  private void runPID() {
+    double elevatorPidOutput = elevatorPid.calculate(getPosition(), elevatorSetpoint);
     elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
   }
 
@@ -123,24 +116,24 @@ public class ElevatorSubsystem extends SubsystemBase {
     return this.runOnce(
         () -> {
           switch (setpoint) {
-            case kElevatorIdle:
+            case elevatorIdle:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
               break;
-            case kElevatorHover:
+            case elevatorHover:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
-            case kElevatorL2:
+            case elevatorL2:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_SETPOINT;
               break;
-            case kElevatorL3:
+            case elevatorL3:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
               break;
-            case kElevatorOuttake:
+            case elevatorOuttake:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_OUTTAKE_SETPOINT;
               break;
-            case kOuttakeElevatorAlgae:
+            case outtakeElevatorAlgae:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
               break;
-            case kElevatorIntake:
+            case elevatorIntake:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
               break;
           }
@@ -149,11 +142,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    moveToSetpoint();
+    runPID();
 
     SmartDashboard.putNumber("Elevator Target Position", elevatorSetpoint);
     SmartDashboard.putNumber("Elevator Actual Position", elevatorEncoder.getPosition());
-    SmartDashboard.putBoolean("Elevator Stalled", elevatorStalled());
+    SmartDashboard.putBoolean("Elevator Stalled", isStalled());
     SmartDashboard.putNumber("Elevator Velocity", elevatorEncoder.getVelocity());
   }
 }

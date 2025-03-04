@@ -38,12 +38,15 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public Command climb() {
     return Commands.runEnd(
-        () -> set(ClimberConstants.CLIMB_SPEED), () -> set(ClimberConstants.CLIMB_REST_SPEED));
+        () -> set(ClimberConstants.CLIMB_SPEED),
+        () -> set(ClimberConstants.CLIMB_REST_SPEED),
+        this);
   }
 
   public Command reverseClimb() {
     return Commands.runEnd(
         () -> set(ClimberConstants.REVERSE_CLIMB_SPEED),
-        () -> set(ClimberConstants.CLIMB_REST_SPEED));
+        () -> set(ClimberConstants.CLIMB_REST_SPEED),
+        this);
   }
 }

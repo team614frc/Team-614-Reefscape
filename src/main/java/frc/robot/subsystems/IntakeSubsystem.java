@@ -43,7 +43,8 @@ public class IntakeSubsystem extends SubsystemBase {
         },
         () -> {
           set(IntakeConstants.INTAKE_REST_SPEED);
-        });
+        },
+        this);
   }
 
   public Command outtakeGamepiece() {
@@ -53,7 +54,8 @@ public class IntakeSubsystem extends SubsystemBase {
         },
         () -> {
           set(IntakeConstants.OUTTAKE_REST_SPEED);
-        });
+        },
+        this);
   }
 
   public Command fastOuttakeGamepiece() {
@@ -63,14 +65,15 @@ public class IntakeSubsystem extends SubsystemBase {
         },
         () -> {
           set(IntakeConstants.OUTTAKE_REST_SPEED);
-        });
+        },
+        this);
   }
 
   public Command autoOuttakeGamepiece() {
-    return Commands.runOnce(() -> set(IntakeConstants.OUTTAKE_SPEED));
+    return Commands.runOnce(() -> set(IntakeConstants.OUTTAKE_SPEED), this);
   }
 
   public Command stopIntake() {
-    return Commands.runOnce(() -> set(IntakeConstants.INTAKE_REST_SPEED));
+    return Commands.runOnce(() -> set(IntakeConstants.INTAKE_REST_SPEED), this);
   }
 }

@@ -43,18 +43,19 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   // Command to activate the end effector (e.g., for gripping or releasing)
   public Command intake() {
-    return Commands.runOnce(() -> set(EndEffectorConstants.INTAKE_SPEED));
+    return Commands.runOnce(() -> set(EndEffectorConstants.INTAKE_SPEED), this);
   }
 
   public Command outtake() {
-    return Commands.runOnce(() -> set(EndEffectorConstants.OUTTAKE_SPEED));
+    return Commands.runOnce(() -> set(EndEffectorConstants.OUTTAKE_SPEED), this);
   }
 
   public Command punchAlgae() {
     return Commands.runOnce(
         () -> {
           set(EndEffectorConstants.OUTTAKE_ALGAE);
-        });
+        },
+        this);
   }
 
   // Command to deactivate the end effector (e.g., stop gripping or releasing)
@@ -62,7 +63,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
     return Commands.runOnce(
         () -> {
           set(EndEffectorConstants.INTAKE_REST_SPEED); // Stop the motor
-        });
+        },
+        this);
   }
 
   public boolean hasGamePiece() {
