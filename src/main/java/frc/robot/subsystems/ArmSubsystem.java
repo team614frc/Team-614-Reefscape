@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
@@ -18,21 +14,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ArmSetpoint;
+import frc.robot.Constants.ElevatorConstants;
 
 public class ArmSubsystem extends SubsystemBase {
-  public enum ArmSetpoint {
-    armIdle,
-    armHover,
-    armL2,
-    armL3,
-    pushArm,
-    scoreL3Arm,
-    scoreL2Arm,
-    outtakeArmAlgaeL2,
-    outtakeArmAlgaeL3,
-    pukeArm;
-  }
-
   // Arm Motor
   private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
   private SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
@@ -50,9 +35,9 @@ public class ArmSubsystem extends SubsystemBase {
       new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kV, ArmConstants.kA);
 
   // Default Current Target
-  private double armSetpoint = ArmConstants.ARM_START_SETPOINT;
+  private double armSetpoint = ArmSetpoint.armStart.value;
 
-  /** Creates a new ElevatorArmSubsystem. */
+  /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     armMotor.configure(
         Configs.ArmConfig.ARM_CONFIG,
@@ -69,33 +54,32 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean checkArmL3() {
-    boolean a = armSetpoint == ArmConstants.ARM_L3_SETPOINT;
+    boolean a = armSetpoint == ArmSetpoint.armL3.value;
     boolean b =
-        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_L3_SETPOINT)
-            <= ArmConstants.ARM_TOLERANCE;
+        Math.abs(armEncoder.getPosition() - ArmSetpoint.armL3.value) <= ArmConstants.ARM_TOLERANCE;
 
     return (a || b);
   }
 
   public boolean checkArmPuke() {
-    return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT
-        || Math.abs(armEncoder.getPosition() - ArmConstants.ARM_PUKE_SETPOINT)
-            <= ArmConstants.ARM_TOLERANCE;
+    boolean a = armSetpoint == ArmSetpoint.pukeArm.value;
+    boolean b =
+        Math.abs(armEncoder.getPosition() - ArmSetpoint.pukeArm.value)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE;
+
+    return a || b;
   }
 
   public boolean checkArmHover() {
-    boolean a = armSetpoint == ArmConstants.ARM_HOVER_SETPOINT;
+    boolean a = armSetpoint == ArmSetpoint.armHover.value;
     boolean b =
-        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_HOVER_SETPOINT)
+        Math.abs(armEncoder.getPosition() - ArmSetpoint.armHover.value)
             <= ArmConstants.ARM_TOLERANCE;
 
     return (a || b);
   }
 
-  /**
-   * Drive the arm motor to their respective setpoint. The Arm will use PIDController and
-   * ArmFeedforward from WPILib.
-   */
+  /** Drive the arm motor to its respective setpoint using PID and feedforward control. */
   private void runPID() {
     double armFeedforwardVoltage =
         armFeedforward.calculate(
@@ -111,46 +95,9 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm FF", armFeedforwardVoltage);
   }
 
-  /**
-   * Command to set the subsystem setpoint. This will set the arm and elevator to their predefined
-   * positions for the given setpoint.
-   */
+  /** Set the arm to a predefined setpoint. */
   public Command setSetpoint(ArmSetpoint setpoint) {
-    return this.runOnce(
-        () -> {
-          switch (setpoint) {
-            case armIdle:
-              armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
-              break;
-            case armHover:
-              armSetpoint = ArmConstants.ARM_HOVER_SETPOINT;
-              break;
-            case armL2:
-              armSetpoint = ArmConstants.ARM_L2_SETPOINT;
-              break;
-            case armL3:
-              armSetpoint = ArmConstants.ARM_L3_SETPOINT;
-              break;
-            case pushArm:
-              armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
-              break;
-            case scoreL3Arm:
-              armSetpoint = ArmConstants.ARM_L3_SCORE_SETPOINT;
-              break;
-            case scoreL2Arm:
-              armSetpoint = ArmConstants.ARM_L2_SCORE_SETPOINT;
-              break;
-            case outtakeArmAlgaeL2:
-              armSetpoint = ArmConstants.ARM_FEEDFORWARD_OFFSET;
-              break;
-            case outtakeArmAlgaeL3:
-              armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
-              break;
-            case pukeArm:
-              armSetpoint = ArmConstants.ARM_PUKE_SETPOINT;
-              break;
-          }
-        });
+    return this.runOnce(() -> armSetpoint = setpoint.value);
   }
 
   @Override

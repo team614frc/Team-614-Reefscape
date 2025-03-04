@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
@@ -17,17 +13,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ElevatorSetpoint;
 
 public class ElevatorSubsystem extends SubsystemBase {
-  public enum ElevatorSetpoint {
-    elevatorIdle,
-    elevatorHover,
-    elevatorL2,
-    elevatorL3,
-    elevatorOuttake,
-    outtakeElevatorAlgae,
-    elevatorIntake;
-  }
 
   // Elevator Motor
   private SparkFlex elevatorMotor =
@@ -44,9 +32,9 @@ public class ElevatorSubsystem extends SubsystemBase {
               ElevatorConstants.ELEVATOR_MAX_ACCELERATION));
 
   // Default Current Target
-  private double elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
+  private double elevatorSetpoint = ElevatorSetpoint.elevatorIdle.value;
 
-  /** Creates a new ElevatorArmSubsystem. */
+  /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
     elevatorMotor.configure(
         Configs.ElevatorConfig.ELEVATOR_CONFIG,
@@ -78,66 +66,36 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean checkElevatorL3() {
-    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
-    boolean d =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_L3_SETPOINT)
+    boolean a = elevatorSetpoint == ElevatorSetpoint.elevatorL3.value;
+    boolean b =
+        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.elevatorL3.value)
             <= ElevatorConstants.ELEVATOR_TOLERANCE;
 
-    return (c || d);
+    return a || b;
   }
 
   public boolean checkElevatorHover() {
-    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
-    boolean d =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_HOVER_SETPOINT)
+    boolean a = elevatorSetpoint == ElevatorSetpoint.elevatorHover.value;
+    boolean b =
+        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.elevatorHover.value)
             <= ElevatorConstants.ELEVATOR_TOLERANCE;
 
-    return (c || d);
+    return a || b;
   }
 
   public Command resetEncoder() {
     return Commands.runOnce(() -> elevatorEncoder.setPosition(0), this);
   }
 
-  /**
-   * Drive the elevator motor to their respective setpoint. The elevator will use raw PIDController
-   * from WPILib.
-   */
+  /** Drive the elevator motor to its respective setpoint using PID control. */
   private void runPID() {
     double elevatorPidOutput = elevatorPid.calculate(getPosition(), elevatorSetpoint);
-    elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
+    elevatorMotor.setVoltage(elevatorPidOutput);
   }
 
-  /**
-   * Command to set the subsystem setpoint. This will set the arm and elevator to their predefined
-   * positions for the given setpoint.
-   */
+  /** Set the elevator to a predefined setpoint. */
   public Command setSetpoint(ElevatorSetpoint setpoint) {
-    return this.runOnce(
-        () -> {
-          switch (setpoint) {
-            case elevatorIdle:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
-              break;
-            case elevatorHover:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
-            case elevatorL2:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_SETPOINT;
-              break;
-            case elevatorL3:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
-              break;
-            case elevatorOuttake:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_OUTTAKE_SETPOINT;
-              break;
-            case outtakeElevatorAlgae:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
-              break;
-            case elevatorIntake:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
-              break;
-          }
-        });
+    return this.runOnce(() -> elevatorSetpoint = setpoint.value);
   }
 
   @Override

@@ -101,6 +101,44 @@ public final class Constants {
     public static final int LASER_MAX_DISTANCE = 180;
   }
 
+  public enum ElevatorSetpoint {
+    elevatorHover(6.19),
+    elevatorIntake(3.74),
+    elevatorIdle(0.05),
+    elevatorL2(0.4),
+    elevatorL3(6.19),
+    elevatorL4(0),
+    elevatorOuttake(1.75),
+    outtakeElevatorAlgae(6.19);
+
+    public final double value;
+
+    ElevatorSetpoint(double value) {
+      this.value = value;
+    }
+  }
+
+  public enum ArmSetpoint {
+    armHover(0.03),
+    pushArm(0.465),
+    armIdle(0.49),
+    armStart(0.5),
+    armL2(0.465),
+    armL3(0.475),
+    armL4(0),
+    scoreL3Arm(0.390),
+    scoreL2Arm(0.380),
+    pukeArm(0.175),
+    outtakeArmAlgaeL2(0.278),
+    outtakeArmAlgaeL3(0.465);
+
+    public final double value;
+
+    ArmSetpoint(double value) {
+      this.value = value;
+    }
+  }
+
   public static final class ElevatorConstants {
     public static final int ELEVATOR_MOTOR = 22;
     public static final Current ELEVATOR_CURRENT_LIMIT = Amp.of(80);
@@ -111,15 +149,7 @@ public final class Constants {
     public static final double kG = 0.02;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double ELEVATOR_HOVER_SETPOINT = 6.19;
-    public static final double ELEVATOR_INTAKE_SETPOINT = 3.74;
-    public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
-    public static final double ELEVATOR_L1_SETPOINT = 0;
-    public static final double ELEVATOR_L2_SETPOINT = 0.4;
-    public static final double ELEVATOR_L3_SETPOINT = 6.19;
-    public static final double ELEVATOR_L4_SETPOINT = 0;
-    public static final double ELEVATOR_OUTTAKE_SETPOINT = 1.75;
-    public static final int ELEVATOR_ZERO_ENCODER = 0;
+
     public static final double ELEVATOR_MAX_VELOCITY = 20;
     public static final double ELEVATOR_MAX_ACCELERATION = 50;
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
@@ -140,19 +170,8 @@ public final class Constants {
     public static final double kG = 0.85;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double ARM_HOVER_SETPOINT = 0.03;
-    public static final double ARM_INTAKE_SETPOINT = 0.03;
-    public static final double ARM_PUSH_SETPOINT = 0.465;
-    public static final double ARM_IDLE_SETPOINT = 0.49;
-    public static final double ARM_START_SETPOINT = 0.5;
-    public static final double ARM_L1_SETPOINT = 0;
-    public static final double ARM_L2_SETPOINT = 0.465;
-    public static final double ARM_L3_SETPOINT = 0.475;
-    public static final double ARM_L4_SETPOINT = 0;
-    public static final double ARM_L3_SCORE_SETPOINT = 0.390;
-    public static final double ARM_L2_SCORE_SETPOINT = 0.380;
+
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
-    public static final double ARM_PUKE_SETPOINT = 0.175;
     public static final int ARM_ZERO_ENCODER = 0;
     public static final double ARM_MAX_VELOCITY = 4;
     public static final double ARM_MAX_ACCELERATION = 1;
