@@ -104,9 +104,9 @@ public class FieldConstants {
       CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(4)));
     }
 
-    public static final List<Integer> CENTER_FACES_RED_IDS = List.of(7, 6, 11, 10, 9, 8);
+    public static final List<Integer> CENTER_FACES_RED_IDS = List.of(7, 8, 9, 10, 11, 6);
 
-    public static final List<Integer> CENTER_FACES_BLUE_IDS = List.of(18, 17, 22, 21, 20, 19);
+    public static final List<Integer> CENTER_FACES_BLUE_IDS = List.of(18, 19, 20, 21, 22, 17);
 
     /** Starting at the right branch facing the driver station in clockwise * */
     public static final List<Map<ReefLevel, Pose3d>> BRANCH_POSITIONS = new ArrayList<>(13);
