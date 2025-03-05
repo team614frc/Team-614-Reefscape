@@ -89,7 +89,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public Command resetEncoder() {
-    return Commands.runOnce(() -> elevatorEncoder.setPosition(0), this);
+    return Commands.runOnce(() -> elevatorEncoder.setPosition(0));
   }
 
   /** Drive the elevator motor to its respective setpoint using PID control. */

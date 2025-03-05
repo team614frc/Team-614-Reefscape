@@ -49,7 +49,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   public boolean atSetpoint(ArmSetpoint setpoint) {
     boolean a = armSetpoint == setpoint;
-    boolean b = Math.abs(armEncoder.getPosition() - setpoint.value) <= ArmConstants.ARM_TOLERANCE;
+    boolean b =
+        Math.abs(armEncoder.getPosition() - setpoint.value.in(Rotations))
+            <= ArmConstants.ARM_TOLERANCE;
     return a || b;
   }
 
@@ -60,7 +62,8 @@ public class ArmSubsystem extends SubsystemBase {
   public boolean checkArmL3() {
     boolean a = armSetpoint == ArmSetpoint.PREPL3;
     boolean b =
-        Math.abs(armEncoder.getPosition() - ArmSetpoint.PREPL3.value) <= ArmConstants.ARM_TOLERANCE;
+        Math.abs(armEncoder.getPosition() - ArmSetpoint.PREPL3.value.in(Rotations))
+            <= ArmConstants.ARM_TOLERANCE;
 
     return a || b;
   }
@@ -68,7 +71,8 @@ public class ArmSubsystem extends SubsystemBase {
   public boolean checkArmPuke() {
     boolean a = armSetpoint == ArmSetpoint.PUKE;
     boolean b =
-        Math.abs(armEncoder.getPosition() - ArmSetpoint.PUKE.value) <= ArmConstants.ARM_TOLERANCE;
+        Math.abs(armEncoder.getPosition() - ArmSetpoint.PUKE.value.in(Rotations))
+            <= ArmConstants.ARM_TOLERANCE;
 
     return a || b;
   }
@@ -76,7 +80,8 @@ public class ArmSubsystem extends SubsystemBase {
   public boolean checkArmHover() {
     boolean a = armSetpoint == ArmSetpoint.HOVER;
     boolean b =
-        Math.abs(armEncoder.getPosition() - ArmSetpoint.HOVER.value) <= ArmConstants.ARM_TOLERANCE;
+        Math.abs(armEncoder.getPosition() - ArmSetpoint.HOVER.value.in(Rotations))
+            <= ArmConstants.ARM_TOLERANCE;
 
     return a || b;
   }
@@ -90,7 +95,7 @@ public class ArmSubsystem extends SubsystemBase {
             armPid.getSetpoint().velocity);
 
     double armPidOutput =
-        armPid.calculate(getPosition().in(Rotations), Units.rotationsToRadians(armSetpoint.value));
+        armPid.calculate(getPosition().in(Rotations), armSetpoint.value.in(Rotations));
 
     armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
 
@@ -106,7 +111,7 @@ public class ArmSubsystem extends SubsystemBase {
   public void periodic() {
     runPID();
 
-    SmartDashboard.putNumber("Arm Target Position", armSetpoint.value);
+    SmartDashboard.putNumber("Arm Target Position", armSetpoint.value.in(Rotations));
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
   }
 }

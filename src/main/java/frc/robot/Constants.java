@@ -132,10 +132,10 @@ public final class Constants {
     PUNCHALGAEL2(0.278),
     PUNCHALGAEL3(0.465);
 
-    public final double value;
+    public final Angle value;
 
     ArmSetpoint(double value) {
-      this.value = value;
+      this.value = Rotations.of(value);
     }
   }
 
