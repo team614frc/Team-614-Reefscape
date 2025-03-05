@@ -12,7 +12,6 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.CanalConstants;
@@ -65,43 +64,38 @@ public class CanalSubsystem extends SubsystemBase {
   }
 
   public Command intake() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           set(CanalConstants.INTAKE_SPEED);
-        },
-        this);
+        });
   }
 
   public Command slow() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           set(CanalConstants.CANAL_SLOW_SPEED);
-        },
-        this);
+        });
   }
 
   public Command fast() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           set(CanalConstants.CANAL_FAST_SPEED);
-        },
-        this);
+        });
   }
 
   public Command backwards() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           set(CanalConstants.BACKWARDS_SPEED);
-        },
-        this);
+        });
   }
 
   public Command stop() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           set(CanalConstants.CANAL_REST_SPEED);
-        },
-        this);
+        });
   }
 
   public boolean gamePieceDetected() {

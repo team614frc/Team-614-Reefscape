@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -32,7 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase {
               ElevatorConstants.ELEVATOR_MAX_ACCELERATION));
 
   // Default Current Target
-  private double elevatorSetpoint = ElevatorSetpoint.elevatorIdle.value;
+  private ElevatorSetpoint elevatorSetpoint = ElevatorSetpoint.IDLE;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -44,9 +46,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorEncoder.setPosition(0);
   }
 
-  public boolean atSetpoint() {
-    return Math.abs(elevatorEncoder.getPosition() - elevatorSetpoint)
-        <= ElevatorConstants.ELEVATOR_TOLERANCE;
+  public boolean atSetpoint(ElevatorSetpoint setpoint) {
+    boolean a = elevatorSetpoint == setpoint;
+    boolean b =
+        Math.abs(elevatorEncoder.getPosition() - setpoint.value.in(Rotations))
+            <= ElevatorConstants.ELEVATOR_TOLERANCE;
+    return a || b;
   }
 
   private double getPosition() {
@@ -66,18 +71,18 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean checkElevatorL3() {
-    boolean a = elevatorSetpoint == ElevatorSetpoint.elevatorL3.value;
+    boolean a = elevatorSetpoint == ElevatorSetpoint.PREPL3;
     boolean b =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.elevatorL3.value)
+        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.PREPL3.value.in(Rotations))
             <= ElevatorConstants.ELEVATOR_TOLERANCE;
 
     return a || b;
   }
 
   public boolean checkElevatorHover() {
-    boolean a = elevatorSetpoint == ElevatorSetpoint.elevatorHover.value;
+    boolean a = elevatorSetpoint == ElevatorSetpoint.HOVER;
     boolean b =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.elevatorHover.value)
+        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.HOVER.value.in(Rotations))
             <= ElevatorConstants.ELEVATOR_TOLERANCE;
 
     return a || b;
@@ -89,20 +94,21 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Drive the elevator motor to its respective setpoint using PID control. */
   private void runPID() {
-    double elevatorPidOutput = elevatorPid.calculate(getPosition(), elevatorSetpoint);
+    double elevatorPidOutput =
+        elevatorPid.calculate(getPosition(), elevatorSetpoint.value.in(Rotations));
     elevatorMotor.setVoltage(elevatorPidOutput);
   }
 
   /** Set the elevator to a predefined setpoint. */
   public Command setSetpoint(ElevatorSetpoint setpoint) {
-    return this.runOnce(() -> elevatorSetpoint = setpoint.value);
+    return this.runOnce(() -> elevatorSetpoint = setpoint);
   }
 
   @Override
   public void periodic() {
     runPID();
 
-    SmartDashboard.putNumber("Elevator Target Position", elevatorSetpoint);
+    SmartDashboard.putNumber("Elevator Target Position", elevatorSetpoint.value.in(Rotations));
     SmartDashboard.putNumber("Elevator Actual Position", elevatorEncoder.getPosition());
     SmartDashboard.putBoolean("Elevator Stalled", isStalled());
     SmartDashboard.putNumber("Elevator Velocity", elevatorEncoder.getVelocity());

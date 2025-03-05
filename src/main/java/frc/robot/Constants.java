@@ -102,35 +102,35 @@ public final class Constants {
   }
 
   public enum ElevatorSetpoint {
-    elevatorHover(6.19),
-    elevatorIntake(3.74),
-    elevatorIdle(0.05),
-    elevatorL2(0.4),
-    elevatorL3(6.19),
-    elevatorL4(0),
-    elevatorOuttake(1.75),
-    outtakeElevatorAlgae(6.19);
+    HOVER(6.19),
+    INTAKE(3.74),
+    IDLE(0.05),
+    PREPL2(0.4),
+    PREPL3(6.19),
+    PREPL4(0),
+    OUTTAKE(1.75),
+    PUNCHALGAE(6.19);
 
-    public final double value;
+    public final Angle value;
 
     ElevatorSetpoint(double value) {
-      this.value = value;
+      this.value = Rotations.of(value);
     }
   }
 
   public enum ArmSetpoint {
-    armHover(0.03),
-    pushArm(0.465),
-    armIdle(0.49),
-    armStart(0.5),
-    armL2(0.465),
-    armL3(0.475),
-    armL4(0),
-    scoreL3Arm(0.390),
-    scoreL2Arm(0.380),
-    pukeArm(0.175),
-    outtakeArmAlgaeL2(0.278),
-    outtakeArmAlgaeL3(0.465);
+    HOVER(0.03),
+    PUSH(0.465),
+    IDLE(0.49),
+    START(0.5),
+    PREPL2(0.465),
+    PREPL3(0.475),
+    PREPL4(0),
+    SCOREL3(0.390),
+    SCOREL2(0.380),
+    PUKE(0.175),
+    PUNCHALGAEL2(0.278),
+    PUNCHALGAEL3(0.465);
 
     public final double value;
 
@@ -173,8 +173,8 @@ public final class Constants {
 
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
     public static final int ARM_ZERO_ENCODER = 0;
-    public static final double ARM_MAX_VELOCITY = 4;
-    public static final double ARM_MAX_ACCELERATION = 1;
+    public static final Angle ARM_MAX_VELOCITY = Rotations.of(4);
+    public static final Angle ARM_MAX_ACCELERATION = Rotations.of(1);
     public static final double ARM_MIN_RANGE = -1;
     public static final double ARM_MAX_RANGE = 1;
     public static final double ARM_LOOP_ERROR = 0.25;
