@@ -20,9 +20,9 @@ import frc.robot.Constants.ElevatorSetpoint;
 public class ElevatorSubsystem extends SubsystemBase {
 
   // Elevator Motor
-  private SparkFlex elevatorMotor =
+  private final SparkFlex elevatorMotor =
       new SparkFlex(ElevatorConstants.ELEVATOR_MOTOR, MotorType.kBrushless);
-  private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
+  private final RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
 
   private final ProfiledPIDController elevatorPid =
       new ProfiledPIDController(
@@ -50,7 +50,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     boolean a = elevatorSetpoint == setpoint;
     boolean b =
         Math.abs(elevatorEncoder.getPosition() - setpoint.value.in(Rotations))
-            <= ElevatorConstants.ELEVATOR_TOLERANCE;
+            <= ElevatorConstants.ELEVATOR_TOLERANCE.in(Rotations);
     return a || b;
   }
 
@@ -68,24 +68,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   public boolean isStalled() {
     return Math.abs(elevatorEncoder.getVelocity()) < ElevatorConstants.ELEVATOR_STALL_VELOCITY
         && elevatorMotor.get() == ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED;
-  }
-
-  public boolean checkElevatorL3() {
-    boolean a = elevatorSetpoint == ElevatorSetpoint.PREPL3;
-    boolean b =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.PREPL3.value.in(Rotations))
-            <= ElevatorConstants.ELEVATOR_TOLERANCE;
-
-    return a || b;
-  }
-
-  public boolean checkElevatorHover() {
-    boolean a = elevatorSetpoint == ElevatorSetpoint.HOVER;
-    boolean b =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.HOVER.value.in(Rotations))
-            <= ElevatorConstants.ELEVATOR_TOLERANCE;
-
-    return a || b;
   }
 
   public Command resetEncoder() {

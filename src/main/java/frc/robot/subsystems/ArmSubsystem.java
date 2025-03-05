@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -10,7 +12,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,8 +22,8 @@ import frc.robot.Constants.ArmSetpoint;
 
 public class ArmSubsystem extends SubsystemBase {
   // Arm Motor
-  private SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
-  private SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
+  private final SparkFlex armMotor = new SparkFlex(ArmConstants.ARM_MOTOR, MotorType.kBrushless);
+  private final SparkAbsoluteEncoder armEncoder = armMotor.getAbsoluteEncoder();
 
   private final ProfiledPIDController armPid =
       new ProfiledPIDController(
@@ -30,8 +31,8 @@ public class ArmSubsystem extends SubsystemBase {
           ArmConstants.kI,
           ArmConstants.kD,
           new TrapezoidProfile.Constraints(
-              (ArmConstants.ARM_MAX_VELOCITY).in(Rotations),
-              (ArmConstants.ARM_MAX_ACCELERATION).in(Rotations)));
+              (ArmConstants.ARM_MAX_VELOCITY).in(RotationsPerSecond),
+              (ArmConstants.ARM_MAX_ACCELERATION).in(RotationsPerSecondPerSecond)));
 
   private final ArmFeedforward armFeedforward =
       new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kV, ArmConstants.kA);
@@ -51,7 +52,7 @@ public class ArmSubsystem extends SubsystemBase {
     boolean a = armSetpoint == setpoint;
     boolean b =
         Math.abs(armEncoder.getPosition() - setpoint.value.in(Rotations))
-            <= ArmConstants.ARM_TOLERANCE;
+            <= ArmConstants.ARM_TOLERANCE.in(Rotations);
     return a || b;
   }
 
@@ -59,39 +60,11 @@ public class ArmSubsystem extends SubsystemBase {
     return Rotations.of(armEncoder.getPosition());
   }
 
-  public boolean checkArmL3() {
-    boolean a = armSetpoint == ArmSetpoint.PREPL3;
-    boolean b =
-        Math.abs(armEncoder.getPosition() - ArmSetpoint.PREPL3.value.in(Rotations))
-            <= ArmConstants.ARM_TOLERANCE;
-
-    return a || b;
-  }
-
-  public boolean checkArmPuke() {
-    boolean a = armSetpoint == ArmSetpoint.PUKE;
-    boolean b =
-        Math.abs(armEncoder.getPosition() - ArmSetpoint.PUKE.value.in(Rotations))
-            <= ArmConstants.ARM_TOLERANCE;
-
-    return a || b;
-  }
-
-  public boolean checkArmHover() {
-    boolean a = armSetpoint == ArmSetpoint.HOVER;
-    boolean b =
-        Math.abs(armEncoder.getPosition() - ArmSetpoint.HOVER.value.in(Rotations))
-            <= ArmConstants.ARM_TOLERANCE;
-
-    return a || b;
-  }
-
   /** Drive the arm motor to its respective setpoint using PID and feedforward control. */
   private void runPID() {
     double armFeedforwardVoltage =
         armFeedforward.calculate(
-            armPid.getSetpoint().position
-                - Units.rotationsToRadians(ArmConstants.ARM_FEEDFORWARD_OFFSET),
+            armPid.getSetpoint().position - ArmConstants.ARM_FEEDFORWARD_OFFSET.in(Rotations),
             armPid.getSetpoint().velocity);
 
     double armPidOutput =

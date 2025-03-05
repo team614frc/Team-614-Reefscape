@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -105,11 +107,11 @@ public final class Constants {
     HOVER(6.19),
     INTAKE(3.74),
     IDLE(0.05),
-    PREPL2(0.4),
-    PREPL3(6.19),
-    PREPL4(0),
+    PREP_L2(0.4),
+    PREP_L3(6.19),
+    PREP_L4(0),
     OUTTAKE(1.75),
-    PUNCHALGAE(6.19);
+    PUNCH_ALGAE(6.19);
 
     public final Angle value;
 
@@ -123,14 +125,14 @@ public final class Constants {
     PUSH(0.465),
     IDLE(0.49),
     START(0.5),
-    PREPL2(0.465),
-    PREPL3(0.475),
-    PREPL4(0),
-    SCOREL3(0.390),
-    SCOREL2(0.380),
+    PREP_L2(0.465),
+    PREP_L3(0.475),
+    PREP_L4(0),
+    SCORE_L3(0.390),
+    SCORE_L2(0.380),
     PUKE(0.175),
-    PUNCHALGAEL2(0.278),
-    PUNCHALGAEL3(0.465);
+    PUNCH_ALGAE_L2(0.278),
+    PUNCH_ALGAE_L3(0.465);
 
     public final Angle value;
 
@@ -154,7 +156,7 @@ public final class Constants {
     public static final double ELEVATOR_MAX_ACCELERATION = 50;
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
     public static final Angle ELEVATOR_SIM_STARTING_ANGLE = Degrees.of(180);
-    public static final double ELEVATOR_TOLERANCE = 0.1;
+    public static final Angle ELEVATOR_TOLERANCE = Rotations.of(0.1);
     public static final double ELEVATOR_SLOW_DOWN_SPEED = -0.05;
     public static final double ELEVATOR_STALL_VELOCITY = 0.1;
     public static final double ELEVATOR_STOP_SPEED = 0;
@@ -171,16 +173,17 @@ public final class Constants {
     public static final double kV = 0;
     public static final double kA = 0;
 
-    public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
+    public static final Angle ARM_FEEDFORWARD_OFFSET = Rotations.of(0.278);
     public static final int ARM_ZERO_ENCODER = 0;
-    public static final Angle ARM_MAX_VELOCITY = Rotations.of(4);
-    public static final Angle ARM_MAX_ACCELERATION = Rotations.of(1);
+    public static final AngularVelocity ARM_MAX_VELOCITY = RotationsPerSecond.of(4);
+    public static final AngularAcceleration ARM_MAX_ACCELERATION =
+        RotationsPerSecondPerSecond.of(1);
     public static final double ARM_MIN_RANGE = -1;
     public static final double ARM_MAX_RANGE = 1;
     public static final double ARM_LOOP_ERROR = 0.25;
     public static final Angle ARM_STARTING_ANGLE = Degrees.of(180);
     public static final Angle ARM_ANGLE_COMPENSATE = Degrees.of(90);
-    public static final double ARM_TOLERANCE = 0.05;
+    public static final Angle ARM_TOLERANCE = Rotations.of(0.05);
   }
 
   public static final class SimulationRobotConstants {

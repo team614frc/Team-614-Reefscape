@@ -15,7 +15,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.IntakeConstants;
@@ -87,34 +86,18 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   public Command pivotDown() {
-    return Commands.runOnce(
-        () -> {
-          pivotSetpoint = IntakeConstants.PIVOT_DOWN;
-        },
-        this);
+    return this.runOnce(() -> pivotSetpoint = IntakeConstants.PIVOT_DOWN);
   }
 
   public Command pivotIdle() {
-    return Commands.runOnce(
-        () -> {
-          pivotSetpoint = IntakeConstants.PIVOT_UP;
-        },
-        this);
+    return this.runOnce(() -> pivotSetpoint = IntakeConstants.PIVOT_UP);
   }
 
   public Command pivotIntakeAlgae() {
-    return Commands.runOnce(
-        () -> {
-          pivotSetpoint = IntakeConstants.PIVOT_INTAKE_ALGAE;
-        },
-        this);
+    return this.runOnce(() -> pivotSetpoint = IntakeConstants.PIVOT_INTAKE_ALGAE);
   }
 
   public Command pivotOuttakeAlgae() {
-    return Commands.runOnce(
-        () -> {
-          pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
-        },
-        this);
+    return this.runOnce(() -> pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE);
   }
 }
