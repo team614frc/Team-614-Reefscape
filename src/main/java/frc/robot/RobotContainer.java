@@ -111,76 +111,75 @@ public class RobotContainer {
 
   private final Command autoOuttakeCoral =
       Commands.sequence(
-              arm.setSetpoint(ArmSetpoint.scoreL3Arm),
+              arm.setSetpoint(ArmSetpoint.SCORE_L3),
               Commands.waitUntil(arm::atSetpoint),
               endEffector.outtake(),
-              arm.setSetpoint(ArmSetpoint.armL3),
-              elevator.setSetpoint(ElevatorSetpoint.elevatorOuttake),
+              arm.setSetpoint(ArmSetpoint.L3),
+              elevator.setSetpoint(ElevatorSetpoint.OUTTAKE_CORAL),
               Commands.waitUntil(elevator::atSetpoint),
-              elevator.setSetpoint(ElevatorSetpoint.elevatorIdle),
-              arm.setSetpoint(ArmSetpoint.armIdle),
+              elevator.setSetpoint(ElevatorSetpoint.IDLE),
+              arm.setSetpoint(ArmSetpoint.IDLE),
               Commands.waitUntil(arm::atSetpoint),
               endEffector.stop())
           .onlyIf(() -> arm.checkArmL3() && elevator.checkElevatorL3())
           .andThen(
               Commands.sequence(
-                  arm.setSetpoint(ArmSetpoint.scoreL2Arm),
+                  arm.setSetpoint(ArmSetpoint.L2),
                   Commands.waitUntil(arm::atSetpoint),
                   endEffector.outtake(),
-                  arm.setSetpoint(ArmSetpoint.armL2),
-                  elevator.setSetpoint(ElevatorSetpoint.elevatorIdle),
+                  arm.setSetpoint(ArmSetpoint.L2),
+                  elevator.setSetpoint(ElevatorSetpoint.IDLE),
                   Commands.waitUntil(elevator::atSetpoint),
-                  arm.setSetpoint(ArmSetpoint.armIdle),
+                  arm.setSetpoint(ArmSetpoint.IDLE),
                   Commands.waitUntil(arm::atSetpoint),
                   endEffector.stop()));
 
   private final Command autoCanalIntake =
       Commands.sequence(
-          arm.setSetpoint(ArmSetpoint.pushArm),
+          arm.setSetpoint(ArmSetpoint.PUSH),
           Commands.waitUntil(arm::atSetpoint),
           canal.intake(),
-          elevator.setSetpoint(ElevatorSetpoint.elevatorHover),
+          elevator.setSetpoint(ElevatorSetpoint.HOVER),
           Commands.waitUntil(elevator::atSetpoint),
-          arm.setSetpoint(ArmSetpoint.armHover),
+          arm.setSetpoint(ArmSetpoint.HOVER),
           Commands.waitUntil(canal::gamePieceDetected),
           canal.slow(),
           Commands.waitSeconds(0.8),
-          Commands.parallel(
-              elevator.setSetpoint(ElevatorSetpoint.elevatorIntake), endEffector.intake()),
+          Commands.parallel(elevator.setSetpoint(ElevatorSetpoint.INTAKE), endEffector.intake()),
           Commands.waitUntil(elevator::atSetpoint),
-          elevator.setSetpoint(ElevatorSetpoint.elevatorHover),
+          elevator.setSetpoint(ElevatorSetpoint.HOVER),
           Commands.waitUntil(elevator::atSetpoint),
           canal.stop(),
-          arm.setSetpoint(ArmSetpoint.armHover));
+          arm.setSetpoint(ArmSetpoint.HOVER));
 
   private final Command autoL1 =
       Commands.sequence(
           intake.autoOuttakeGamepiece(), Commands.waitSeconds(0.25), intake.stopIntake());
 
   private final Command autoL2 =
-      Commands.sequence(arm.setSetpoint(ArmSetpoint.pushArm), Commands.waitUntil(arm::atSetpoint))
+      Commands.sequence(arm.setSetpoint(ArmSetpoint.PUSH), Commands.waitUntil(arm::atSetpoint))
           .onlyIf(() -> arm.checkArmHover() && elevator.checkElevatorHover())
           .andThen(
               Commands.sequence(
-                  elevator.setSetpoint(ElevatorSetpoint.elevatorL2),
+                  elevator.setSetpoint(ElevatorSetpoint.L2),
                   Commands.waitUntil(elevator::atSetpoint),
-                  arm.setSetpoint(ArmSetpoint.armL2)));
+                  arm.setSetpoint(ArmSetpoint.L2)));
 
   private final Command autoL3 =
-      Commands.sequence(arm.setSetpoint(ArmSetpoint.pushArm), Commands.waitUntil(arm::atSetpoint))
+      Commands.sequence(arm.setSetpoint(ArmSetpoint.PUSH), Commands.waitUntil(arm::atSetpoint))
           .onlyIf(() -> arm.checkArmHover() && elevator.checkElevatorHover())
           .andThen(
               Commands.sequence(
-                  elevator.setSetpoint(ElevatorSetpoint.elevatorL2),
+                  elevator.setSetpoint(ElevatorSetpoint.L2),
                   Commands.waitUntil(elevator::atSetpoint),
-                  arm.setSetpoint(ArmSetpoint.armL3)));
+                  arm.setSetpoint(ArmSetpoint.L3)));
 
   private final Command autoElevatorArmIdle =
       Commands.sequence(
           led.setBasicPattern(),
-          arm.setSetpoint(ArmSetpoint.armIdle),
+          arm.setSetpoint(ArmSetpoint.IDLE),
           Commands.waitUntil(arm::atSetpoint),
-          elevator.setSetpoint(ElevatorSetpoint.elevatorIdle));
+          elevator.setSetpoint(ElevatorSetpoint.IDLE));
 
   private final Command autoIntakeDownAndIntake =
       Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece());
@@ -212,60 +211,60 @@ public class RobotContainer {
 
   private final Command outtakeL2andL3 =
       Commands.sequence(
-              arm.setSetpoint(ArmSetpoint.scoreL3Arm),
+              arm.setSetpoint(ArmSetpoint.SCORE_L3),
               Commands.waitUntil(arm::atSetpoint),
               endEffector.outtake(),
-              arm.setSetpoint(ArmSetpoint.armL3),
-              elevator.setSetpoint(ElevatorSetpoint.elevatorOuttake),
+              arm.setSetpoint(ArmSetpoint.L3),
+              elevator.setSetpoint(ElevatorSetpoint.OUTTAKE_CORAL),
               Commands.waitUntil(elevator::atSetpoint),
-              elevator.setSetpoint(ElevatorSetpoint.elevatorIdle),
-              arm.setSetpoint(ArmSetpoint.armIdle),
+              elevator.setSetpoint(ElevatorSetpoint.IDLE),
+              arm.setSetpoint(ArmSetpoint.IDLE),
               Commands.waitUntil(arm::atSetpoint),
               endEffector.stop())
           .onlyIf(() -> elevator.checkElevatorL3() && arm.checkArmL3())
           .andThen(
               Commands.sequence(
-                  arm.setSetpoint(ArmSetpoint.scoreL2Arm),
+                  arm.setSetpoint(ArmSetpoint.SCORE_L2),
                   Commands.waitUntil(arm::atSetpoint),
                   endEffector.outtake(),
-                  arm.setSetpoint(ArmSetpoint.armL2),
-                  elevator.setSetpoint(ElevatorSetpoint.elevatorIdle),
+                  arm.setSetpoint(ArmSetpoint.L2),
+                  elevator.setSetpoint(ElevatorSetpoint.IDLE),
                   Commands.waitUntil(arm::atSetpoint),
-                  arm.setSetpoint(ArmSetpoint.armIdle),
+                  arm.setSetpoint(ArmSetpoint.IDLE),
                   Commands.waitUntil(arm::atSetpoint),
                   endEffector.stop()));
 
   private final Command pukeOnTrue =
-      Commands.parallel(arm.setSetpoint(ArmSetpoint.pukeArm), canal.fast(), endEffector.outtake())
+      Commands.parallel(arm.setSetpoint(ArmSetpoint.PUKE), canal.fast(), endEffector.outtake())
           .onlyIf(() -> arm.checkArmHover() && elevator.checkElevatorHover())
           .andThen(
               Commands.parallel(
-                  arm.setSetpoint(ArmSetpoint.pushArm), canal.fast(), endEffector.outtake()));
+                  arm.setSetpoint(ArmSetpoint.PUSH), canal.fast(), endEffector.outtake()));
 
   private final Command pukeOnFalse =
-      Commands.parallel(arm.setSetpoint(ArmSetpoint.armHover), canal.stop(), endEffector.stop())
+      Commands.parallel(arm.setSetpoint(ArmSetpoint.HOVER), canal.stop(), endEffector.stop())
           .onlyIf(() -> arm.checkArmPuke())
           .andThen(
               Commands.sequence(
                   canal.stop(),
                   endEffector.stop(),
-                  arm.setSetpoint(ArmSetpoint.armIdle),
+                  arm.setSetpoint(ArmSetpoint.IDLE),
                   Commands.waitUntil(arm::atSetpoint),
-                  elevator.setSetpoint(ElevatorSetpoint.elevatorIdle)));
+                  elevator.setSetpoint(ElevatorSetpoint.IDLE)));
 
   private final Command punchL2Algae =
       Commands.sequence(
-          elevator.setSetpoint(ElevatorSetpoint.outtakeElevatorAlgae),
+          elevator.setSetpoint(ElevatorSetpoint.OUTTAKE_ALGAE),
           Commands.waitUntil(elevator::atSetpoint),
           endEffector.punchAlgae(),
-          arm.setSetpoint(ArmSetpoint.outtakeArmAlgaeL2));
+          arm.setSetpoint(ArmSetpoint.OUTTAKE_ALGAE_L2));
 
   private final Command punchL3Algae =
       Commands.sequence(
-          elevator.setSetpoint(ElevatorSetpoint.outtakeElevatorAlgae),
+          elevator.setSetpoint(ElevatorSetpoint.OUTTAKE_ALGAE),
           Commands.waitUntil(elevator::atSetpoint),
           endEffector.punchAlgae(),
-          arm.setSetpoint(ArmSetpoint.outtakeArmAlgaeL3));
+          arm.setSetpoint(ArmSetpoint.OUTTAKE_ALGAE_L3));
 
   private final Command canalIntakeSequence =
       Commands.sequence(
@@ -276,36 +275,36 @@ public class RobotContainer {
                   canal.slow()),
               Commands.waitSeconds(0.75),
               Commands.parallel(
-                  elevator.setSetpoint(ElevatorSetpoint.elevatorIntake), endEffector.intake()),
+                  elevator.setSetpoint(ElevatorSetpoint.INTAKE), endEffector.intake()),
               Commands.waitUntil(elevator::atSetpoint),
-              elevator.setSetpoint(ElevatorSetpoint.elevatorHover),
+              elevator.setSetpoint(ElevatorSetpoint.HOVER),
               Commands.waitUntil(elevator::atSetpoint),
               endEffector.stop(),
               canal.stop(),
-              arm.setSetpoint(ArmSetpoint.armHover))
+              arm.setSetpoint(ArmSetpoint.HOVER))
           .onlyIf(() -> arm.checkArmHover() && elevator.checkElevatorHover())
           .andThen(
               Commands.sequence(
-                  arm.setSetpoint(ArmSetpoint.pushArm),
+                  arm.setSetpoint(ArmSetpoint.PUSH),
                   Commands.waitUntil(arm::atSetpoint),
                   canal.intake(),
                   // intake.intakeGamepiece(),
-                  elevator.setSetpoint(ElevatorSetpoint.elevatorHover),
+                  elevator.setSetpoint(ElevatorSetpoint.HOVER),
                   Commands.waitUntil(elevator::atSetpoint),
-                  arm.setSetpoint(ArmSetpoint.armHover),
+                  arm.setSetpoint(ArmSetpoint.HOVER),
                   Commands.waitUntil(canal::gamePieceDetected),
                   Commands.parallel(
                       rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
                       canal.slow()), // intake.stopIntake()),
                   Commands.waitSeconds(0.5),
                   Commands.parallel(
-                      elevator.setSetpoint(ElevatorSetpoint.elevatorIntake), endEffector.intake()),
+                      elevator.setSetpoint(ElevatorSetpoint.INTAKE), endEffector.intake()),
                   Commands.waitUntil(elevator::atSetpoint),
-                  elevator.setSetpoint(ElevatorSetpoint.elevatorHover),
+                  elevator.setSetpoint(ElevatorSetpoint.HOVER),
                   Commands.waitUntil(elevator::atSetpoint),
                   endEffector.stop(),
                   canal.stop(),
-                  arm.setSetpoint(ArmSetpoint.armHover)));
+                  arm.setSetpoint(ArmSetpoint.HOVER)));
 
   private final Command resetElevator =
       Commands.sequence(
@@ -316,31 +315,31 @@ public class RobotContainer {
 
   private final Command setElevatorArmIdle =
       Commands.sequence(
-          arm.setSetpoint(ArmSetpoint.armIdle),
+          arm.setSetpoint(ArmSetpoint.IDLE),
           Commands.waitUntil(arm::atSetpoint),
           endEffector.stop(),
-          elevator.setSetpoint(ElevatorSetpoint.elevatorIdle));
+          elevator.setSetpoint(ElevatorSetpoint.IDLE));
 
   private final Command outtakeFastGroundCoral =
       Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.fastOuttakeGamepiece());
 
   private final Command prepL2 =
-      Commands.sequence(arm.setSetpoint(ArmSetpoint.pushArm), Commands.waitUntil(arm::atSetpoint))
+      Commands.sequence(arm.setSetpoint(ArmSetpoint.PUSH), Commands.waitUntil(arm::atSetpoint))
           .onlyIf(() -> arm.checkArmHover() && elevator.checkElevatorHover())
           .andThen(
               Commands.sequence(
-                  elevator.setSetpoint(ElevatorSetpoint.elevatorL2),
+                  elevator.setSetpoint(ElevatorSetpoint.L2),
                   Commands.waitUntil(elevator::atSetpoint),
-                  arm.setSetpoint(ArmSetpoint.armL2)));
+                  arm.setSetpoint(ArmSetpoint.L2)));
 
   private final Command prepL3 =
-      Commands.sequence(arm.setSetpoint(ArmSetpoint.pushArm), Commands.waitUntil(arm::atSetpoint))
+      Commands.sequence(arm.setSetpoint(ArmSetpoint.PUSH), Commands.waitUntil(arm::atSetpoint))
           .onlyIf(() -> arm.checkArmHover() && elevator.checkElevatorHover())
           .andThen(
               Commands.sequence(
-                  elevator.setSetpoint(ElevatorSetpoint.elevatorL2),
+                  elevator.setSetpoint(ElevatorSetpoint.L2),
                   Commands.waitUntil(elevator::atSetpoint),
-                  arm.setSetpoint(ArmSetpoint.armL3)));
+                  arm.setSetpoint(ArmSetpoint.L3)));
 
   private final Command driveLeftReef =
       Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT));

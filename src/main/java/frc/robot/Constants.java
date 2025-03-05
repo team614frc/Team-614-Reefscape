@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -102,40 +104,40 @@ public final class Constants {
   }
 
   public enum ElevatorSetpoint {
-    elevatorHover(6.19),
-    elevatorIntake(3.74),
-    elevatorIdle(0.05),
-    elevatorL2(0.4),
-    elevatorL3(6.19),
-    elevatorL4(0),
-    elevatorOuttake(1.75),
-    outtakeElevatorAlgae(6.19);
+    HOVER(6.19),
+    INTAKE(3.74),
+    IDLE(0.05),
+    L2(0.4),
+    L3(6.19),
+    L4(0),
+    OUTTAKE_CORAL(1.75),
+    OUTTAKE_ALGAE(6.19);
 
-    public final double value;
+    public final Angle value;
 
     ElevatorSetpoint(double value) {
-      this.value = value;
+      this.value = Rotations.of(value);
     }
   }
 
   public enum ArmSetpoint {
-    armHover(0.03),
-    pushArm(0.465),
-    armIdle(0.49),
-    armStart(0.5),
-    armL2(0.465),
-    armL3(0.475),
-    armL4(0),
-    scoreL3Arm(0.390),
-    scoreL2Arm(0.380),
-    pukeArm(0.175),
-    outtakeArmAlgaeL2(0.278),
-    outtakeArmAlgaeL3(0.465);
+    HOVER(0.03),
+    PUSH(0.465),
+    IDLE(0.49),
+    START(0.5),
+    L2(0.465),
+    L3(0.475),
+    L4(0),
+    SCORE_L3(0.390),
+    SCORE_L2(0.380),
+    PUKE(0.175),
+    OUTTAKE_ALGAE_L2(0.278),
+    OUTTAKE_ALGAE_L3(0.465);
 
-    public final double value;
+    public final Angle value;
 
     ArmSetpoint(double value) {
-      this.value = value;
+      this.value = Rotations.of(value);
     }
   }
 
@@ -173,8 +175,9 @@ public final class Constants {
 
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
     public static final int ARM_ZERO_ENCODER = 0;
-    public static final double ARM_MAX_VELOCITY = 4;
-    public static final double ARM_MAX_ACCELERATION = 1;
+    public static final AngularVelocity ARM_MAX_VELOCITY = RotationsPerSecond.of(4);
+    public static final AngularAcceleration ARM_MAX_ACCELERATION =
+        RotationsPerSecondPerSecond.of(1);
     public static final double ARM_MIN_RANGE = -1;
     public static final double ARM_MAX_RANGE = 1;
     public static final double ARM_LOOP_ERROR = 0.25;

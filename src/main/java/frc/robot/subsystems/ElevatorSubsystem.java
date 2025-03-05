@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -32,7 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase {
               ElevatorConstants.ELEVATOR_MAX_ACCELERATION));
 
   // Default Current Target
-  private double elevatorSetpoint = ElevatorSetpoint.elevatorIdle.value;
+  private double elevatorSetpoint = ElevatorSetpoint.IDLE.value.in(Radians);
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -66,25 +69,25 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean checkElevatorL3() {
-    boolean a = elevatorSetpoint == ElevatorSetpoint.elevatorL3.value;
+    boolean a = elevatorSetpoint == ElevatorSetpoint.L3.value.in(Radians);
     boolean b =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.elevatorL3.value)
+        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.L3.value.in(Radians))
             <= ElevatorConstants.ELEVATOR_TOLERANCE;
 
     return a || b;
   }
 
   public boolean checkElevatorHover() {
-    boolean a = elevatorSetpoint == ElevatorSetpoint.elevatorHover.value;
+    boolean a = elevatorSetpoint == ElevatorSetpoint.HOVER.value.in(Radians);
     boolean b =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.elevatorHover.value)
+        Math.abs(elevatorEncoder.getPosition() - ElevatorSetpoint.HOVER.value.in(Radians))
             <= ElevatorConstants.ELEVATOR_TOLERANCE;
 
     return a || b;
   }
 
   public Command resetEncoder() {
-    return Commands.runOnce(() -> elevatorEncoder.setPosition(0), this);
+    return Commands.runOnce(() -> elevatorEncoder.setPosition(0));
   }
 
   /** Drive the elevator motor to its respective setpoint using PID control. */
@@ -95,7 +98,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Set the elevator to a predefined setpoint. */
   public Command setSetpoint(ElevatorSetpoint setpoint) {
-    return this.runOnce(() -> elevatorSetpoint = setpoint.value);
+    return this.runOnce(() -> elevatorSetpoint = setpoint.value.in(Rotations));
   }
 
   @Override
