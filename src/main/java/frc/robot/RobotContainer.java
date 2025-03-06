@@ -344,34 +344,39 @@ public class RobotContainer {
                     Commands.parallel(
                         rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
                         canal.slow()),
-                    Commands.waitSeconds(0.75),
+                    elevatorArm.setSetpoint(Setpoint.kElevatorIntakeUp),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
+                    elevatorArm.setSetpoint(Setpoint.kArmIntakeUp),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     Commands.parallel(
                         elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     endEffector.stop(),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     canal.stop(),
                     elevatorArm.setSetpoint(Setpoint.kArmHover)),
                 Commands.sequence(
                     elevatorArm.setSetpoint(Setpoint.kPushArm),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     canal.intake(),
-                    // intake.intakeGamepiece(),
                     elevatorArm.setSetpoint(Setpoint.kElevatorHover),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmHover),
                     Commands.waitUntil(canal::gamePieceDetected),
                     Commands.parallel(
                         rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                        canal.slow()), // intake.stopIntake()),
-                    Commands.waitSeconds(0.5),
+                        canal.slow()),
+                    elevatorArm.setSetpoint(Setpoint.kElevatorIntakeUp),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
+                    elevatorArm.setSetpoint(Setpoint.kArmIntakeUp),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     Commands.parallel(
                         elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     endEffector.stop(),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     canal.stop(),
                     elevatorArm.setSetpoint(Setpoint.kArmHover)),
                 () -> elevatorArm.checkHover()));
@@ -402,10 +407,12 @@ public class RobotContainer {
         .onTrue(
             Commands.either(
                 Commands.sequence(
+                    endEffector.stop(),
                     elevatorArm.setSetpoint(Setpoint.kElevatorL2),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL2)),
                 Commands.sequence(
+                    endEffector.stop(),
                     elevatorArm.setSetpoint(Setpoint.kPushArm),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kElevatorL2),
@@ -417,12 +424,14 @@ public class RobotContainer {
         .onTrue(
             Commands.either(
                 Commands.sequence(
+                    endEffector.stop(),
                     elevatorArm.setSetpoint(Setpoint.kPushArm),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kElevatorL3),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL3)),
                 Commands.sequence(
+                    endEffector.stop(),
                     elevatorArm.setSetpoint(Setpoint.kPushArm),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kElevatorL3),
