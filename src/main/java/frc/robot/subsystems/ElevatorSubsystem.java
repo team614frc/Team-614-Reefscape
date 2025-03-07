@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -9,9 +11,9 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ElevatorConstants;
@@ -30,8 +32,8 @@ public class ElevatorSubsystem extends SubsystemBase {
           ElevatorConstants.kI,
           ElevatorConstants.kD,
           new TrapezoidProfile.Constraints(
-              ElevatorConstants.ELEVATOR_MAX_VELOCITY,
-              ElevatorConstants.ELEVATOR_MAX_ACCELERATION));
+              ElevatorConstants.ELEVATOR_MAX_VELOCITY.in(RotationsPerSecond),
+              ElevatorConstants.ELEVATOR_MAX_ACCELERATION.in(RotationsPerSecondPerSecond)));
 
   // Default Current Target
   private ElevatorSetpoint elevatorSetpoint = ElevatorSetpoint.IDLE;
@@ -54,15 +56,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     return a || b;
   }
 
-  private double getPosition() {
-    return elevatorEncoder.getPosition();
+  private Angle getPosition() {
+    return Rotations.of(elevatorEncoder.getPosition());
   }
 
   public Command descendSlowly() {
-    return Commands.runEnd(
+    return this.runEnd(
         () -> elevatorMotor.set(ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED),
-        () -> elevatorMotor.set(ElevatorConstants.ELEVATOR_STOP_SPEED),
-        this);
+        () -> elevatorMotor.set(ElevatorConstants.ELEVATOR_STOP_SPEED));
   }
 
   public boolean isStalled() {
@@ -71,13 +72,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public Command resetEncoder() {
-    return Commands.runOnce(() -> elevatorEncoder.setPosition(0));
+    return this.runOnce(() -> elevatorEncoder.setPosition(0));
   }
 
   /** Drive the elevator motor to its respective setpoint using PID control. */
   private void runPID() {
     double elevatorPidOutput =
-        elevatorPid.calculate(getPosition(), elevatorSetpoint.value.in(Rotations));
+        elevatorPid.calculate(getPosition().in(Rotations), elevatorSetpoint.value.in(Rotations));
     elevatorMotor.setVoltage(elevatorPidOutput);
   }
 

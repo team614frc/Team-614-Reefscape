@@ -45,6 +45,19 @@ public final class Constants {
     public static final double AUTO_ROTATION_kD = 0.0;
   }
 
+  public enum IntakePivotSetpoint {
+    UP(-1.5),
+    DOWN(-7.2),
+    INTAKE_ALGAE(-4.4),
+    OUTTAKE_ALGAE(-2.6);
+
+    public final Angle value;
+
+    IntakePivotSetpoint(double value) {
+      this.value = Rotations.of(value);
+    }
+  }
+
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR = 24;
     public static final int INTAKE_PIVOT_MOTOR = 26;
@@ -64,17 +77,13 @@ public final class Constants {
     public static final double PIVOT_kV = 0;
     public static final double PIVOT_kA = 0;
     public static final double GEAR_RATIO = 60;
-    public static final double PIVOT_UP = -1.5;
-    public static final double PIVOT_DOWN = -7.2;
-    public static final double PIVOT_INTAKE_ALGAE = -4.4;
-    public static final double PIVOT_OUTTAKE_ALGAE = -2.6;
-    public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final double PIVOT_MAX_VELOCITY = 8;
-    public static final double PIVOT_MAX_ACCELERATION = 12;
+    public static final AngularVelocity PIVOT_MAX_VELOCITY = RotationsPerSecond.of(8);
+    public static final AngularAcceleration PIVOT_MAX_ACCELERATION =
+        RotationsPerSecondPerSecond.of(12);
     public static final double PIVOT_FEEDFORWARD_OFFSET = -6.3;
-    public static final double PIVOT_TOLERANCE = 0.75;
+    public static final Angle PIVOT_TOLERANCE = Rotations.of(0.75);
   }
 
   public static class EndEffectorConstants {
@@ -152,8 +161,9 @@ public final class Constants {
     public static final double kV = 0;
     public static final double kA = 0;
 
-    public static final double ELEVATOR_MAX_VELOCITY = 20;
-    public static final double ELEVATOR_MAX_ACCELERATION = 50;
+    public static final AngularVelocity ELEVATOR_MAX_VELOCITY = RotationsPerSecond.of(20);
+    public static final AngularAcceleration ELEVATOR_MAX_ACCELERATION =
+        RotationsPerSecondPerSecond.of(50);
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
     public static final Angle ELEVATOR_SIM_STARTING_ANGLE = Degrees.of(180);
     public static final Angle ELEVATOR_TOLERANCE = Rotations.of(0.1);

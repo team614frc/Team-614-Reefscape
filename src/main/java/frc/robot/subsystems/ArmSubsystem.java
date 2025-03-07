@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -31,8 +31,8 @@ public class ArmSubsystem extends SubsystemBase {
           ArmConstants.kI,
           ArmConstants.kD,
           new TrapezoidProfile.Constraints(
-              (ArmConstants.ARM_MAX_VELOCITY).in(RotationsPerSecond),
-              (ArmConstants.ARM_MAX_ACCELERATION).in(RotationsPerSecondPerSecond)));
+              (ArmConstants.ARM_MAX_VELOCITY).in(RadiansPerSecond),
+              (ArmConstants.ARM_MAX_ACCELERATION).in(RadiansPerSecondPerSecond)));
 
   private final ArmFeedforward armFeedforward =
       new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kV, ArmConstants.kA);
