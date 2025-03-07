@@ -49,9 +49,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorEncoder.setPosition(0);
   }
 
-  public boolean atSetpoint() {
-    return Math.abs(elevatorEncoder.getPosition() - elevatorSetpoint.value.in(Rotations))
+  public boolean atSetpoint(ElevatorSetpoint setpoint) {
+    return Math.abs(elevatorEncoder.getPosition() - setpoint.value.in(Rotations))
         <= ElevatorConstants.ELEVATOR_TOLERANCE.in(Rotations);
+  }
+
+  public boolean atSetpoint() {
+    return atSetpoint(elevatorSetpoint);
   }
 
   private Angle getPosition() {
@@ -82,7 +86,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Set the elevator to a predefined setpoint. */
   public Command setSetpoint(ElevatorSetpoint setpoint) {
-    return this.runOnce(() -> elevatorSetpoint = setpoint);
+    return this.run(() -> elevatorSetpoint = setpoint).until(this::atSetpoint);
   }
 
   @Override

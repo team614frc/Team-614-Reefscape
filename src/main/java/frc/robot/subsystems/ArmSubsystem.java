@@ -50,7 +50,11 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean atSetpoint() {
-    return Math.abs(armEncoder.getPosition() - armSetpoint.value.in(Rotations))
+    return atSetpoint(armSetpoint);
+  }
+
+  public boolean atSetpoint(ArmSetpoint setpoint) {
+    return Math.abs(armEncoder.getPosition() - setpoint.value.in(Rotations))
         <= ArmConstants.ARM_TOLERANCE.in(Rotations);
   }
 
@@ -75,7 +79,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   /** Set the arm to a predefined setpoint. */
   public Command setSetpoint(ArmSetpoint setpoint) {
-    return this.runOnce(() -> armSetpoint = setpoint);
+    return this.run(() -> armSetpoint = setpoint).until(this::atSetpoint);
   }
 
   @Override
