@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
@@ -48,12 +49,9 @@ public class ArmSubsystem extends SubsystemBase {
         PersistMode.kPersistParameters);
   }
 
-  public boolean atSetpoint(ArmSetpoint setpoint) {
-    boolean a = armSetpoint == setpoint;
-    boolean b =
-        Math.abs(armEncoder.getPosition() - setpoint.value.in(Rotations))
-            <= ArmConstants.ARM_TOLERANCE.in(Rotations);
-    return a || b;
+  public boolean atSetpoint() {
+    return Math.abs(armEncoder.getPosition() - armSetpoint.value.in(Rotations))
+        <= ArmConstants.ARM_TOLERANCE.in(Rotations);
   }
 
   private Angle getPosition() {
@@ -64,11 +62,11 @@ public class ArmSubsystem extends SubsystemBase {
   private void runPID() {
     double armFeedforwardVoltage =
         armFeedforward.calculate(
-            armPid.getSetpoint().position - ArmConstants.ARM_FEEDFORWARD_OFFSET.in(Rotations),
+            armPid.getSetpoint().position - ArmConstants.ARM_FEEDFORWARD_OFFSET.in(Radians),
             armPid.getSetpoint().velocity);
 
     double armPidOutput =
-        armPid.calculate(getPosition().in(Rotations), armSetpoint.value.in(Rotations));
+        armPid.calculate(getPosition().in(Radians), armSetpoint.value.in(Radians));
 
     armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
 

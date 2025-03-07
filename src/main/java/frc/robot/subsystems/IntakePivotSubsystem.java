@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
@@ -73,8 +74,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
                 * 0.254,
             pid.getSetpoint().velocity);
 
-    double pivotPidOutput =
-        pid.calculate(getPivotAngleRadians(), pivotSetpoint.value.in(Rotations));
+    double pivotPidOutput = pid.calculate(getPivotAngleRadians(), pivotSetpoint.value.in(Radians));
 
     intakePivotMotor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
 

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
@@ -48,12 +49,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorEncoder.setPosition(0);
   }
 
-  public boolean atSetpoint(ElevatorSetpoint setpoint) {
-    boolean a = elevatorSetpoint == setpoint;
-    boolean b =
-        Math.abs(elevatorEncoder.getPosition() - setpoint.value.in(Rotations))
-            <= ElevatorConstants.ELEVATOR_TOLERANCE.in(Rotations);
-    return a || b;
+  public boolean atSetpoint() {
+    return Math.abs(elevatorEncoder.getPosition() - elevatorSetpoint.value.in(Rotations))
+        <= ElevatorConstants.ELEVATOR_TOLERANCE.in(Rotations);
   }
 
   private Angle getPosition() {
@@ -78,7 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** Drive the elevator motor to its respective setpoint using PID control. */
   private void runPID() {
     double elevatorPidOutput =
-        elevatorPid.calculate(getPosition().in(Rotations), elevatorSetpoint.value.in(Rotations));
+        elevatorPid.calculate(getPosition().in(Radians), elevatorSetpoint.value.in(Radians));
     elevatorMotor.setVoltage(elevatorPidOutput);
   }
 
