@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -15,10 +20,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IntakePivotSetpoint;
 
 public class IntakePivotSubsystem extends SubsystemBase {
   private final SparkFlex intakePivotMotor =
@@ -31,8 +36,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
           IntakeConstants.PIVOT_kI,
           IntakeConstants.PIVOT_kD,
           new TrapezoidProfile.Constraints(
-              Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_VELOCITY),
-              Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_ACCELERATION)));
+              IntakeConstants.PIVOT_MAX_VELOCITY.in(RadiansPerSecond),
+              IntakeConstants.PIVOT_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
 
   private final ArmFeedforward feedforward =
       new ArmFeedforward(
@@ -41,7 +46,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
           IntakeConstants.PIVOT_kV,
           IntakeConstants.PIVOT_kA);
 
-  private double pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
+  private IntakePivotSetpoint pivotSetpoint = IntakePivotSetpoint.OUTTAKE_ALGAE;
 
   public IntakePivotSubsystem() {
     intakePivotMotor.configure(
@@ -52,9 +57,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
     intakePivotEncoder.setPosition(0);
   }
 
-  public boolean reachedSetpoint() {
-    return Math.abs(intakePivotEncoder.getPosition() - pivotSetpoint)
-        <= IntakeConstants.PIVOT_TOLERANCE;
+  public boolean atSetpoint() {
+    return Math.abs(intakePivotEncoder.getPosition() - pivotSetpoint.value.in(Rotations))
+        <= IntakeConstants.PIVOT_TOLERANCE.in(Rotations);
   }
 
   private double getPivotAngleRadians() {
@@ -69,12 +74,16 @@ public class IntakePivotSubsystem extends SubsystemBase {
                 * 0.254,
             pid.getSetpoint().velocity);
 
-    double pivotPidOutput =
-        pid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(pivotSetpoint));
+    double pivotPidOutput = pid.calculate(getPivotAngleRadians(), pivotSetpoint.value.in(Radians));
 
     intakePivotMotor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
 
     SmartDashboard.putNumber("Pivot FF", armFeedforwardVoltage);
+  }
+
+  /** Set the pivot to a predefined setpoint. */
+  public Command setSetpoint(IntakePivotSetpoint setpoint) {
+    return this.runOnce(() -> pivotSetpoint = setpoint);
   }
 
   @Override
@@ -84,33 +93,5 @@ public class IntakePivotSubsystem extends SubsystemBase {
     SmartDashboard.putData(pid);
     SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
     SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
-  }
-
-  public Command pivotDown() {
-    return Commands.runOnce(
-        () -> {
-          pivotSetpoint = IntakeConstants.PIVOT_DOWN;
-        });
-  }
-
-  public Command pivotIdle() {
-    return Commands.runOnce(
-        () -> {
-          pivotSetpoint = IntakeConstants.PIVOT_UP;
-        });
-  }
-
-  public Command pivotIntakeAlgae() {
-    return Commands.runOnce(
-        () -> {
-          pivotSetpoint = IntakeConstants.PIVOT_INTAKE_ALGAE;
-        });
-  }
-
-  public Command pivotOuttakeAlgae() {
-    return Commands.runOnce(
-        () -> {
-          pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
-        });
   }
 }
