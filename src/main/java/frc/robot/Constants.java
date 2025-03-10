@@ -45,7 +45,8 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR = 24;
-    public static final int INTAKE_PIVOT_MOTOR = 26;
+    public static final int LEFT_INTAKE_PIVOT_MOTOR = 26;
+    public static final int RIGHT_INTAKE_PIVOT_MOTOR = 28;
     public static final Current INTAKE_CURRENT_LIMIT = Amp.of(80);
     public static final Current INTAKE_PIVOT_CURRENT_LIMIT = Amp.of(40);
     public static final double OUTTAKE_SPEED = -0.2;
