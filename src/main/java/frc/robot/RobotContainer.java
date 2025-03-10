@@ -146,19 +146,19 @@ public class RobotContainer {
   private final Command autoL1 = intake.outtakeGamepiece().withTimeout(0.25);
   private final Command autoL2 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.isBelowHorizonal())
+          .onlyIf(() -> arm.isBelowHorizontal())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L2), arm.setSetpoint(ArmSetpoint.PREP_L2));
 
   private final Command autoL3 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.isBelowHorizonal())
+          .onlyIf(() -> arm.isBelowHorizontal())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L3), arm.setSetpoint(ArmSetpoint.PREP_L3));
 
   private final Command autoElevatorArmIdle =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.isBelowHorizonal())
+          .onlyIf(() -> arm.isBelowHorizontal())
           .andThen(elevator.setSetpoint(ElevatorSetpoint.IDLE), arm.setSetpoint(ArmSetpoint.IDLE));
 
   private final Command autoIntakeDownAndIntake =
@@ -262,13 +262,13 @@ public class RobotContainer {
 
   private final Command prepL2 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.isBelowHorizonal())
+          .onlyIf(() -> arm.isBelowHorizontal())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L2), arm.setSetpoint(ArmSetpoint.PREP_L2));
 
   private final Command prepL3 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.isBelowHorizonal())
+          .onlyIf(() -> arm.isBelowHorizontal())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L3), arm.setSetpoint(ArmSetpoint.PREP_L3));
 
