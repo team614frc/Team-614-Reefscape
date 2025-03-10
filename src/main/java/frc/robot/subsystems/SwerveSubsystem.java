@@ -85,7 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
       throw new RuntimeException(e);
     }
     swerveDrive.setHeadingCorrection(
-        false); // Heading correction should only be used while controlling the robot via angle.
+        true); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(
         false); // !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for
     // simulations since it causes discrepancies not seen in real life.
@@ -96,6 +96,7 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setModuleEncoderAutoSynchronize(
         false, 1); // Enable if you want to resynchronize your absolute encoders and motor encoders
     // periodically when they are not moving.
+    swerveDrive.setChassisDiscretization(true, 0.02);
     setupPathPlanner();
   }
 
@@ -299,7 +300,9 @@ public class SwerveSubsystem extends SubsystemBase {
    * <p>If red alliance rotate the robot 180 after the drviebase zero command
    */
   public void zeroGyroWithAlliance() {
-    if (isRedAlliance()) {
+    // We changed to !isRedAlliance after testing because blue and red are inverted when run with
+    // the boolean isRedAlliance()
+    if (!isRedAlliance()) {
       zeroGyro();
       // Set the pose 180 degrees
       resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
@@ -447,7 +450,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public boolean isFieldCentric = true;
 
   public Command flipFieldAndRobotRelative() {
-    return Commands.runOnce(() -> isFieldCentric = !isFieldCentric);
+    return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
   }
 
   /**

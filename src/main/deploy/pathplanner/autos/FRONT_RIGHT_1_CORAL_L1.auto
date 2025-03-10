@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Rotational Test Path"
+            "pathName": "FRONT_RIGHT_#0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L1"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "FrontRight",
   "choreoAuto": false
 }

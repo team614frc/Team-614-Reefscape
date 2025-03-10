@@ -56,8 +56,13 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kL3,
     kL4,
     kPushArm,
-    kScoreArm,
-    kElevatorOuttake;
+    kScoreL3Arm,
+    kScoreL2Arm,
+    kElevatorOuttake,
+    kOuttakeElevatorAlgae,
+    kOuttakeArmAlgaeL2,
+    kOuttakeArmAlgaeL3,
+    kPuke;
   }
 
   // Elevator Motor
@@ -203,13 +208,36 @@ public class ElevatorArmSubsystem extends SubsystemBase {
         && elevatorMotor.get() == ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED;
   }
 
-  public boolean armSetpointComparison() {
-    return armSetpoint > ArmConstants.ARM_FEEDFORWARD_OFFSET;
+  public boolean checkL3() {
+    boolean a = armSetpoint == ArmConstants.ARM_L3_SETPOINT;
+    boolean b =
+        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_L3_SETPOINT)
+            <= ArmConstants.ARM_TOLERANCE;
+    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
+    boolean d =
+        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_L3_SETPOINT)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE;
+
+    return (a || b) && (c || d);
   }
 
-  public boolean checkL3() {
-    return armSetpoint == ArmConstants.ARM_L3_SETPOINT
-        && elevatorSetpoint == ElevatorConstants.ELEVATOR_L3_SETPOINT;
+  public boolean checkPuke() {
+    return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT
+        || Math.abs(armEncoder.getPosition() - ArmConstants.ARM_PUKE_SETPOINT)
+            <= ArmConstants.ARM_TOLERANCE;
+  }
+
+  public boolean checkHover() {
+    boolean a = armSetpoint == ArmConstants.ARM_HOVER_SETPOINT;
+    boolean b =
+        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_HOVER_SETPOINT)
+            <= ArmConstants.ARM_TOLERANCE;
+    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
+    boolean d =
+        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_HOVER_SETPOINT)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE;
+
+    return (a || b) && (c || d);
   }
 
   public Command resetElevatorEncoder() {
@@ -236,6 +264,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     double elevatorPidOutput = elevatorPid.calculate(getElevatorPosition(), elevatorSetpoint);
 
     armMotor.setVoltage(armPidOutput + armFeedforwardVoltage);
+
+    SmartDashboard.putNumber("Arm FF", armFeedforwardVoltage);
 
     elevatorMotor.setVoltage(elevatorPidOutput); // + ElevatorConstants.kG);
   }
@@ -302,11 +332,26 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             case kPushArm:
               armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
               break;
-            case kScoreArm:
-              armSetpoint = ArmConstants.ARM_SCORE_SETPOINT;
+            case kScoreL3Arm:
+              armSetpoint = ArmConstants.ARM_L3_SCORE_SETPOINT;
+              break;
+            case kScoreL2Arm:
+              armSetpoint = ArmConstants.ARM_L2_SCORE_SETPOINT;
               break;
             case kElevatorOuttake:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_OUTTAKE_SETPOINT;
+              break;
+            case kOuttakeElevatorAlgae:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
+              break;
+            case kOuttakeArmAlgaeL2:
+              armSetpoint = ArmConstants.ARM_FEEDFORWARD_OFFSET;
+              break;
+            case kOuttakeArmAlgaeL3:
+              armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
+              break;
+            case kPuke:
+              armSetpoint = ArmConstants.ARM_PUKE_SETPOINT;
               break;
           }
         });
@@ -321,7 +366,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Target Position", elevatorSetpoint);
     SmartDashboard.putNumber("Elevator Actual Position", elevatorEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator Output", elevatorMotor.get());
     SmartDashboard.putBoolean("Elevator Stalled", elevatorStalled());
     SmartDashboard.putNumber("Elevator Velocity", elevatorEncoder.getVelocity());
 

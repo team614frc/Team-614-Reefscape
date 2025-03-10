@@ -41,6 +41,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
           IntakeConstants.PIVOT_kV,
           IntakeConstants.PIVOT_kA);
 
+  private double pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
+
   public IntakePivotSubsystem() {
     intakePivotMotor.configure(
         Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG,
@@ -50,52 +52,65 @@ public class IntakePivotSubsystem extends SubsystemBase {
     intakePivotEncoder.setPosition(0);
   }
 
+  public boolean reachedSetpoint() {
+    return Math.abs(intakePivotEncoder.getPosition() - pivotSetpoint)
+        <= IntakeConstants.PIVOT_TOLERANCE;
+  }
+
+  private double getPivotAngleRadians() {
+    return Units.rotationsToRadians(intakePivotEncoder.getPosition());
+  }
+
+  private void pivotPIDControl() {
+    double armFeedforwardVoltage =
+        feedforward.calculate(
+            (Units.radiansToRotations(pid.getSetpoint().position)
+                    - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET)
+                * 0.254,
+            pid.getSetpoint().velocity);
+
+    double pivotPidOutput =
+        pid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(pivotSetpoint));
+
+    intakePivotMotor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
+
+    SmartDashboard.putNumber("Pivot FF", armFeedforwardVoltage);
+  }
+
   @Override
   public void periodic() {
     pivotPIDControl();
 
+    SmartDashboard.putData(pid);
     SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
     SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
-  }
-
-  private double getArmAngleRadians() {
-    return Units.rotationsToRadians(intakePivotEncoder.getPosition());
-  }
-
-  public Command pivotPIDControl() {
-    return run(
-        () -> {
-          double armFeedforwardVoltage =
-              feedforward.calculate(
-                  pid.getSetpoint().position
-                      - Units.rotationsToRadians(IntakeConstants.PIVOT_FEEDFORWARD_OFFSET),
-                  pid.getSetpoint().velocity);
-          SmartDashboard.putNumber("Intake Pivot Feedforward Feed Forward", armFeedforwardVoltage);
-
-          double pidOutput = pid.calculate(getArmAngleRadians(), pid.getGoal());
-
-          intakePivotMotor.setVoltage(pidOutput + armFeedforwardVoltage);
-        });
   }
 
   public Command pivotDown() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(IntakeConstants.PIVOT_DOWN);
+          pivotSetpoint = IntakeConstants.PIVOT_DOWN;
         });
   }
 
   public Command pivotIdle() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(IntakeConstants.PIVOT_UP);
+          pivotSetpoint = IntakeConstants.PIVOT_UP;
         });
   }
 
-  public Command pivotAlgae() {
+  public Command pivotIntakeAlgae() {
     return Commands.runOnce(
         () -> {
-          pid.setGoal(IntakeConstants.PIVOT_ALGAE);
+          pivotSetpoint = IntakeConstants.PIVOT_INTAKE_ALGAE;
+        });
+  }
+
+  public Command pivotOuttakeAlgae() {
+    return Commands.runOnce(
+        () -> {
+          pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
         });
   }
 }

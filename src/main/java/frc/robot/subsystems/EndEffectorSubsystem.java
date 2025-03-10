@@ -29,7 +29,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     super.periodic();
 
-    SmartDashboard.putNumber("End Effector Motor Output", endEffectorMotor.get());
     SmartDashboard.putBoolean("End Effector Has Game Piece", hasGamePiece());
   }
 
@@ -49,6 +48,13 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
   public Command outtake() {
     return Commands.runOnce(() -> set(EndEffectorConstants.OUTTAKE_SPEED));
+  }
+
+  public Command punchAlgae() {
+    return Commands.runOnce(
+        () -> {
+          set(EndEffectorConstants.OUTTAKE_ALGAE);
+        });
   }
 
   // Command to deactivate the end effector (e.g., stop gripping or releasing)

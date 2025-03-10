@@ -37,10 +37,10 @@ public final class Constants {
   public static final class DrivebaseConstants {
     // Hold time on motor brakes when disabled.
     public static final Time WHEEL_LOCK_TIME = Seconds.of(10);
-    public static final double AUTO_TRANSLATION_kP = 5.0;
+    public static final double AUTO_TRANSLATION_kP = 2;
     public static final double AUTO_TRANSLATION_kI = 0.0;
     public static final double AUTO_TRANSLATION_kD = 0.0;
-    public static final double AUTO_ROTATION_kP = 1.0;
+    public static final double AUTO_ROTATION_kP = 6;
     public static final double AUTO_ROTATION_kI = 0.0;
     public static final double AUTO_ROTATION_kD = 0.0;
     public static final Boolean USE_LIMELIGHT_FRONT = false;
@@ -54,36 +54,40 @@ public final class Constants {
     public static final int INTAKE_PIVOT_MOTOR = 26;
     public static final Current INTAKE_CURRENT_LIMIT = Amp.of(80);
     public static final Current INTAKE_PIVOT_CURRENT_LIMIT = Amp.of(40);
-    public static final double OUTTAKE_SPEED = -0.3;
+    public static final double OUTTAKE_SPEED = -0.2;
+    public static final double FAST_OUTTAKE_SPEED = -0.3;
     public static final double INTAKE_SPEED = 0.3;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
 
-    public static final double PIVOT_kP = 0.1;
+    public static final double PIVOT_kP = 0.8;
     public static final double PIVOT_kI = 0;
-    public static final double PIVOT_kD = 0;
+    public static final double PIVOT_kD = 0.01;
     public static final double PIVOT_kS = 0;
-    public static final double PIVOT_kG = 0;
+    public static final double PIVOT_kG = 0.8;
     public static final double PIVOT_kV = 0;
     public static final double PIVOT_kA = 0;
     public static final double GEAR_RATIO = 60;
-    public static final double PIVOT_UP = 0;
-    public static final double PIVOT_DOWN = 105;
-    public static final double PIVOT_ALGAE = 0;
+    public static final double PIVOT_UP = -1.5;
+    public static final double PIVOT_DOWN = -7.2;
+    public static final double PIVOT_INTAKE_ALGAE = -4.4;
+    public static final double PIVOT_OUTTAKE_ALGAE = -2.6;
     public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final double PIVOT_MAX_VELOCITY = 2;
-    public static final double PIVOT_MAX_ACCELERATION = 0.4;
-    public static final double PIVOT_FEEDFORWARD_OFFSET = 0;
+    public static final double PIVOT_MAX_VELOCITY = 8;
+    public static final double PIVOT_MAX_ACCELERATION = 12;
+    public static final double PIVOT_FEEDFORWARD_OFFSET = -6.3;
+    public static final double PIVOT_TOLERANCE = 0.75;
   }
 
   public static class EndEffectorConstants {
     public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(80);
-    public static final double OUTTAKE_SPEED = -0.1;
-    public static final double INTAKE_SPEED = 0.05;
+    public static final double OUTTAKE_SPEED = -0.35;
+    public static final double INTAKE_SPEED = 0.125;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
+    public static final double OUTTAKE_ALGAE = -0.75;
     public static final int END_EFFECTOR_MOTOR = 25;
     public static final double END_EFFECTOR_MIN_OUTPUT = 0.15;
     public static final Angle END_EFFECTOR_MIN_RPM = Rotations.of(50);
@@ -93,12 +97,13 @@ public final class Constants {
   public static final class CanalConstants {
     public static final int CANAL_MOTOR = 23;
     public static final Current CANAL_CURRENT_LIMIT = Amp.of(80);
-    public static final double OUTTAKE_SPEED = 0;
-    public static final double INTAKE_SPEED = 0.125;
+    public static final double BACKWARDS_SPEED = -0.095;
+    public static final double INTAKE_SPEED = 0.1;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
+    public static final double CANAL_FAST_SPEED = 0.3;
     public static final int CANAL_REST_SPEED = 0;
-    public static final double CANAL_SLOW_SPEED = 0.025;
+    public static final double CANAL_SLOW_SPEED = 0.06;
     public static final int LASER_MAX_DISTANCE = 180;
   }
 
@@ -119,7 +124,7 @@ public final class Constants {
     public static final double ELEVATOR_L2_SETPOINT = 0.4;
     public static final double ELEVATOR_L3_SETPOINT = 6.19;
     public static final double ELEVATOR_L4_SETPOINT = 0;
-    public static final double ELEVATOR_OUTTAKE_SETPOINT = 5;
+    public static final double ELEVATOR_OUTTAKE_SETPOINT = 1.75;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
     public static final double ELEVATOR_MAX_VELOCITY = 20;
     public static final double ELEVATOR_MAX_ACCELERATION = 50;
@@ -148,10 +153,12 @@ public final class Constants {
     public static final double ARM_START_SETPOINT = 0.5;
     public static final double ARM_L1_SETPOINT = 0;
     public static final double ARM_L2_SETPOINT = 0.465;
-    public static final double ARM_L3_SETPOINT = 0.465;
+    public static final double ARM_L3_SETPOINT = 0.475;
     public static final double ARM_L4_SETPOINT = 0;
-    public static final double ARM_SCORE_SETPOINT = 0.390;
+    public static final double ARM_L3_SCORE_SETPOINT = 0.390;
+    public static final double ARM_L2_SCORE_SETPOINT = 0.380;
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
+    public static final double ARM_PUKE_SETPOINT = 0.175;
     public static final int ARM_ZERO_ENCODER = 0;
     public static final double ARM_MAX_VELOCITY = 4;
     public static final double ARM_MAX_ACCELERATION = 1;
@@ -192,8 +199,8 @@ public final class Constants {
   public static final class ClimberConstants {
     public static final int CLIMBER_MOTOR = 27;
     public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(80);
-    public static final double CLIMB_SPEED = 0.4;
-    public static final double REVERSE_CLIMB_SPEED = -0.4;
+    public static final double CLIMB_SPEED = 0.5;
+    public static final double REVERSE_CLIMB_SPEED = -0.5;
     public static final double CLIMB_REST_SPEED = 0;
   }
 
@@ -204,7 +211,7 @@ public final class Constants {
     public static final int CODRIVER_PORT = 1;
     public static final double RUMBLE_REST = 0;
     public static final double RUMBLE_SPEED = 1;
-    public static final double RUMBLE_DURATION = 1;
+    public static final double RUMBLE_DURATION = 0.25;
   }
 
   public static final class LEDConstants {
