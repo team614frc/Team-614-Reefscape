@@ -394,7 +394,7 @@ public class SwerveSubsystem extends SubsystemBase {
       limelightBack.updateSettings(getOrientation3d());
       updatePosition(limelightBack.getVisionEstimate());
     }
-    SmartDashboard.putNumber("Closest AprilTagID", findReefID());
+    // SmartDashboard.putNumber("Closest AprilTagID", findReefID());
     SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
 import java.util.Optional;
@@ -14,7 +15,7 @@ public class LimelightSubsystem extends SubsystemBase {
   private LimelightTargetData limelightTargetData;
 
   public LimelightSubsystem(String name) {
-    Limelight limelight = new Limelight(name);
+    limelight = new Limelight(name);
     limelight
         .getSettings()
         .withLimelightLEDMode(LEDMode.PipelineControl)
@@ -42,7 +43,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // SmartDashboard.putBoolean("Sees AprilTag", hasTarget());
-    // SmartDashboard.putNumber("AprilTag ID", getID());
+    SmartDashboard.putBoolean("Sees AprilTag", hasTarget());
+    SmartDashboard.putNumber("AprilTag ID", getID());
   }
 }
