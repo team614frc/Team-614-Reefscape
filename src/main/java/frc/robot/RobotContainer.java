@@ -225,23 +225,26 @@ public class RobotContainer {
 
   private final Command canalIntakeSequence =
       Commands.sequence(
-          Commands.either(
-              canal.intake().andThen(Commands.waitUntil(canal::gamePieceDetected)),
-              Commands.sequence(
-                  Commands.sequence(arm.setSetpoint(ArmSetpoint.PUSH)),
-                  canal.intake(),
+          Commands.sequence(
+                  arm.setSetpoint(ArmSetpoint.PUSH),
                   elevator.setSetpoint(ElevatorSetpoint.HOVER),
-                  arm.setSetpoint(ArmSetpoint.HOVER),
-                  Commands.waitUntil(canal::gamePieceDetected)),
-              () -> arm.atSetpoint(ArmSetpoint.HOVER)),
-          Commands.parallel(
-              rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-              canal.slow()),
-          Commands.parallel(elevator.setSetpoint(ElevatorSetpoint.INTAKE), endEffector.intake()),
-          elevator.setSetpoint(ElevatorSetpoint.HOVER),
-          endEffector.stop(),
-          canal.stop(),
-          arm.setSetpoint(ArmSetpoint.HOVER));
+                  arm.setSetpoint(ArmSetpoint.HOVER))
+              .unless(
+                  () ->
+                      arm.atSetpoint(ArmSetpoint.HOVER)
+                          && elevator.atSetpoint(ElevatorSetpoint.HOVER)),
+          canal.intake(),
+          Commands.waitUntil(canal::gamePieceDetected),
+          Commands.sequence(
+                  canal.slow(),
+                  Commands.waitSeconds(0.05),
+                  endEffector.intake(),
+                  elevator.setSetpoint(ElevatorSetpoint.INTAKE),
+                  elevator.setSetpoint(ElevatorSetpoint.HOVER),
+                  endEffector.stop(),
+                  canal.stop())
+              .alongWith(
+                  rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION)));
 
   private final Command resetElevator =
       Commands.sequence(
