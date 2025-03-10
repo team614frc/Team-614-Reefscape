@@ -232,7 +232,7 @@ public class RobotContainer {
           Commands.sequence(
                   canal.slow(),
                   elevator.setSetpoint(ElevatorSetpoint.INTAKE_UP),
-                  arm.setSetpoint(ArmSetpoint.INTAKEUP),
+                  arm.setSetpoint(ArmSetpoint.INTAKE_UP),
                   endEffector.intake(),
                   elevator.setSetpoint(ElevatorSetpoint.INTAKE),
                   elevator.setSetpoint(ElevatorSetpoint.HOVER),

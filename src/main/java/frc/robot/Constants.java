@@ -132,7 +132,7 @@ public final class Constants {
 
   public enum ArmSetpoint {
     HOVER(0.03),
-    INTAKEUP(0.015),
+    INTAKE_UP(0.015),
     PUSH(0.465),
     IDLE(0.49),
     START(0.5),
