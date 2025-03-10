@@ -18,6 +18,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -62,11 +63,11 @@ public class IntakePivotSubsystem extends SubsystemBase {
         <= IntakeConstants.PIVOT_TOLERANCE.in(Rotations);
   }
 
-  private double getPivotAngleRadians() {
-    return Units.rotationsToRadians(intakePivotEncoder.getPosition());
+  private Angle getPosition() {
+    return Rotations.of(intakePivotEncoder.getPosition());
   }
 
-  private void pivotPIDControl() {
+  private void runPID() {
     double armFeedforwardVoltage =
         feedforward.calculate(
             (Units.radiansToRotations(pid.getSetpoint().position)
@@ -74,7 +75,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
                 * 0.254,
             pid.getSetpoint().velocity);
 
-    double pivotPidOutput = pid.calculate(getPivotAngleRadians(), pivotSetpoint.value.in(Radians));
+    double pivotPidOutput =
+        pid.calculate(getPosition().in(Radians), pivotSetpoint.value.in(Radians));
 
     intakePivotMotor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
 
@@ -88,7 +90,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    pivotPIDControl();
+    runPID();
 
     SmartDashboard.putData(pid);
     SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
