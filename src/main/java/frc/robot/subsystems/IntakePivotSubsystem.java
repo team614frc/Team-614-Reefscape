@@ -21,44 +21,85 @@ import frc.robot.Configs;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakePivotSubsystem extends SubsystemBase {
-  private final SparkFlex intakePivotMotor =
+  private final SparkFlex intakePivotMotorRight =
       new SparkFlex(IntakeConstants.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
-  private RelativeEncoder intakePivotEncoder = intakePivotMotor.getEncoder();
+  private RelativeEncoder intakePivotEncoderRight = intakePivotMotorRight.getEncoder();
+  private final SparkFlex intakePivotMotorLeft =
+      new SparkFlex(IntakeConstants.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
+  private RelativeEncoder intakePivotEncoderLeft = intakePivotMotorLeft.getEncoder();
 
-  private final ProfiledPIDController pid =
+
+  private final ProfiledPIDController rightPid =
       new ProfiledPIDController(
-          IntakeConstants.PIVOT_kP,
-          IntakeConstants.PIVOT_kI,
-          IntakeConstants.PIVOT_kD,
+          IntakeConstants.RIGHT_PIVOT_kP,
+          IntakeConstants.RIGHT_PIVOT_kI,
+          IntakeConstants.RIGHT_PIVOT_kD,
           new TrapezoidProfile.Constraints(
               Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_VELOCITY),
               Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_ACCELERATION)));
 
-  private final ArmFeedforward feedforward =
+  private final ArmFeedforward rightFeedForward =
       new ArmFeedforward(
-          IntakeConstants.PIVOT_kS,
-          IntakeConstants.PIVOT_kG,
-          IntakeConstants.PIVOT_kV,
-          IntakeConstants.PIVOT_kA);
+          IntakeConstants.RIGHT_PIVOT_kS,
+          IntakeConstants.RIGHT_PIVOT_kG,
+          IntakeConstants.RIGHT_PIVOT_kV,
+          IntakeConstants.RIGHT_PIVOT_kA);
+
+          private final ProfiledPIDController leftPid =
+          new ProfiledPIDController(
+              IntakeConstants.LEFT_PIVOT_kP,
+              IntakeConstants.LEFT_PIVOT_kI,
+              IntakeConstants.LEFT_PIVOT_kD,
+              new TrapezoidProfile.Constraints(
+                  Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_VELOCITY),
+                  Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_ACCELERATION)));
+    
+      private final ArmFeedforward leftFeedForward =
+          new ArmFeedforward(
+              IntakeConstants.LEFT_PIVOT_kS,
+              IntakeConstants.LEFT_PIVOT_kG,
+              IntakeConstants.LEFT_PIVOT_kV,
+              IntakeConstants.LEFT_PIVOT_kA);
+        
 
   private double pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
 
   public IntakePivotSubsystem() {
-    intakePivotMotor.configure(
+    intakePivotMotorRight.configure(
         Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-
-    intakePivotEncoder.setPosition(0);
+    intakePivotMotorLeft.configure(
+          Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG,
+          ResetMode.kResetSafeParameters,
+          PersistMode.kPersistParameters);
+    intakePivotEncoderRight.setPosition(0);
+    intakePivotEncoderLeft.setPosition(0);
   }
 
-  public boolean reachedSetpoint() {
-    return Math.abs(intakePivotEncoder.getPosition() - pivotSetpoint)
+  public boolean reachedSetpoint(RelativeEncoder encoder) {
+    return Math.abs(encoder.getPosition() - pivotSetpoint)
         <= IntakeConstants.PIVOT_TOLERANCE;
   }
 
   private double getPivotAngleRadians() {
     return Units.rotationsToRadians(intakePivotEncoder.getPosition());
+  }
+
+  private void pivotPIDControl() {
+    double armFeedforwardVoltage =
+        feedforward.calculate(
+            (Units.radiansToRotations(pid.getSetpoint().position)
+                    - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET)
+                * 0.254,
+            pid.getSetpoint().velocity);
+
+    double pivotPidOutput =
+        pid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(pivotSetpoint));
+
+    intakePivotMotor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
+
+    SmartDashboard.putNumber("Pivot FF", armFeedforwardVoltage);
   }
 
   private void pivotPIDControl() {

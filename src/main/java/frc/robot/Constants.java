@@ -54,13 +54,22 @@ public final class Constants {
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
 
-    public static final double PIVOT_kP = 0.8;
-    public static final double PIVOT_kI = 0;
-    public static final double PIVOT_kD = 0.01;
-    public static final double PIVOT_kS = 0;
-    public static final double PIVOT_kG = 0.8;
-    public static final double PIVOT_kV = 0;
-    public static final double PIVOT_kA = 0;
+    public static final double RIGHT_PIVOT_kP = 0.8;
+    public static final double RIGHT_PIVOT_kI = 0;
+    public static final double RIGHT_PIVOT_kD = 0.01;
+    public static final double RIGHT_PIVOT_kS = 0;
+    public static final double RIGHT_PIVOT_kG = 0.8;
+    public static final double RIGHT_PIVOT_kV = 0;
+    public static final double RIGHT_PIVOT_kA = 0;
+    
+    public static final double LEFT_PIVOT_kP = 0.8;
+    public static final double LEFT_PIVOT_kI = 0;
+    public static final double LEFT_PIVOT_kD = 0.01;
+    public static final double LEFT_PIVOT_kS = 0;
+    public static final double LEFT_PIVOT_kG = 0.8;
+    public static final double LEFT_PIVOT_kV = 0;
+    public static final double LEFT_PIVOT_kA = 0;
+
     public static final double GEAR_RATIO = 60;
     public static final double PIVOT_UP = -1.5;
     public static final double PIVOT_DOWN = -7.2;
