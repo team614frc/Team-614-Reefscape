@@ -146,19 +146,19 @@ public class RobotContainer {
   private final Command autoL1 = intake.outtakeGamepiece().withTimeout(0.25);
   private final Command autoL2 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.atSetpoint(ArmSetpoint.HOVER))
+          .onlyIf(() -> arm.checkBelowPush())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L2), arm.setSetpoint(ArmSetpoint.PREP_L2));
 
   private final Command autoL3 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.atSetpoint(ArmSetpoint.HOVER))
+          .onlyIf(() -> arm.checkBelowPush())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L3), arm.setSetpoint(ArmSetpoint.PREP_L3));
 
   private final Command autoElevatorArmIdle =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.atSetpoint(ArmSetpoint.HOVER))
+          .onlyIf(() -> arm.checkBelowPush())
           .andThen(elevator.setSetpoint(ElevatorSetpoint.IDLE), arm.setSetpoint(ArmSetpoint.IDLE));
 
   private final Command autoIntakeDownAndIntake =
@@ -237,12 +237,15 @@ public class RobotContainer {
           Commands.waitUntil(canal::gamePieceDetected),
           Commands.sequence(
                   canal.slow(),
-                  Commands.waitSeconds(0.05),
+                  elevator.setSetpoint(ElevatorSetpoint.INTAKEUP),
+                  arm.setSetpoint(ArmSetpoint.INTAKEUP),
                   endEffector.intake(),
                   elevator.setSetpoint(ElevatorSetpoint.INTAKE),
                   elevator.setSetpoint(ElevatorSetpoint.HOVER),
                   endEffector.stop(),
-                  canal.stop())
+                  canal.stop(),
+                  arm.setSetpoint(ArmSetpoint.IDLE),
+                  elevator.setSetpoint(ElevatorSetpoint.IDLE))
               .alongWith(
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION)));
 
@@ -265,13 +268,13 @@ public class RobotContainer {
 
   private final Command prepL2 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.atSetpoint(ArmSetpoint.HOVER))
+          .onlyIf(() -> arm.checkBelowPush())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L2), arm.setSetpoint(ArmSetpoint.PREP_L2));
 
   private final Command prepL3 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.atSetpoint(ArmSetpoint.PREP_L3))
+          .onlyIf(() -> arm.checkBelowPush())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L3), arm.setSetpoint(ArmSetpoint.PREP_L3));
 
