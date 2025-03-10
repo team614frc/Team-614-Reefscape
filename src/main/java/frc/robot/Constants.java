@@ -61,7 +61,7 @@ public final class Constants {
     public static final double RIGHT_PIVOT_kG = 0.8;
     public static final double RIGHT_PIVOT_kV = 0;
     public static final double RIGHT_PIVOT_kA = 0;
-    
+
     public static final double LEFT_PIVOT_kP = 0.8;
     public static final double LEFT_PIVOT_kI = 0;
     public static final double LEFT_PIVOT_kD = 0.01;

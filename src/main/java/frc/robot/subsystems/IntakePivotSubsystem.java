@@ -28,7 +28,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
       new SparkFlex(IntakeConstants.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
   private RelativeEncoder intakePivotEncoderLeft = intakePivotMotorLeft.getEncoder();
 
-
   private final ProfiledPIDController rightPid =
       new ProfiledPIDController(
           IntakeConstants.RIGHT_PIVOT_kP,
@@ -45,22 +44,21 @@ public class IntakePivotSubsystem extends SubsystemBase {
           IntakeConstants.RIGHT_PIVOT_kV,
           IntakeConstants.RIGHT_PIVOT_kA);
 
-          private final ProfiledPIDController leftPid =
-          new ProfiledPIDController(
-              IntakeConstants.LEFT_PIVOT_kP,
-              IntakeConstants.LEFT_PIVOT_kI,
-              IntakeConstants.LEFT_PIVOT_kD,
-              new TrapezoidProfile.Constraints(
-                  Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_VELOCITY),
-                  Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_ACCELERATION)));
-    
-      private final ArmFeedforward leftFeedForward =
-          new ArmFeedforward(
-              IntakeConstants.LEFT_PIVOT_kS,
-              IntakeConstants.LEFT_PIVOT_kG,
-              IntakeConstants.LEFT_PIVOT_kV,
-              IntakeConstants.LEFT_PIVOT_kA);
-        
+  private final ProfiledPIDController leftPid =
+      new ProfiledPIDController(
+          IntakeConstants.LEFT_PIVOT_kP,
+          IntakeConstants.LEFT_PIVOT_kI,
+          IntakeConstants.LEFT_PIVOT_kD,
+          new TrapezoidProfile.Constraints(
+              Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_VELOCITY),
+              Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_ACCELERATION)));
+
+  private final ArmFeedforward leftFeedForward =
+      new ArmFeedforward(
+          IntakeConstants.LEFT_PIVOT_kS,
+          IntakeConstants.LEFT_PIVOT_kG,
+          IntakeConstants.LEFT_PIVOT_kV,
+          IntakeConstants.LEFT_PIVOT_kA);
 
   private double pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
 
@@ -70,24 +68,29 @@ public class IntakePivotSubsystem extends SubsystemBase {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     intakePivotMotorLeft.configure(
-          Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG,
-          ResetMode.kResetSafeParameters,
-          PersistMode.kPersistParameters);
+        Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG,
+        ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
     intakePivotEncoderRight.setPosition(0);
     intakePivotEncoderLeft.setPosition(0);
   }
 
   public boolean reachedSetpoint() {
     return Math.abs(intakePivotEncoderLeft.getPosition() - pivotSetpoint)
-        <= IntakeConstants.PIVOT_TOLERANCE && Math.abs(intakePivotEncoderRight.getPosition() - pivotSetpoint)
-        <= IntakeConstants.PIVOT_TOLERANCE;
+            <= IntakeConstants.PIVOT_TOLERANCE
+        && Math.abs(intakePivotEncoderRight.getPosition() - pivotSetpoint)
+            <= IntakeConstants.PIVOT_TOLERANCE;
   }
 
   private double getPivotAngleRadians(RelativeEncoder enconder) {
     return Units.rotationsToRadians(enconder.getPosition());
   }
 
-  private void pivotPIDControl(ProfiledPIDController pid, SparkFlex motor, ArmFeedforward feedforward, RelativeEncoder encoder) {
+  private void pivotPIDControl(
+      ProfiledPIDController pid,
+      SparkFlex motor,
+      ArmFeedforward feedforward,
+      RelativeEncoder encoder) {
     double armFeedforwardVoltage =
         feedforward.calculate(
             (Units.radiansToRotations(pid.getSetpoint().position)
@@ -98,16 +101,17 @@ public class IntakePivotSubsystem extends SubsystemBase {
     double pivotPidOutput =
         pid.calculate(getPivotAngleRadians(encoder), Units.rotationsToRadians(pivotSetpoint));
 
-        motor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
+    motor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
 
     SmartDashboard.putNumber("Pivot FF", armFeedforwardVoltage);
   }
 
   @Override
   public void periodic() {
-    pivotPIDControl(leftPid,intakePivotMotorLeft,leftFeedForward,intakePivotEncoderLeft);
-    pivotPIDControl(rightPid,intakePivotMotorRight,rightFeedForward,intakePivotEncoderRight);
+    pivotPIDControl(leftPid, intakePivotMotorLeft, leftFeedForward, intakePivotEncoderLeft);
+    pivotPIDControl(rightPid, intakePivotMotorRight, rightFeedForward, intakePivotEncoderRight);
     SmartDashboard.putData(leftPid);
+    SmartDashboard.putData(rightPid);
     SmartDashboard.putNumber("Left Pivot Goal", leftPid.getGoal().position);
     SmartDashboard.putNumber("Left Pivot Position", intakePivotEncoderLeft.getPosition());
     SmartDashboard.putNumber("Right Pivot Goal", rightPid.getGoal().position);
