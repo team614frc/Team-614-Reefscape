@@ -58,7 +58,7 @@ public class ArmSubsystem extends SubsystemBase {
         <= ArmConstants.ARM_TOLERANCE.in(Rotations);
   }
 
-  public boolean checkBelowPush() {
+  public boolean isBelowHorizonal() {
     return armEncoder.getPosition() < ArmConstants.ARM_FEEDFORWARD_OFFSET.in(Rotations);
   }
 

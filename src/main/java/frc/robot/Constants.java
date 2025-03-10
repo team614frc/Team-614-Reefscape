@@ -114,7 +114,7 @@ public final class Constants {
 
   public enum ElevatorSetpoint {
     HOVER(4.85),
-    INTAKEUP(5.5),
+    INTAKE_UP(5.5),
     INTAKE(3.74),
     IDLE(0.05),
     PREP_L2(0.4),

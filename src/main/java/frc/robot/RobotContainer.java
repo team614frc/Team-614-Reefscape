@@ -146,19 +146,19 @@ public class RobotContainer {
   private final Command autoL1 = intake.outtakeGamepiece().withTimeout(0.25);
   private final Command autoL2 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.checkBelowPush())
+          .onlyIf(() -> arm.isBelowHorizonal())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L2), arm.setSetpoint(ArmSetpoint.PREP_L2));
 
   private final Command autoL3 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.checkBelowPush())
+          .onlyIf(() -> arm.isBelowHorizonal())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L3), arm.setSetpoint(ArmSetpoint.PREP_L3));
 
   private final Command autoElevatorArmIdle =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.checkBelowPush())
+          .onlyIf(() -> arm.isBelowHorizonal())
           .andThen(elevator.setSetpoint(ElevatorSetpoint.IDLE), arm.setSetpoint(ArmSetpoint.IDLE));
 
   private final Command autoIntakeDownAndIntake =
@@ -225,19 +225,13 @@ public class RobotContainer {
 
   private final Command canalIntakeSequence =
       Commands.sequence(
-          Commands.sequence(
-                  arm.setSetpoint(ArmSetpoint.PUSH),
-                  elevator.setSetpoint(ElevatorSetpoint.HOVER),
-                  arm.setSetpoint(ArmSetpoint.HOVER))
-              .unless(
-                  () ->
-                      arm.atSetpoint(ArmSetpoint.HOVER)
-                          && elevator.atSetpoint(ElevatorSetpoint.HOVER)),
+          elevator.setSetpoint(ElevatorSetpoint.HOVER),
+          arm.setSetpoint(ArmSetpoint.HOVER),
           canal.intake(),
           Commands.waitUntil(canal::gamePieceDetected),
           Commands.sequence(
                   canal.slow(),
-                  elevator.setSetpoint(ElevatorSetpoint.INTAKEUP),
+                  elevator.setSetpoint(ElevatorSetpoint.INTAKE_UP),
                   arm.setSetpoint(ArmSetpoint.INTAKEUP),
                   endEffector.intake(),
                   elevator.setSetpoint(ElevatorSetpoint.INTAKE),
@@ -268,13 +262,13 @@ public class RobotContainer {
 
   private final Command prepL2 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.checkBelowPush())
+          .onlyIf(() -> arm.isBelowHorizonal())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L2), arm.setSetpoint(ArmSetpoint.PREP_L2));
 
   private final Command prepL3 =
       arm.setSetpoint(ArmSetpoint.PUSH)
-          .onlyIf(() -> arm.checkBelowPush())
+          .onlyIf(() -> arm.isBelowHorizonal())
           .andThen(
               elevator.setSetpoint(ElevatorSetpoint.PREP_L3), arm.setSetpoint(ArmSetpoint.PREP_L3));
 
