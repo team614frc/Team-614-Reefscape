@@ -108,12 +108,13 @@ public final class Constants {
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final double CANAL_FAST_SPEED = 0.3;
     public static final int CANAL_REST_SPEED = 0;
-    public static final double CANAL_SLOW_SPEED = 0.06;
+    public static final double CANAL_SLOW_SPEED = 0.085;
     public static final int LASER_MAX_DISTANCE = 180;
   }
 
   public enum ElevatorSetpoint {
-    HOVER(6.19),
+    HOVER(4.85),
+    INTAKE_UP(5.5),
     INTAKE(3.74),
     IDLE(0.05),
     PREP_L2(0.4),
@@ -131,6 +132,7 @@ public final class Constants {
 
   public enum ArmSetpoint {
     HOVER(0.03),
+    INTAKE_UP(0.015),
     PUSH(0.465),
     IDLE(0.49),
     START(0.5),
