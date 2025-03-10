@@ -77,16 +77,17 @@ public class IntakePivotSubsystem extends SubsystemBase {
     intakePivotEncoderLeft.setPosition(0);
   }
 
-  public boolean reachedSetpoint(RelativeEncoder encoder) {
-    return Math.abs(encoder.getPosition() - pivotSetpoint)
+  public boolean reachedSetpoint() {
+    return Math.abs(intakePivotEncoderLeft.getPosition() - pivotSetpoint)
+        <= IntakeConstants.PIVOT_TOLERANCE && Math.abs(intakePivotEncoderRight.getPosition() - pivotSetpoint)
         <= IntakeConstants.PIVOT_TOLERANCE;
   }
 
-  private double getPivotAngleRadians() {
-    return Units.rotationsToRadians(intakePivotEncoder.getPosition());
+  private double getPivotAngleRadians(RelativeEncoder enconder) {
+    return Units.rotationsToRadians(enconder.getPosition());
   }
 
-  private void pivotPIDControl() {
+  private void pivotPIDControl(ProfiledPIDController pid, SparkFlex motor, ArmFeedforward feedforward, RelativeEncoder encoder) {
     double armFeedforwardVoltage =
         feedforward.calculate(
             (Units.radiansToRotations(pid.getSetpoint().position)
@@ -95,36 +96,22 @@ public class IntakePivotSubsystem extends SubsystemBase {
             pid.getSetpoint().velocity);
 
     double pivotPidOutput =
-        pid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(pivotSetpoint));
+        pid.calculate(getPivotAngleRadians(encoder), Units.rotationsToRadians(pivotSetpoint));
 
-    intakePivotMotor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
-
-    SmartDashboard.putNumber("Pivot FF", armFeedforwardVoltage);
-  }
-
-  private void pivotPIDControl() {
-    double armFeedforwardVoltage =
-        feedforward.calculate(
-            (Units.radiansToRotations(pid.getSetpoint().position)
-                    - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET)
-                * 0.254,
-            pid.getSetpoint().velocity);
-
-    double pivotPidOutput =
-        pid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(pivotSetpoint));
-
-    intakePivotMotor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
+        motor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
 
     SmartDashboard.putNumber("Pivot FF", armFeedforwardVoltage);
   }
 
   @Override
   public void periodic() {
-    pivotPIDControl();
-
-    SmartDashboard.putData(pid);
-    SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
-    SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
+    pivotPIDControl(leftPid,intakePivotMotorLeft,leftFeedForward,intakePivotEncoderLeft);
+    pivotPIDControl(rightPid,intakePivotMotorRight,rightFeedForward,intakePivotEncoderRight);
+    SmartDashboard.putData(leftPid);
+    SmartDashboard.putNumber("Left Pivot Goal", leftPid.getGoal().position);
+    SmartDashboard.putNumber("Left Pivot Position", intakePivotEncoderLeft.getPosition());
+    SmartDashboard.putNumber("Right Pivot Goal", rightPid.getGoal().position);
+    SmartDashboard.putNumber("Right Pivot Position", intakePivotEncoderRight.getPosition());
   }
 
   public Command pivotDown() {
