@@ -42,6 +42,8 @@ import limelight.networktables.Orientation3d;
 import limelight.networktables.PoseEstimate;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
+import swervelib.parser.SwerveControllerConfiguration;
+import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
