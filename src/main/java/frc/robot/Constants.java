@@ -31,6 +31,8 @@ public final class Constants {
       new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS.in(Kilogram));
   public static final Time LOOP_TIME = Seconds.of(0.13); // s, 20ms + 110ms sprk max velocity lag
   public static final LinearVelocity MAX_SPEED = FeetPerSecond.of(17.5);
+  public static final boolean USE_LIMELIGHT_FRONT = false;
+  public static final boolean USE_LIMELIGHT_BACK = false;
 
   public static final class DrivebaseConstants {
     // Hold time on motor brakes when disabled.
@@ -41,6 +43,10 @@ public final class Constants {
     public static final double AUTO_ROTATION_kP = 6;
     public static final double AUTO_ROTATION_kI = 0.0;
     public static final double AUTO_ROTATION_kD = 0.0;
+    public static final Boolean USE_LIMELIGHT_FRONT = false;
+    public static final Boolean USE_LIMELIGHT_BACK = false;
+    public static final String LIMELIGHT_FRONT_NAME = "limelight-front";
+    public static final String LIMELIGHT_BACK_NAME = "limelight-back";
   }
 
   public static final class IntakeConstants {
