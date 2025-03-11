@@ -9,8 +9,11 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
@@ -31,8 +34,6 @@ public final class Constants {
       new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS.in(Kilogram));
   public static final Time LOOP_TIME = Seconds.of(0.13); // s, 20ms + 110ms sprk max velocity lag
   public static final LinearVelocity MAX_SPEED = FeetPerSecond.of(17.5);
-  public static final boolean USE_LIMELIGHT_FRONT = false;
-  public static final boolean USE_LIMELIGHT_BACK = false;
 
   public static final class DrivebaseConstants {
     // Hold time on motor brakes when disabled.
@@ -47,6 +48,12 @@ public final class Constants {
     public static final Boolean USE_LIMELIGHT_BACK = false;
     public static final String LIMELIGHT_FRONT_NAME = "limelight-front";
     public static final String LIMELIGHT_BACK_NAME = "limelight-back";
+    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(.5);
+    public static final LinearAcceleration MAX_ALIGNMENT_ACCELERATION =
+        MetersPerSecondPerSecond.of(.5);
+    public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
+    public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
+        DegreesPerSecondPerSecond.of(45);
   }
 
   public static final class IntakeConstants {

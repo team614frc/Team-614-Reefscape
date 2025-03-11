@@ -20,10 +20,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -204,14 +208,16 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param pose Target {@link Pose2d} to go to.
    * @return PathFinding command
    */
-  public Command driveToPose(Pose2d pose) {
+  public Command driveToPose(
+      Pose2d pose,
+      LinearVelocity maxvelocity,
+      LinearAcceleration maxacceleration,
+      AngularVelocity maxangularvelocity,
+      AngularAcceleration maxangularacceleration) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints =
         new PathConstraints(
-            swerveDrive.getMaximumChassisVelocity(),
-            4.0,
-            swerveDrive.getMaximumChassisAngularVelocity(),
-            Units.degreesToRadians(720));
+            maxvelocity, maxacceleration, maxangularvelocity, maxangularacceleration);
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return AutoBuilder.pathfindToPose(
@@ -385,18 +391,18 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
-    //   limelightFront.updateSettings(getOrientation3d());
-    //   updatePosition(limelightFront.getVisionEstimate());
-    // }
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
+      limelightFront.updateSettings(getOrientation3d());
+      updatePosition(limelightFront.getVisionEstimate());
+    }
     // if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK) {
     //   limelightBack.updateSettings(getOrientation3d());
     //   updatePosition(limelightBack.getVisionEstimate());
     // }
     // SmartDashboard.putNumber("Closest AprilTagID", findReefID());
-    // SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
-    // SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
-    // SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
+    SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
+    SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
     // SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
   }
 
@@ -443,7 +449,12 @@ public class SwerveSubsystem extends SubsystemBase {
             .get(FieldConstants.ReefLevel.L1)
             .toPose2d();
     path = AllianceFlipUtil.apply(path);
-    return driveToPose(path);
+    return driveToPose(
+        path,
+        Constants.DrivebaseConstants.MAX_ALIGNMENT_VELOCITY,
+        Constants.DrivebaseConstants.MAX_ALIGNMENT_ACCELERATION,
+        Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_VELOCITY,
+        Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_ACCELERATION);
   }
 
   public boolean isFieldCentric = true;
