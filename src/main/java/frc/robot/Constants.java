@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -43,6 +45,19 @@ public final class Constants {
     public static final double AUTO_ROTATION_kD = 0.0;
   }
 
+  public enum IntakePivotSetpoint {
+    UP(-1.5),
+    DOWN(-7.2),
+    INTAKE_ALGAE(-4.4),
+    OUTTAKE_ALGAE(-2.6);
+
+    public final Angle value;
+
+    IntakePivotSetpoint(double value) {
+      this.value = Rotations.of(value);
+    }
+  }
+
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR = 24;
     public static final int INTAKE_PIVOT_MOTOR = 26;
@@ -62,17 +77,13 @@ public final class Constants {
     public static final double PIVOT_kV = 0;
     public static final double PIVOT_kA = 0;
     public static final double GEAR_RATIO = 60;
-    public static final double PIVOT_UP = -1.5;
-    public static final double PIVOT_DOWN = -7.2;
-    public static final double PIVOT_INTAKE_ALGAE = -4.4;
-    public static final double PIVOT_OUTTAKE_ALGAE = -2.6;
-    public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final double PIVOT_MAX_VELOCITY = 8;
-    public static final double PIVOT_MAX_ACCELERATION = 12;
+    public static final AngularVelocity PIVOT_MAX_VELOCITY = RotationsPerSecond.of(8);
+    public static final AngularAcceleration PIVOT_MAX_ACCELERATION =
+        RotationsPerSecondPerSecond.of(12);
     public static final double PIVOT_FEEDFORWARD_OFFSET = -6.3;
-    public static final double PIVOT_TOLERANCE = 0.75;
+    public static final Angle PIVOT_TOLERANCE = Rotations.of(0.75);
   }
 
   public static class EndEffectorConstants {
@@ -97,8 +108,48 @@ public final class Constants {
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final double CANAL_FAST_SPEED = 0.3;
     public static final int CANAL_REST_SPEED = 0;
-    public static final double CANAL_SLOW_SPEED = 0.06;
+    public static final double CANAL_SLOW_SPEED = 0.085;
     public static final int LASER_MAX_DISTANCE = 180;
+  }
+
+  public enum ElevatorSetpoint {
+    HOVER(4.85),
+    INTAKE_UP(5.5),
+    INTAKE(3.74),
+    IDLE(0.05),
+    PREP_L2(0.4),
+    PREP_L3(6.19),
+    PREP_L4(0),
+    OUTTAKE(1.75),
+    PUNCH_ALGAE(6.19);
+
+    public final Angle value;
+
+    ElevatorSetpoint(double value) {
+      this.value = Rotations.of(value);
+    }
+  }
+
+  public enum ArmSetpoint {
+    HOVER(0.03),
+    INTAKE_UP(0.015),
+    PUSH(0.465),
+    IDLE(0.49),
+    START(0.5),
+    PREP_L2(0.465),
+    PREP_L3(0.475),
+    PREP_L4(0),
+    SCORE_L3(0.390),
+    SCORE_L2(0.380),
+    PUKE(0.175),
+    PUNCH_ALGAE_L2(0.278),
+    PUNCH_ALGAE_L3(0.465);
+
+    public final Angle value;
+
+    ArmSetpoint(double value) {
+      this.value = Rotations.of(value);
+    }
   }
 
   public static final class ElevatorConstants {
@@ -111,20 +162,13 @@ public final class Constants {
     public static final double kG = 0.02;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double ELEVATOR_HOVER_SETPOINT = 6.19;
-    public static final double ELEVATOR_INTAKE_SETPOINT = 3.74;
-    public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
-    public static final double ELEVATOR_L1_SETPOINT = 0;
-    public static final double ELEVATOR_L2_SETPOINT = 0.4;
-    public static final double ELEVATOR_L3_SETPOINT = 6.19;
-    public static final double ELEVATOR_L4_SETPOINT = 0;
-    public static final double ELEVATOR_OUTTAKE_SETPOINT = 1.75;
-    public static final int ELEVATOR_ZERO_ENCODER = 0;
-    public static final double ELEVATOR_MAX_VELOCITY = 20;
-    public static final double ELEVATOR_MAX_ACCELERATION = 50;
+
+    public static final AngularVelocity ELEVATOR_MAX_VELOCITY = RotationsPerSecond.of(20);
+    public static final AngularAcceleration ELEVATOR_MAX_ACCELERATION =
+        RotationsPerSecondPerSecond.of(50);
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
     public static final Angle ELEVATOR_SIM_STARTING_ANGLE = Degrees.of(180);
-    public static final double ELEVATOR_TOLERANCE = 0.1;
+    public static final Angle ELEVATOR_TOLERANCE = Rotations.of(0.1);
     public static final double ELEVATOR_SLOW_DOWN_SPEED = -0.05;
     public static final double ELEVATOR_STALL_VELOCITY = 0.1;
     public static final double ELEVATOR_STOP_SPEED = 0;
@@ -140,28 +184,18 @@ public final class Constants {
     public static final double kG = 0.85;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double ARM_HOVER_SETPOINT = 0.03;
-    public static final double ARM_INTAKE_SETPOINT = 0.03;
-    public static final double ARM_PUSH_SETPOINT = 0.465;
-    public static final double ARM_IDLE_SETPOINT = 0.49;
-    public static final double ARM_START_SETPOINT = 0.5;
-    public static final double ARM_L1_SETPOINT = 0;
-    public static final double ARM_L2_SETPOINT = 0.465;
-    public static final double ARM_L3_SETPOINT = 0.475;
-    public static final double ARM_L4_SETPOINT = 0;
-    public static final double ARM_L3_SCORE_SETPOINT = 0.390;
-    public static final double ARM_L2_SCORE_SETPOINT = 0.380;
-    public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
-    public static final double ARM_PUKE_SETPOINT = 0.175;
+
+    public static final Angle ARM_FEEDFORWARD_OFFSET = Rotations.of(0.278);
     public static final int ARM_ZERO_ENCODER = 0;
-    public static final double ARM_MAX_VELOCITY = 4;
-    public static final double ARM_MAX_ACCELERATION = 1;
+    public static final AngularVelocity ARM_MAX_VELOCITY = RotationsPerSecond.of(4);
+    public static final AngularAcceleration ARM_MAX_ACCELERATION =
+        RotationsPerSecondPerSecond.of(1);
     public static final double ARM_MIN_RANGE = -1;
     public static final double ARM_MAX_RANGE = 1;
     public static final double ARM_LOOP_ERROR = 0.25;
     public static final Angle ARM_STARTING_ANGLE = Degrees.of(180);
     public static final Angle ARM_ANGLE_COMPENSATE = Degrees.of(90);
-    public static final double ARM_TOLERANCE = 0.05;
+    public static final Angle ARM_TOLERANCE = Rotations.of(0.05);
   }
 
   public static final class SimulationRobotConstants {

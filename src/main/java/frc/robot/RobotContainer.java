@@ -15,11 +15,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ArmSetpoint;
+import frc.robot.Constants.ElevatorSetpoint;
+import frc.robot.Constants.IntakePivotSetpoint;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.CanalSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.ElevatorArmSubsystem;
-import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -38,7 +41,8 @@ public class RobotContainer {
   private final IntakeSubsystem intake = new IntakeSubsystem();
   private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
   private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
-  private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
+  private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+  private final ArmSubsystem arm = new ArmSubsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
   private final CanalSubsystem canal = new CanalSubsystem();
   private final LEDSubsystem led = new LEDSubsystem();
@@ -81,128 +85,198 @@ public class RobotContainer {
       driveAngularVelocitySim.copy().robotRelative(true).allianceRelativeControl(false);
 
   private final Command rumble(double power, double duration) {
-    return Commands.runOnce(
+    return Commands.runEnd(
             () -> {
               driverXbox.getHID().setRumble(RumbleType.kBothRumble, power);
               codriverXbox.getHID().setRumble(RumbleType.kBothRumble, power);
-            })
-        .andThen(Commands.waitSeconds(duration))
-        .andThen(
+            },
             () -> {
               driverXbox.getHID().setRumble(RumbleType.kBothRumble, OperatorConstants.RUMBLE_REST);
               codriverXbox
                   .getHID()
                   .setRumble(RumbleType.kBothRumble, OperatorConstants.RUMBLE_REST);
-            });
+            })
+        .withTimeout(duration);
   }
 
   private final Command toggleDriveMode =
-      Commands.either(
-          Commands.sequence(
-              drivebase.driveFieldOriented(driveRobotOriented),
-              drivebase.flipFieldAndRobotRelative()),
-          Commands.sequence(
-              drivebase.driveFieldOriented(driveAngularVelocitySim),
-              drivebase.flipFieldAndRobotRelative()),
-          () -> drivebase.isFieldCentric);
+      drivebase
+          .flipFieldAndRobotRelative()
+          .andThen(
+              Commands.either(
+                  drivebase.driveFieldOriented(driveRobotOriented),
+                  drivebase.driveFieldOriented(driveAngularVelocity),
+                  () -> drivebase.isFieldCentric));
 
-  private final Command autoOuttakeCoral =
+  private final Command outtakeL2andL3 =
       Commands.either(
           Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kScoreL3Arm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              arm.setSetpoint(ArmSetpoint.SCORE_L3),
               endEffector.outtake(),
-              elevatorArm.setSetpoint(Setpoint.kArmL3),
-              elevatorArm.setSetpoint(Setpoint.kElevatorOuttake),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-              elevatorArm.setSetpoint(Setpoint.kArmIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              arm.setSetpoint(ArmSetpoint.PREP_L3),
+              elevator.setSetpoint(ElevatorSetpoint.OUTTAKE),
+              elevator.setSetpoint(ElevatorSetpoint.IDLE),
+              arm.setSetpoint(ArmSetpoint.IDLE),
               endEffector.stop()),
           Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              arm.setSetpoint(ArmSetpoint.SCORE_L2),
               endEffector.outtake(),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL2),
-              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              arm.setSetpoint(ArmSetpoint.PREP_L2),
+              elevator.setSetpoint(ElevatorSetpoint.IDLE),
+              arm.setSetpoint(ArmSetpoint.IDLE),
               endEffector.stop()),
-          () -> elevatorArm.checkL3());
+          (() ->
+              arm.atSetpoint(ArmSetpoint.PREP_L3)
+                  && elevator.atSetpoint(ElevatorSetpoint.PREP_L3)));
 
   private final Command autoCanalIntake =
       Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kPushArm),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          arm.setSetpoint(ArmSetpoint.PUSH),
           canal.intake(),
-          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kArmHover),
+          elevator.setSetpoint(ElevatorSetpoint.HOVER),
+          arm.setSetpoint(ArmSetpoint.HOVER),
           Commands.waitUntil(canal::gamePieceDetected),
           canal.slow(),
-          Commands.waitSeconds(0.8),
-          Commands.parallel(elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          Commands.waitSeconds(0.15),
+          elevator.setSetpoint(ElevatorSetpoint.INTAKE).alongWith(endEffector.intake()),
+          elevator.setSetpoint(ElevatorSetpoint.HOVER),
           canal.stop(),
-          elevatorArm.setSetpoint(Setpoint.kArmHover));
+          arm.setSetpoint(ArmSetpoint.HOVER));
 
-  private final Command autoL1 =
-      Commands.sequence(
-          intake.autoOuttakeGamepiece(), Commands.waitSeconds(0.25), intake.stopIntake());
-
+  private final Command autoL1 = intake.outtakeGamepiece().withTimeout(0.25);
   private final Command autoL2 =
-      Commands.either(
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL2)),
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kPushArm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL2)),
-          () -> !elevatorArm.checkHover());
+      arm.setSetpoint(ArmSetpoint.PUSH)
+          .onlyIf(() -> arm.isBelowHorizontal())
+          .andThen(
+              elevator.setSetpoint(ElevatorSetpoint.PREP_L2), arm.setSetpoint(ArmSetpoint.PREP_L2));
 
   private final Command autoL3 =
-      Commands.either(
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL3)),
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kPushArm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL3)),
-          () -> !elevatorArm.checkHover());
+      arm.setSetpoint(ArmSetpoint.PUSH)
+          .onlyIf(() -> arm.isBelowHorizontal())
+          .andThen(
+              elevator.setSetpoint(ElevatorSetpoint.PREP_L3), arm.setSetpoint(ArmSetpoint.PREP_L3));
 
   private final Command autoElevatorArmIdle =
-      Commands.sequence(
-          led.setBasicPattern(),
-          elevatorArm.setSetpoint(Setpoint.kArmIdle),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
+      arm.setSetpoint(ArmSetpoint.PUSH)
+          .onlyIf(() -> arm.isBelowHorizontal())
+          .andThen(elevator.setSetpoint(ElevatorSetpoint.IDLE), arm.setSetpoint(ArmSetpoint.IDLE));
 
   private final Command autoIntakeDownAndIntake =
-      Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece());
+      intakePivot.setSetpoint(IntakePivotSetpoint.DOWN).alongWith(intake.intakeGamepiece());
 
-  private final Command autoIntakeUp =
+  private final Command autoIntakeUp = intakePivot.setSetpoint(IntakePivotSetpoint.OUTTAKE_ALGAE);
+
+  private final Command reverseClimb =
+      intakePivot.setSetpoint(IntakePivotSetpoint.DOWN).alongWith(climber.reverseClimb());
+
+  private final Command climb =
+      climber.climb().alongWith(intakePivot.setSetpoint(IntakePivotSetpoint.DOWN));
+
+  private final Command groundIntakeCoral =
+      intakePivot.setSetpoint(IntakePivotSetpoint.DOWN).alongWith(intake.intakeGamepiece());
+
+  private final Command pivotIdle = intakePivot.setSetpoint(IntakePivotSetpoint.OUTTAKE_ALGAE);
+
+  private final Command outtakeGroundCoral =
+      intakePivot
+          .setSetpoint(IntakePivotSetpoint.OUTTAKE_ALGAE)
+          .alongWith(intake.outtakeGamepiece());
+
+  private final Command intakeAlgae =
+      intakePivot
+          .setSetpoint(IntakePivotSetpoint.INTAKE_ALGAE)
+          .alongWith(intake.outtakeGamepiece());
+
+  private final Command outtakeAlgae =
+      intakePivot
+          .setSetpoint(IntakePivotSetpoint.OUTTAKE_ALGAE)
+          .alongWith(intake.intakeGamepiece());
+
+  private final Command pukeOnTrue =
+      Commands.parallel(
+          Commands.either(
+              arm.setSetpoint(ArmSetpoint.PUKE),
+              arm.setSetpoint(ArmSetpoint.PUSH),
+              () -> arm.atSetpoint(ArmSetpoint.HOVER)),
+          canal.fast(),
+          endEffector.outtake());
+
+  private final Command pukeOnFalse =
+      Commands.parallel(
+          Commands.either(
+              arm.setSetpoint(ArmSetpoint.HOVER),
+              arm.setSetpoint(ArmSetpoint.IDLE)
+                  .andThen(elevator.setSetpoint(ElevatorSetpoint.IDLE)),
+              () -> arm.atSetpoint(ArmSetpoint.PUKE)),
+          canal.stop(),
+          endEffector.stop());
+
+  private final Command punchL2Algae =
       Commands.sequence(
-          intakePivot.pivotIntakeAlgae(),
-          Commands.waitUntil(intakePivot::reachedSetpoint),
-          intakePivot.pivotIdle());
+          elevator.setSetpoint(ElevatorSetpoint.PUNCH_ALGAE),
+          endEffector.punchAlgae(),
+          arm.setSetpoint(ArmSetpoint.PUNCH_ALGAE_L2));
 
-  //   private final Command driveLeftReef =
-  //       Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT));
+  private final Command punchL3Algae =
+      Commands.sequence(
+          elevator.setSetpoint(ElevatorSetpoint.PUNCH_ALGAE),
+          endEffector.punchAlgae(),
+          arm.setSetpoint(ArmSetpoint.PUNCH_ALGAE_L3));
 
-  //   private final Command driveRightReef =
-  //       Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT));
+  private final Command canalIntakeSequence =
+      Commands.sequence(
+          elevator.setSetpoint(ElevatorSetpoint.HOVER),
+          arm.setSetpoint(ArmSetpoint.HOVER),
+          canal.intake(),
+          Commands.waitUntil(canal::gamePieceDetected),
+          Commands.sequence(
+                  canal.slow(),
+                  elevator.setSetpoint(ElevatorSetpoint.INTAKE_UP),
+                  arm.setSetpoint(ArmSetpoint.INTAKE_UP),
+                  endEffector.intake(),
+                  elevator.setSetpoint(ElevatorSetpoint.INTAKE),
+                  elevator.setSetpoint(ElevatorSetpoint.HOVER),
+                  endEffector.stop(),
+                  canal.stop(),
+                  arm.setSetpoint(ArmSetpoint.IDLE),
+                  elevator.setSetpoint(ElevatorSetpoint.IDLE))
+              .alongWith(
+                  rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION)));
+
+  private final Command resetElevator =
+      Commands.sequence(
+          elevator.descendSlowly().until(elevator::isStalled),
+          elevator.resetEncoder(),
+          rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION));
+
+  private final Command setElevatorArmIdle =
+      Commands.sequence(
+          arm.setSetpoint(ArmSetpoint.IDLE),
+          endEffector.stop(),
+          elevator.setSetpoint(ElevatorSetpoint.IDLE));
+
+  private final Command outtakeFastGroundCoral =
+      intakePivot
+          .setSetpoint(IntakePivotSetpoint.OUTTAKE_ALGAE)
+          .alongWith(intake.fastOuttakeGamepiece());
+
+  private final Command prepL2 =
+      arm.setSetpoint(ArmSetpoint.PUSH)
+          .onlyIf(() -> arm.isBelowHorizontal())
+          .andThen(
+              elevator.setSetpoint(ElevatorSetpoint.PREP_L2), arm.setSetpoint(ArmSetpoint.PREP_L2));
+
+  private final Command prepL3 =
+      arm.setSetpoint(ArmSetpoint.PUSH)
+          .onlyIf(() -> arm.isBelowHorizontal())
+          .andThen(
+              elevator.setSetpoint(ElevatorSetpoint.PREP_L3), arm.setSetpoint(ArmSetpoint.PREP_L3));
+
+  private final Command driveLeftReef =
+      Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT));
+
+  private final Command driveRightReef =
+      Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -216,7 +290,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("Canal Intake", autoCanalIntake);
-    NamedCommands.registerCommand("Score Coral", autoOuttakeCoral);
+    NamedCommands.registerCommand("Score Coral", outtakeL2andL3);
     NamedCommands.registerCommand("Idle Setpoint", autoElevatorArmIdle);
     NamedCommands.registerCommand("Intake Down", autoIntakeDownAndIntake);
     NamedCommands.registerCommand("Intake Up", autoIntakeUp);
@@ -249,186 +323,23 @@ public class RobotContainer {
     // driverXbox.b().whileTrue(driveRightReef);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
-    driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
-    driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
-    driverXbox
-        .leftTrigger()
-        .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
-        .onFalse(Commands.sequence(intakePivot.pivotOuttakeAlgae()));
-    // Commands.waitUntil(intakePivot::reachedSetpoint),
-    // intakePivot.pivotIdle()));
-    driverXbox
-        .rightTrigger()
-        .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.outtakeGamepiece()));
-    driverXbox
-        .x()
-        .whileTrue(Commands.parallel(intakePivot.pivotIntakeAlgae(), intake.outtakeGamepiece()))
-        .onFalse(intakePivot.pivotOuttakeAlgae());
-    driverXbox
-        .b()
-        .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.intakeGamepiece()))
-        .onFalse(intakePivot.pivotOuttakeAlgae());
-    driverXbox
-        .rightBumper()
-        .onTrue(
-            Commands.either(
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kScoreL3Arm),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    endEffector.outtake(),
-                    elevatorArm.setSetpoint(Setpoint.kArmL3),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorOuttake),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-                    elevatorArm.setSetpoint(Setpoint.kArmIdle),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    endEffector.stop()),
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    endEffector.outtake(),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmL2),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmIdle),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    endEffector.stop()),
-                () -> elevatorArm.checkL3()));
-    driverXbox
-        .leftBumper()
-        .whileTrue(
-            Commands.either(
-                Commands.parallel(
-                    elevatorArm.setSetpoint(Setpoint.kPuke), canal.fast(), endEffector.outtake()),
-                Commands.parallel(
-                    elevatorArm.setSetpoint(Setpoint.kPushArm),
-                    canal.fast(),
-                    endEffector.outtake()),
-                () -> elevatorArm.checkHover()))
-        .onFalse(
-            Commands.either(
-                Commands.parallel(
-                    elevatorArm.setSetpoint(Setpoint.kArmHover), canal.stop(), endEffector.stop()),
-                Commands.sequence(
-                    canal.stop(),
-                    endEffector.stop(),
-                    elevatorArm.setSetpoint(Setpoint.kArmIdle),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
-                () -> elevatorArm.checkPuke()));
+    driverXbox.a().whileTrue(reverseClimb);
+    driverXbox.y().whileTrue(climb);
+    driverXbox.leftTrigger().whileTrue(groundIntakeCoral).onFalse(pivotIdle);
+    driverXbox.rightTrigger().whileTrue(outtakeGroundCoral);
+    driverXbox.x().whileTrue(intakeAlgae).onFalse(pivotIdle);
+    driverXbox.b().whileTrue(outtakeAlgae).onFalse(pivotIdle);
+    driverXbox.rightBumper().onTrue(outtakeL2andL3);
+    driverXbox.leftBumper().whileTrue(pukeOnTrue).onFalse(pukeOnFalse);
 
-    codriverXbox
-        .a()
-        .onTrue(
-            Commands.sequence(
-                elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
-                Commands.waitUntil(elevatorArm::reachedSetpoint),
-                endEffector.punchAlgae(),
-                elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL2)));
-    codriverXbox
-        .y()
-        .onTrue(
-            Commands.sequence(
-                elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
-                Commands.waitUntil(elevatorArm::reachedSetpoint),
-                endEffector.punchAlgae(),
-                elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));
-    codriverXbox
-        .x()
-        .onTrue(
-            Commands.either(
-                Commands.sequence(
-                    canal.intake(),
-                    Commands.waitUntil(canal::gamePieceDetected),
-                    Commands.parallel(
-                        rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                        canal.slow()),
-                    Commands.waitSeconds(0.75),
-                    Commands.parallel(
-                        elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    endEffector.stop(),
-                    canal.stop(),
-                    elevatorArm.setSetpoint(Setpoint.kArmHover)),
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kPushArm),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    canal.intake(),
-                    // intake.intakeGamepiece(),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmHover),
-                    Commands.waitUntil(canal::gamePieceDetected),
-                    Commands.parallel(
-                        rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                        canal.slow()), // intake.stopIntake()),
-                    Commands.waitSeconds(0.5),
-                    Commands.parallel(
-                        elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    endEffector.stop(),
-                    canal.stop(),
-                    elevatorArm.setSetpoint(Setpoint.kArmHover)),
-                () -> elevatorArm.checkHover()));
-    codriverXbox
-        .start()
-        .whileTrue(
-            Commands.sequence(
-                elevatorArm.setElevatorResetSpeed(),
-                Commands.waitSeconds(1),
-                Commands.waitUntil(elevatorArm::elevatorStalled),
-                Commands.waitSeconds(0.25),
-                elevatorArm.resetElevatorEncoder(),
-                rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION)));
-    codriverXbox
-        .leftBumper()
-        .onTrue(
-            Commands.sequence(
-                elevatorArm.setSetpoint(Setpoint.kArmIdle),
-                Commands.waitUntil(elevatorArm::reachedSetpoint),
-                endEffector.stop(),
-                elevatorArm.setSetpoint(Setpoint.kElevatorIdle)));
-    codriverXbox
-        .rightBumper()
-        .whileTrue(
-            Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.fastOuttakeGamepiece()));
-    codriverXbox
-        .leftTrigger()
-        .onTrue(
-            Commands.either(
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmL2)),
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kPushArm),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmL2)),
-                () -> !elevatorArm.checkHover()));
-    codriverXbox
-        .rightTrigger()
-        .onTrue(
-            Commands.either(
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kPushArm),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmL3)),
-                Commands.sequence(
-                    elevatorArm.setSetpoint(Setpoint.kPushArm),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-                    Commands.waitUntil(elevatorArm::reachedSetpoint),
-                    elevatorArm.setSetpoint(Setpoint.kArmL3)),
-                () -> !elevatorArm.checkHover()));
+    codriverXbox.a().onTrue(punchL2Algae);
+    codriverXbox.y().onTrue(punchL3Algae);
+    codriverXbox.x().onTrue(canalIntakeSequence);
+    codriverXbox.start().whileTrue(resetElevator);
+    codriverXbox.leftBumper().onTrue(setElevatorArmIdle);
+    codriverXbox.rightBumper().whileTrue(outtakeFastGroundCoral);
+    codriverXbox.leftTrigger().onTrue(prepL2);
+    codriverXbox.rightTrigger().onTrue(prepL3);
 
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation()

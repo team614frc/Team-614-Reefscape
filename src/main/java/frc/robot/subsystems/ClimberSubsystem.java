@@ -5,7 +5,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants;
@@ -37,12 +36,12 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command climb() {
-    return Commands.runEnd(
+    return this.runEnd(
         () -> set(ClimberConstants.CLIMB_SPEED), () -> set(ClimberConstants.CLIMB_REST_SPEED));
   }
 
   public Command reverseClimb() {
-    return Commands.runEnd(
+    return this.runEnd(
         () -> set(ClimberConstants.REVERSE_CLIMB_SPEED),
         () -> set(ClimberConstants.CLIMB_REST_SPEED));
   }
