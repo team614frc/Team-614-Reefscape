@@ -31,7 +31,7 @@ public final class Constants {
       new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS.in(Kilogram));
   public static final Time LOOP_TIME = Seconds.of(0.13); // s, 20ms + 110ms sprk max velocity lag
   public static final LinearVelocity MAX_SPEED = FeetPerSecond.of(17.5);
-  public static final boolean USE_LIMELIGHT_FRONT = true;
+  public static final boolean USE_LIMELIGHT_FRONT = false;
   public static final boolean USE_LIMELIGHT_BACK = false;
 
   public static final class DrivebaseConstants {

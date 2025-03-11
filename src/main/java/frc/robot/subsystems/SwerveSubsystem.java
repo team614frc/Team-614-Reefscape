@@ -24,7 +24,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -386,19 +385,19 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
-      limelightFront.updateSettings(getOrientation3d());
-      updatePosition(limelightFront.getVisionEstimate());
-    }
-    if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK) {
-      limelightBack.updateSettings(getOrientation3d());
-      updatePosition(limelightBack.getVisionEstimate());
-    }
+    // if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
+    //   limelightFront.updateSettings(getOrientation3d());
+    //   updatePosition(limelightFront.getVisionEstimate());
+    // }
+    // if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK) {
+    //   limelightBack.updateSettings(getOrientation3d());
+    //   updatePosition(limelightBack.getVisionEstimate());
+    // }
     // SmartDashboard.putNumber("Closest AprilTagID", findReefID());
-    SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
-    SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
-    SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
-    SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
+    // SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
+    // SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
+    // SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
+    // SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
   }
 
   public void updatePosition(Optional<PoseEstimate> visionEstimate) {

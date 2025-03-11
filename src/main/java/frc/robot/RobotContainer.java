@@ -4,20 +4,12 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.FieldConstants.Direction;
-import frc.robot.subsystems.SwerveSubsystem;
-import java.io.File;
-import swervelib.SwerveInputStream;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,7 +26,7 @@ public class RobotContainer {
   //   private final CanalSubsystem canal = new CanalSubsystem();
   //   private final LEDSubsystem led = new LEDSubsystem();
 
-  private final SendableChooser<Command> autoChooser;
+  //   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverXbox =
@@ -43,33 +35,35 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.CODRIVER_PORT);
 
   // The robot's subsystems and commands are defined here...
-  final SwerveSubsystem drivebase =
-      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  //   final SwerveSubsystem drivebase =
+  //       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
-  private final SwerveInputStream driveAngularVelocity =
-      SwerveInputStream.of(
-              drivebase.getSwerveDrive(), () -> driverXbox.getLeftY(), () -> driverXbox.getLeftX())
-          .withControllerRotationAxis(() -> -driverXbox.getRightX())
-          .deadband(OperatorConstants.DEADBAND)
-          .scaleTranslation(1)
-          .allianceRelativeControl(true);
+  //   private final SwerveInputStream driveAngularVelocity =
+  //       SwerveInputStream.of(
+  //               drivebase.getSwerveDrive(), () -> driverXbox.getLeftY(), () ->
+  // driverXbox.getLeftX())
+  //           .withControllerRotationAxis(() -> -driverXbox.getRightX())
+  //           .deadband(OperatorConstants.DEADBAND)
+  //           .scaleTranslation(1)
+  //           .allianceRelativeControl(true);
 
-  private final Command driveFieldOrientedAnglularVelocity =
-      drivebase.driveFieldOriented(driveAngularVelocity);
+  //   private final Command driveFieldOrientedAnglularVelocity =
+  //       drivebase.driveFieldOriented(driveAngularVelocity);
 
-  private final SwerveInputStream driveAngularVelocitySim =
-      SwerveInputStream.of(
-              drivebase.getSwerveDrive(), () -> driverXbox.getLeftY(), () -> driverXbox.getLeftX())
-          .withControllerRotationAxis(() -> driverXbox.getRawAxis(4))
-          .deadband(OperatorConstants.DEADBAND)
-          .scaleTranslation(1)
-          .allianceRelativeControl(true);
+  //   private final SwerveInputStream driveAngularVelocitySim =
+  //       SwerveInputStream.of(
+  //               drivebase.getSwerveDrive(), () -> driverXbox.getLeftY(), () ->
+  // driverXbox.getLeftX())
+  //           .withControllerRotationAxis(() -> driverXbox.getRawAxis(4))
+  //           .deadband(OperatorConstants.DEADBAND)
+  //           .scaleTranslation(1)
+  //           .allianceRelativeControl(true);
 
-  private final Command driveFieldOrientedAngularVelocitySim =
-      drivebase.driveFieldOriented(driveAngularVelocitySim);
+  //   private final Command driveFieldOrientedAngularVelocitySim =
+  //       drivebase.driveFieldOriented(driveAngularVelocitySim);
 
-  private final SwerveInputStream driveRobotOriented =
-      driveAngularVelocitySim.copy().robotRelative(true).allianceRelativeControl(false);
+  //   private final SwerveInputStream driveRobotOriented =
+  //       driveAngularVelocitySim.copy().robotRelative(true).allianceRelativeControl(false);
 
   //   private final Command rumble(double power, double duration) {
   //     return Commands.runOnce(
@@ -214,12 +208,11 @@ public class RobotContainer {
     // NamedCommands.registerCommand("Intake Up", autoIntakeUp);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
-    autoChooser = AutoBuilder.buildAutoChooser();
+    // autoChooser = AutoBuilder.buildAutoChooser();
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    SmartDashboard.putNumber("Git Revision", BuildConstants.GIT_REVISION);
+    // ?    SmartDashboard.putNumber("Git Revision", BuildConstants.GIT_REVISION);
     SmartDashboard.putString("Git Sha", BuildConstants.GIT_SHA);
     SmartDashboard.putString("Git Date", BuildConstants.GIT_DATE);
     SmartDashboard.putString("Git Branch", BuildConstants.GIT_BRANCH);
@@ -237,9 +230,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.x().onTrue(Commands.deferredProxy(() -> drivebase.driveReef(Direction.LEFT)));
-    driverXbox.b().onTrue(Commands.deferredProxy(() -> drivebase.driveReef(Direction.RIGHT)));
-    driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
+    // driverXbox.x().onTrue(Commands.deferredProxy(() -> drivebase.driveReef(Direction.LEFT)));
+    // driverXbox.b().onTrue(Commands.deferredProxy(() -> drivebase.driveReef(Direction.RIGHT)));
+    // driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     // driverXbox.back().onTrue(toggleDriveMode);
     // driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
     // driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
@@ -427,10 +420,10 @@ public class RobotContainer {
     //                 elevatorArm.setSetpoint(Setpoint.kArmL3)),
     //             () -> !elevatorArm.checkHover()));
 
-    drivebase.setDefaultCommand(
-        !RobotBase.isSimulation()
-            ? driveFieldOrientedAnglularVelocity
-            : driveFieldOrientedAngularVelocitySim);
+    //     drivebase.setDefaultCommand(
+    //         !RobotBase.isSimulation()
+    //             ? driveFieldOrientedAnglularVelocity
+    //             : driveFieldOrientedAngularVelocitySim);
   }
 
   /**
@@ -439,14 +432,15 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    return Commands.none();
   }
 
   public void setDriveMode() {
     configureBindings();
   }
 
-  public void setMotorBrake(boolean brake) {
-    drivebase.setMotorBrake(brake);
-  }
+  //   public void setMotorBrake(boolean brake) {
+  //     drivebase.setMotorBrake(brake);
+  //   }
 }
