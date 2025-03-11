@@ -76,7 +76,7 @@ public final class Constants {
     public static final double PIVOT_kG = 0.8;
     public static final double PIVOT_kV = 0;
     public static final double PIVOT_kA = 0;
-    public static final double GEAR_RATIO = 60;
+    public static final double PIVOT_GEAR_RATIO = 20;
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
     public static final AngularVelocity PIVOT_MAX_VELOCITY = RotationsPerSecond.of(8);

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ArmSetpoint;
 import frc.robot.Constants.ElevatorSetpoint;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakePivotSetpoint;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ArmSubsystem;
@@ -39,7 +40,20 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
   private final IntakeSubsystem intake = new IntakeSubsystem();
-  private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
+  private final IntakePivotSubsystem intakePivotLeft =
+      new IntakePivotSubsystem(
+          IntakeConstants.INTAKE_PIVOT_MOTOR,
+          IntakeConstants.PIVOT_kP,
+          IntakeConstants.PIVOT_kI,
+          IntakeConstants.PIVOT_kD,
+          IntakeConstants.PIVOT_kG);
+  private final IntakePivotSubsystem intakePivotRight =
+      new IntakePivotSubsystem(
+          IntakeConstants.INTAKE_PIVOT_MOTOR,
+          IntakeConstants.PIVOT_kP,
+          IntakeConstants.PIVOT_kI,
+          IntakeConstants.PIVOT_kD,
+          IntakeConstants.PIVOT_kG);
   private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
@@ -161,36 +175,33 @@ public class RobotContainer {
           .onlyIf(() -> arm.isBelowHorizontal())
           .andThen(elevator.setSetpoint(ElevatorSetpoint.IDLE), arm.setSetpoint(ArmSetpoint.IDLE));
 
-  private final Command autoIntakeDownAndIntake =
-      intakePivot.setSetpoint(IntakePivotSetpoint.DOWN).alongWith(intake.intakeGamepiece());
+  private final Command setIntakePivot(IntakePivotSetpoint setpoint) {
+    return intakePivotLeft.setSetpoint(setpoint).alongWith(intakePivotRight.setSetpoint(setpoint));
+  }
 
-  private final Command autoIntakeUp = intakePivot.setSetpoint(IntakePivotSetpoint.OUTTAKE_ALGAE);
+  private final Command autoIntakeDownAndIntake =
+      setIntakePivot(IntakePivotSetpoint.DOWN).alongWith(intake.intakeGamepiece());
+
+  private final Command autoIntakeUp = setIntakePivot(IntakePivotSetpoint.OUTTAKE_ALGAE);
 
   private final Command reverseClimb =
-      intakePivot.setSetpoint(IntakePivotSetpoint.DOWN).alongWith(climber.reverseClimb());
+      setIntakePivot(IntakePivotSetpoint.DOWN).alongWith(climber.reverseClimb());
 
-  private final Command climb =
-      climber.climb().alongWith(intakePivot.setSetpoint(IntakePivotSetpoint.DOWN));
+  private final Command climb = climber.climb().alongWith(setIntakePivot(IntakePivotSetpoint.DOWN));
 
   private final Command groundIntakeCoral =
-      intakePivot.setSetpoint(IntakePivotSetpoint.DOWN).alongWith(intake.intakeGamepiece());
+      setIntakePivot(IntakePivotSetpoint.DOWN).alongWith(intake.intakeGamepiece());
 
-  private final Command pivotIdle = intakePivot.setSetpoint(IntakePivotSetpoint.OUTTAKE_ALGAE);
+  private final Command pivotIdle = setIntakePivot(IntakePivotSetpoint.OUTTAKE_ALGAE);
 
   private final Command outtakeGroundCoral =
-      intakePivot
-          .setSetpoint(IntakePivotSetpoint.OUTTAKE_ALGAE)
-          .alongWith(intake.outtakeGamepiece());
+      setIntakePivot(IntakePivotSetpoint.OUTTAKE_ALGAE).alongWith(intake.outtakeGamepiece());
 
   private final Command intakeAlgae =
-      intakePivot
-          .setSetpoint(IntakePivotSetpoint.INTAKE_ALGAE)
-          .alongWith(intake.outtakeGamepiece());
+      setIntakePivot(IntakePivotSetpoint.INTAKE_ALGAE).alongWith(intake.outtakeGamepiece());
 
   private final Command outtakeAlgae =
-      intakePivot
-          .setSetpoint(IntakePivotSetpoint.OUTTAKE_ALGAE)
-          .alongWith(intake.intakeGamepiece());
+      setIntakePivot(IntakePivotSetpoint.OUTTAKE_ALGAE).alongWith(intake.intakeGamepiece());
 
   private final Command pukeOnTrue =
       Commands.parallel(
@@ -256,9 +267,7 @@ public class RobotContainer {
           elevator.setSetpoint(ElevatorSetpoint.IDLE));
 
   private final Command outtakeFastGroundCoral =
-      intakePivot
-          .setSetpoint(IntakePivotSetpoint.OUTTAKE_ALGAE)
-          .alongWith(intake.fastOuttakeGamepiece());
+      setIntakePivot(IntakePivotSetpoint.OUTTAKE_ALGAE).alongWith(intake.fastOuttakeGamepiece());
 
   private final Command prepL2 =
       arm.setSetpoint(ArmSetpoint.PUSH)

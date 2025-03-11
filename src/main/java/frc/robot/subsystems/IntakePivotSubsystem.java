@@ -27,33 +27,32 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakePivotSetpoint;
 
 public class IntakePivotSubsystem extends SubsystemBase {
-  private final SparkFlex intakePivotMotor =
-      new SparkFlex(IntakeConstants.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
-  private RelativeEncoder intakePivotEncoder = intakePivotMotor.getEncoder();
-
-  private final ProfiledPIDController pid =
-      new ProfiledPIDController(
-          IntakeConstants.PIVOT_kP,
-          IntakeConstants.PIVOT_kI,
-          IntakeConstants.PIVOT_kD,
-          new TrapezoidProfile.Constraints(
-              IntakeConstants.PIVOT_MAX_VELOCITY.in(RadiansPerSecond),
-              IntakeConstants.PIVOT_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
-
-  private final ArmFeedforward feedforward =
-      new ArmFeedforward(
-          IntakeConstants.PIVOT_kS,
-          IntakeConstants.PIVOT_kG,
-          IntakeConstants.PIVOT_kV,
-          IntakeConstants.PIVOT_kA);
-
+  private final SparkFlex intakePivotMotor;
+  private final RelativeEncoder intakePivotEncoder;
+  private final ProfiledPIDController pid;
+  private final ArmFeedforward feedforward;
   private IntakePivotSetpoint pivotSetpoint = IntakePivotSetpoint.OUTTAKE_ALGAE;
 
-  public IntakePivotSubsystem() {
+  public IntakePivotSubsystem(int motor, double kP, double kI, double kD, double kG) {
+    intakePivotMotor = new SparkFlex(motor, MotorType.kBrushless);
     intakePivotMotor.configure(
         Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+    intakePivotEncoder = intakePivotMotor.getEncoder();
+
+    pid =
+        new ProfiledPIDController(
+            kP,
+            kI,
+            kD,
+            new TrapezoidProfile.Constraints(
+                IntakeConstants.PIVOT_MAX_VELOCITY.in(RadiansPerSecond),
+                IntakeConstants.PIVOT_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
+
+    feedforward =
+        new ArmFeedforward(
+            IntakeConstants.PIVOT_kS, kG, IntakeConstants.PIVOT_kV, IntakeConstants.PIVOT_kA);
 
     intakePivotEncoder.setPosition(0);
   }
@@ -68,12 +67,13 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   private void runPID() {
+    double delta =
+        Units.radiansToRotations(pid.getSetpoint().position)
+            - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET;
+    delta /= IntakeConstants.PIVOT_GEAR_RATIO;
+
     double armFeedforwardVoltage =
-        feedforward.calculate(
-            (Units.radiansToRotations(pid.getSetpoint().position)
-                    - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET)
-                * 0.254,
-            pid.getSetpoint().velocity);
+        feedforward.calculate(Units.rotationsToRadians(delta), pid.getSetpoint().velocity);
 
     double pivotPidOutput =
         pid.calculate(getPosition().in(Radians), pivotSetpoint.value.in(Radians));
