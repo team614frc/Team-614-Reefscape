@@ -67,7 +67,7 @@ public class FieldConstants {
     public static final double FACE_TO_ZONE_LINE = Units.inchesToMeters(12);
 
     /** Starting facing the driver station in clockwise order * */
-    public static final List<Pose2d> CENTER_FACES =
+    public static final List<Pose2d> CENTER_FACES_BLUE =
         List.of(
             new Pose2d(
                 Units.inchesToMeters(144.003),
@@ -94,9 +94,19 @@ public class FieldConstants {
                 Units.inchesToMeters(130.144),
                 Rotation2d.fromDegrees(-120)));
 
-    public static final List<Integer> CENTER_FACES_RED_IDS = List.of(7, 6, 11, 10, 9, 8);
+    public static final List<Pose2d> CENTER_FACES_RED = new ArrayList<>(5);
 
-    public static final List<Integer> CENTER_FACES_BLUE_IDS = List.of(18, 17, 22, 21, 20, 19);
+    static {
+      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(0)));
+      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(1)));
+      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(2)));
+      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(3)));
+      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(4)));
+    }
+
+    public static final List<Integer> CENTER_FACES_RED_IDS = List.of(7, 8, 9, 10, 11, 6);
+
+    public static final List<Integer> CENTER_FACES_BLUE_IDS = List.of(18, 19, 20, 21, 22, 17);
 
     /** Starting at the right branch facing the driver station in clockwise * */
     public static final List<Map<ReefLevel, Pose3d>> BRANCH_POSITIONS = new ArrayList<>(13);
@@ -177,6 +187,11 @@ public class FieldConstants {
   public enum Direction {
     RIGHT,
     LEFT;
+  }
+
+  public enum DetectionMode {
+    CORAL,
+    APRILTAG;
   }
 
   public enum ReefLevel {

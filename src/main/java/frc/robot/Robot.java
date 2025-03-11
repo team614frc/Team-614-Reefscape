@@ -40,8 +40,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    
   }
-
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
@@ -92,8 +92,8 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().cancelAll();
     }
 
-    m_robotContainer.drivebase.zeroGyroWithAlliance();
-    m_robotContainer.setDriveMode();
+    // m_robotContainer.drivebase.zeroGyroWithAlliance();
+    // m_robotContainer.setDriveMode();
   }
 
   /** This function is called periodically during operator control. */
