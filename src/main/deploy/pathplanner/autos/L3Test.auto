@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "FRONT_LEFT_#0"
+            "pathName": "2_pieceright#1"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "L1"
+            "pathName": "L3_RIGHT_#1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L3_RIGHT_#2"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "FrontLeft",
+  "folder": null,
   "choreoAuto": false
 }

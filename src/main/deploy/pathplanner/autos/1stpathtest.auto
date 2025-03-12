@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "FRONT_RIGHT_#0"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L1"
+            "pathName": "2_pieceright#1"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "FrontRight",
+  "folder": null,
   "choreoAuto": false
 }
