@@ -7,6 +7,12 @@
         {
           "type": "path",
           "data": {
+            "pathName": "2_pieceright#1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "L3_RIGHT_#1"
           }
         },
