@@ -45,8 +45,8 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR = 24;
-    public static final int LEFT_INTAKE_PIVOT_MOTOR = 26;
-    public static final int RIGHT_INTAKE_PIVOT_MOTOR = 28;
+    public static final int LEFT_INTAKE_PIVOT_MOTOR = 28;
+    public static final int RIGHT_INTAKE_PIVOT_MOTOR = 26;
     public static final Current INTAKE_CURRENT_LIMIT = Amp.of(80);
     public static final Current INTAKE_PIVOT_CURRENT_LIMIT = Amp.of(40);
     public static final double OUTTAKE_SPEED = -0.2;
@@ -54,34 +54,35 @@ public final class Constants {
     public static final double INTAKE_SPEED = 0.3;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
+    public static final double PIVOT_GEAR_RATIO = 60;
 
-    public static final double RIGHT_PIVOT_kP = 0.8;
+    public static final double RIGHT_PIVOT_kP = 0.1;
     public static final double RIGHT_PIVOT_kI = 0;
-    public static final double RIGHT_PIVOT_kD = 0.01;
+    public static final double RIGHT_PIVOT_kD = 0;
     public static final double RIGHT_PIVOT_kS = 0;
-    public static final double RIGHT_PIVOT_kG = 0.8;
+    public static final double RIGHT_PIVOT_kG = 0.4;
     public static final double RIGHT_PIVOT_kV = 0;
     public static final double RIGHT_PIVOT_kA = 0;
 
-    public static final double LEFT_PIVOT_kP = 0.8;
+    public static final double LEFT_PIVOT_kP = 0.1;
     public static final double LEFT_PIVOT_kI = 0;
-    public static final double LEFT_PIVOT_kD = 0.01;
+    public static final double LEFT_PIVOT_kD = 0;
     public static final double LEFT_PIVOT_kS = 0;
-    public static final double LEFT_PIVOT_kG = 0.8;
+    public static final double LEFT_PIVOT_kG = 0.4;
     public static final double LEFT_PIVOT_kV = 0;
     public static final double LEFT_PIVOT_kA = 0;
 
     public static final double GEAR_RATIO = 60;
     public static final double PIVOT_UP = -1.5;
-    public static final double PIVOT_DOWN = -7.2;
-    public static final double PIVOT_INTAKE_ALGAE = -4.4;
-    public static final double PIVOT_OUTTAKE_ALGAE = -2.6;
+    public static final double PIVOT_DOWN = -19;
+    public static final double PIVOT_INTAKE_ALGAE = -5.8;
+    public static final double PIVOT_OUTTAKE_ALGAE = -0.7;
     public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final double PIVOT_MAX_VELOCITY = 8;
-    public static final double PIVOT_MAX_ACCELERATION = 12;
-    public static final double PIVOT_FEEDFORWARD_OFFSET = -6.3;
+    public static final double PIVOT_MAX_VELOCITY = 85;
+    public static final double PIVOT_MAX_ACCELERATION = 110;
+    public static final double PIVOT_FEEDFORWARD_OFFSET = -16.4;
     public static final double PIVOT_TOLERANCE = 0.75;
   }
 
