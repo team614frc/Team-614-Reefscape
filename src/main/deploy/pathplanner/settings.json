@@ -4,14 +4,10 @@
   "holonomicMode": true,
   "pathFolders": [
     "Front",
-    "FrontLeft",
-    "FrontRight",
     "2gamepiecetest"
   ],
   "autoFolders": [
-    "Front",
-    "FrontLeft",
-    "FrontRight"
+    "Front"
   ],
   "defaultMaxVel": 0.5,
   "defaultMaxAccel": 1.0,
