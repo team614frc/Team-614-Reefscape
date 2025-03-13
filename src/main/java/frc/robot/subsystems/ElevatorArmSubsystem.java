@@ -229,17 +229,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             <= ArmConstants.ARM_TOLERANCE;
   }
 
-  public boolean checkHover() {
-    boolean a = armSetpoint == ArmConstants.ARM_HOVER_SETPOINT;
-    boolean b =
-        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_HOVER_SETPOINT)
-            <= ArmConstants.ARM_TOLERANCE;
-    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
-    boolean d =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_HOVER_SETPOINT)
-            <= ElevatorConstants.ELEVATOR_TOLERANCE;
-
-    return (a || b) && (c || d);
+  public boolean isBelowHorizontal() {
+    return armEncoder.getPosition() < ArmConstants.ARM_FEEDFORWARD_OFFSET;
   }
 
   public Command resetElevatorEncoder() {
@@ -355,10 +346,10 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               armSetpoint = ArmConstants.ARM_PUKE_SETPOINT;
               break;
             case kElevatorIntakeUp:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_INTAKEUP_SETPOINT;
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_INTAKE_UP_SETPOINT;
               break;
             case kArmIntakeUp:
-              armSetpoint = ArmConstants.ARM_INTAKEUP_SETPOINT;
+              armSetpoint = ArmConstants.ARM_INTAKE_UP_SETPOINT;
           }
         });
   }
