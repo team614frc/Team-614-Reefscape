@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.81,
-        "y": 5.208
+        "x": 7.091,
+        "y": 5.9
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.367219839387328,
-        "y": 4.9249923264117115
+        "x": 6.532940789473685,
+        "y": 5.880756578947368
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.397,
-        "y": 7.09775256849315
+        "x": 3.81,
+        "y": 5.208470394736842
       },
       "prevControl": {
-        "x": 1.5898483455276404,
-        "y": 6.718580767234495
+        "x": 3.0883717105263155,
+        "y": 6.536266447368421
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,16 +31,9 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Hover",
-      "waypointRelativePos": 0.14523809523809542,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 0.5,
+    "maxVelocity": 0.75,
     "maxAcceleration": 1.0,
     "maxAngularVelocity": 5400.0,
     "maxAngularAcceleration": 7200.0,
@@ -49,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.246
+    "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "L3paths",
+  "folder": "BackRight3Coral",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

@@ -56,21 +56,13 @@ public final class Constants {
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final double PIVOT_GEAR_RATIO = 60;
 
-    public static final double RIGHT_PIVOT_kP = 0.1;
-    public static final double RIGHT_PIVOT_kI = 0;
-    public static final double RIGHT_PIVOT_kD = 0;
-    public static final double RIGHT_PIVOT_kS = 0;
-    public static final double RIGHT_PIVOT_kG = 0.4;
-    public static final double RIGHT_PIVOT_kV = 0;
-    public static final double RIGHT_PIVOT_kA = 0;
-
-    public static final double LEFT_PIVOT_kP = 0.1;
-    public static final double LEFT_PIVOT_kI = 0;
-    public static final double LEFT_PIVOT_kD = 0;
-    public static final double LEFT_PIVOT_kS = 0;
-    public static final double LEFT_PIVOT_kG = 0.4;
-    public static final double LEFT_PIVOT_kV = 0;
-    public static final double LEFT_PIVOT_kA = 0;
+    public static final double PIVOT_kP = 0.1;
+    public static final double PIVOT_kI = 0;
+    public static final double PIVOT_kD = 0;
+    public static final double PIVOT_kS = 0;
+    public static final double PIVOT_kG = 0.4;
+    public static final double PIVOT_kV = 0;
+    public static final double PIVOT_kA = 0;
 
     public static final double GEAR_RATIO = 60;
     public static final double PIVOT_UP = -1.5;
@@ -124,7 +116,7 @@ public final class Constants {
     public static final double kA = 0;
     public static final double ELEVATOR_HOVER_SETPOINT = 4.6; // 6.19
     public static final double ELEVATOR_INTAKE_SETPOINT = 3.54;
-    public static final double ELEVATOR_INTAKEUP_SETPOINT = 5.5;
+    public static final double ELEVATOR_INTAKE_UP_SETPOINT = 5.5;
     public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
     public static final double ELEVATOR_L1_SETPOINT = 0;
     public static final double ELEVATOR_L2_SETPOINT = 0.4;
@@ -154,7 +146,7 @@ public final class Constants {
     public static final double kA = 0;
     public static final double ARM_HOVER_SETPOINT = 0.03;
     public static final double ARM_INTAKE_SETPOINT = 0.03;
-    public static final double ARM_INTAKEUP_SETPOINT = 0.015;
+    public static final double ARM_INTAKE_UP_SETPOINT = 0.015;
     public static final double ARM_PUSH_SETPOINT = 0.465;
     public static final double ARM_IDLE_SETPOINT = 0.49;
     public static final double ARM_START_SETPOINT = 0.5;

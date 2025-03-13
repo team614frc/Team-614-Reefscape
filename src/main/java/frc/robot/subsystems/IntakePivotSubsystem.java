@@ -15,7 +15,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.IntakeConstants;
@@ -30,19 +29,19 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   private final ProfiledPIDController pid =
       new ProfiledPIDController(
-          IntakeConstants.RIGHT_PIVOT_kP,
-          IntakeConstants.RIGHT_PIVOT_kI,
-          IntakeConstants.RIGHT_PIVOT_kD,
+          IntakeConstants.PIVOT_kP,
+          IntakeConstants.PIVOT_kI,
+          IntakeConstants.PIVOT_kD,
           new TrapezoidProfile.Constraints(
               Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_VELOCITY),
               Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_ACCELERATION)));
 
   private final ArmFeedforward feedforward =
       new ArmFeedforward(
-          IntakeConstants.LEFT_PIVOT_kS,
-          IntakeConstants.LEFT_PIVOT_kG,
-          IntakeConstants.LEFT_PIVOT_kV,
-          IntakeConstants.LEFT_PIVOT_kA);
+          IntakeConstants.PIVOT_kS,
+          IntakeConstants.PIVOT_kG,
+          IntakeConstants.PIVOT_kV,
+          IntakeConstants.PIVOT_kA);
 
   private double pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
 
@@ -96,28 +95,28 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   public Command pivotDown() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_DOWN;
         });
   }
 
   public Command pivotIdle() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_UP;
         });
   }
 
   public Command pivotIntakeAlgae() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_INTAKE_ALGAE;
         });
   }
 
   public Command pivotOuttakeAlgae() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
         });

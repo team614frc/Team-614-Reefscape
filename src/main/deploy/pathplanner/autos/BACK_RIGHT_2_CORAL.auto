@@ -7,37 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2_pieceright#1"
+            "pathName": "BACK_RIGHT_#1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "autoL1"
+            "name": "L1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2_pieceright#2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2_pieceright#3"
+            "pathName": "BACK_RIGHT_#2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "autoL1"
+            "name": "Canal Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BACK_RIGHT_#3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "BackRight",
   "choreoAuto": false
 }

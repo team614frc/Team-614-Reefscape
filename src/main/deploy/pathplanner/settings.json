@@ -3,14 +3,17 @@
   "robotLength": 0.95,
   "holonomicMode": true,
   "pathFolders": [
-    "2gamepiecetest",
-    "Front",
-    "L3paths"
+    "2PieceL1",
+    "BackLeft3Coral",
+    "BackRight3Coral",
+    "Front1Coral"
   ],
   "autoFolders": [
-    "Front"
+    "BackLeft",
+    "Front",
+    "BackRight"
   ],
-  "defaultMaxVel": 0.5,
+  "defaultMaxVel": 0.75,
   "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 5400.0,
   "defaultMaxAngAccel": 7200.0,
