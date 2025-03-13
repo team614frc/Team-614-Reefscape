@@ -81,18 +81,19 @@ public class RobotContainer {
       driveAngularVelocitySim.copy().robotRelative(true).allianceRelativeControl(false);
 
   private final Command rumble(double power, double duration) {
-    return Commands.runEnd(
+    return Commands.runOnce(
             () -> {
               driverXbox.getHID().setRumble(RumbleType.kBothRumble, power);
               codriverXbox.getHID().setRumble(RumbleType.kBothRumble, power);
-            },
+            })
+        .andThen(Commands.waitSeconds(duration))
+        .andThen(
             () -> {
               driverXbox.getHID().setRumble(RumbleType.kBothRumble, OperatorConstants.RUMBLE_REST);
               codriverXbox
                   .getHID()
                   .setRumble(RumbleType.kBothRumble, OperatorConstants.RUMBLE_REST);
-            })
-        .withTimeout(duration);
+            });
   }
 
   private final Command toggleDriveMode =
