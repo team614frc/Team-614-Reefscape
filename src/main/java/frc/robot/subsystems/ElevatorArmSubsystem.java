@@ -62,7 +62,9 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kOuttakeElevatorAlgae,
     kOuttakeArmAlgaeL2,
     kOuttakeArmAlgaeL3,
-    kPuke;
+    kPuke,
+    kElevatorIntakeUp,
+    kArmIntakeUp;
   }
 
   // Elevator Motor
@@ -227,17 +229,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             <= ArmConstants.ARM_TOLERANCE;
   }
 
-  public boolean checkHover() {
-    boolean a = armSetpoint == ArmConstants.ARM_HOVER_SETPOINT;
-    boolean b =
-        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_HOVER_SETPOINT)
-            <= ArmConstants.ARM_TOLERANCE;
-    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
-    boolean d =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_HOVER_SETPOINT)
-            <= ElevatorConstants.ELEVATOR_TOLERANCE;
-
-    return (a || b) && (c || d);
+  public boolean isBelowHorizontal() {
+    return armEncoder.getPosition() < ArmConstants.ARM_FEEDFORWARD_OFFSET;
   }
 
   public Command resetElevatorEncoder() {
@@ -295,7 +288,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               break;
             case kIntake:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
-              armSetpoint = ArmConstants.ARM_INTAKE_SETPOINT;
               break;
             case kIdleSetpoint:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_SETPOINT;
@@ -353,6 +345,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             case kPuke:
               armSetpoint = ArmConstants.ARM_PUKE_SETPOINT;
               break;
+            case kElevatorIntakeUp:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_INTAKE_UP_SETPOINT;
+              break;
+            case kArmIntakeUp:
+              armSetpoint = ArmConstants.ARM_INTAKE_UP_SETPOINT;
           }
         });
   }
