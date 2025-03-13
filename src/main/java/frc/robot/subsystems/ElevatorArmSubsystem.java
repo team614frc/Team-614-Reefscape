@@ -233,19 +233,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     return armEncoder.getPosition() < ArmConstants.ARM_FEEDFORWARD_OFFSET;
   }
 
-  public boolean checkHover() {
-    boolean a = armSetpoint == ArmConstants.ARM_HOVER_SETPOINT;
-    boolean b =
-        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_HOVER_SETPOINT)
-            <= ArmConstants.ARM_TOLERANCE;
-    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
-    boolean d =
-        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_HOVER_SETPOINT)
-            <= ElevatorConstants.ELEVATOR_TOLERANCE;
-
-    return (a || b) && (c || d);
-  }
-
   public Command resetElevatorEncoder() {
     return Commands.runOnce(
         () -> {

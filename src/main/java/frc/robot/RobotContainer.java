@@ -171,7 +171,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorL2),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmL2)),
-          () -> !elevatorArm.checkHover());
+          () -> !elevatorArm.isBelowHorizontal());
 
   private final Command autoL3 =
       Commands.either(
@@ -185,7 +185,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorL3),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmL3)),
-          () -> !elevatorArm.checkHover());
+          () -> !elevatorArm.isBelowHorizontal());
 
   private final Command autoElevatorArmIdle =
       Commands.sequence(
@@ -310,7 +310,7 @@ public class RobotContainer {
                     elevatorArm.setSetpoint(Setpoint.kPushArm),
                     canal.fast(),
                     endEffector.outtake()),
-                () -> elevatorArm.checkHover()))
+                () -> elevatorArm.isBelowHorizontal()))
         .onFalse(
             Commands.either(
                 Commands.parallel(
