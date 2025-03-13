@@ -66,7 +66,7 @@ public final class Constants {
 
     public static final double GEAR_RATIO = 60;
     public static final double PIVOT_UP = -1.5;
-    public static final double PIVOT_DOWN = -19;
+    public static final double PIVOT_DOWN = -16;
     public static final double PIVOT_INTAKE_ALGAE = -5.8;
     public static final double PIVOT_OUTTAKE_ALGAE = -0.7;
     public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
@@ -95,7 +95,7 @@ public final class Constants {
     public static final int CANAL_MOTOR = 23;
     public static final Current CANAL_CURRENT_LIMIT = Amp.of(80);
     public static final double BACKWARDS_SPEED = -0.095;
-    public static final double INTAKE_SPEED = 0.2;
+    public static final double INTAKE_SPEED = 0.23;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final double CANAL_FAST_SPEED = 0.3;

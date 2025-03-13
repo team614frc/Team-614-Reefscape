@@ -260,6 +260,7 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
         .onFalse(Commands.sequence(intakePivot.pivotOuttakeAlgae()));
+    driverXbox.povUp().whileTrue(intake.intakeGamepiece());
     // Commands.waitUntil(intakePivot::reachedSetpoint),
     // intakePivot.pivotIdle()));
     driverXbox
@@ -360,7 +361,11 @@ public class RobotContainer {
                     endEffector.stop(),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     canal.stop(),
-                    elevatorArm.setSetpoint(Setpoint.kArmHover)),
+                    elevatorArm.setSetpoint(Setpoint.kArmHover),
+                    elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
+                    endEffector.stop(),
+                    elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
                 Commands.sequence(
                     elevatorArm.setSetpoint(Setpoint.kPushArm),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
@@ -383,7 +388,11 @@ public class RobotContainer {
                     endEffector.stop(),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     canal.stop(),
-                    elevatorArm.setSetpoint(Setpoint.kArmHover)),
+                    elevatorArm.setSetpoint(Setpoint.kArmHover),
+                    elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
+                    endEffector.stop(),
+                    elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
                 () -> elevatorArm.isBelowHorizontal()));
     codriverXbox
         .start()
@@ -395,6 +404,30 @@ public class RobotContainer {
                 Commands.waitSeconds(0.25),
                 elevatorArm.resetElevatorEncoder(),
                 rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION)));
+    codriverXbox
+        .back()
+        .onTrue(
+            Commands.sequence(
+                canal.slow(),
+                elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmHover),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorIntakeUp),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmIntakeUp),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                Commands.parallel(elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                endEffector.stop(),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                canal.stop(),
+                elevatorArm.setSetpoint(Setpoint.kArmHover),
+                elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                endEffector.stop(),
+                elevatorArm.setSetpoint(Setpoint.kElevatorIdle)));
     codriverXbox
         .leftBumper()
         .onTrue(
