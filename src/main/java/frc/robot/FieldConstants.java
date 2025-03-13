@@ -126,17 +126,11 @@ public class FieldConstants {
                 new Translation2d(
                     poseDirection
                         .transformBy(
-                            new Transform2d(
-                                Offsets.ADJUST_X.in(Meters),
-                                Offsets.ADJUST_Y.in(Meters),
-                                new Rotation2d()))
+                            new Transform2d(Offsets.ADJUST_X, Offsets.ADJUST_Y, new Rotation2d()))
                         .getX(),
                     poseDirection
                         .transformBy(
-                            new Transform2d(
-                                Offsets.ADJUST_X.in(Meters),
-                                Offsets.ADJUST_Y.in(Meters),
-                                new Rotation2d()))
+                            new Transform2d(Offsets.ADJUST_X, Offsets.ADJUST_Y, new Rotation2d()))
                         .getY()),
                 new Rotation2d(poseDirection.getRotation().getRadians())));
         BRANCH_POSITIONS_RIGHT_RED.add(
