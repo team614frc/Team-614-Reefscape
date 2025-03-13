@@ -133,29 +133,28 @@ public class RobotContainer {
           () -> elevatorArm.checkL3());
 
   private final Command autoHover =
-    Commands.sequence(
-        elevatorArm.setSetpoint(Setpoint.kPushArm),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        elevatorArm.setSetpoint(Setpoint.kArmHover));
+      Commands.sequence(
+          elevatorArm.setSetpoint(Setpoint.kPushArm),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          elevatorArm.setSetpoint(Setpoint.kArmHover));
 
   private final Command autoCanalIntake =
       Commands.sequence(
-        canal.intake(),
-        Commands.waitUntil(canal::gamePieceDetected),
-        elevatorArm.setSetpoint(Setpoint.kElevatorIntakeUp),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        elevatorArm.setSetpoint(Setpoint.kArmIntakeUp),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        Commands.parallel(
-            elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-        endEffector.stop(),
-        Commands.waitUntil(elevatorArm::reachedSetpoint),
-        canal.stop(),
-        elevatorArm.setSetpoint(Setpoint.kArmHover));
+          canal.intake(),
+          Commands.waitUntil(canal::gamePieceDetected),
+          elevatorArm.setSetpoint(Setpoint.kElevatorIntakeUp),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          elevatorArm.setSetpoint(Setpoint.kArmIntakeUp),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          Commands.parallel(elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+          endEffector.stop(),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          canal.stop(),
+          elevatorArm.setSetpoint(Setpoint.kArmHover));
 
   private final Command autoL1 =
       Commands.sequence(
