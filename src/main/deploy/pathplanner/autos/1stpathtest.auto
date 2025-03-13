@@ -9,6 +9,36 @@
           "data": {
             "pathName": "2_pieceright#1"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L3_RIGHT_#1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Canal Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L3_RIGHT_#2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
         }
       ]
     }

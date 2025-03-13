@@ -132,27 +132,34 @@ public class RobotContainer {
               endEffector.stop()),
           () -> elevatorArm.checkL3());
 
+  private final Command autoHover =
+    Commands.sequence(
+        elevatorArm.setSetpoint(Setpoint.kPushArm),
+        Commands.waitUntil(elevatorArm::reachedSetpoint),
+        elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+        Commands.waitUntil(elevatorArm::reachedSetpoint),
+        elevatorArm.setSetpoint(Setpoint.kArmHover));
+
   private final Command autoCanalIntake =
       Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kPushArm),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          canal.intake(),
-          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kArmHover),
-          Commands.waitUntil(canal::gamePieceDetected),
-          canal.slow(),
-          Commands.waitSeconds(0.8),
-          Commands.parallel(elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          canal.stop(),
-          elevatorArm.setSetpoint(Setpoint.kArmHover));
+        canal.intake(),
+        Commands.waitUntil(canal::gamePieceDetected),
+        elevatorArm.setSetpoint(Setpoint.kElevatorIntakeUp),
+        Commands.waitUntil(elevatorArm::reachedSetpoint),
+        elevatorArm.setSetpoint(Setpoint.kArmIntakeUp),
+        Commands.waitUntil(elevatorArm::reachedSetpoint),
+        Commands.parallel(
+            elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
+        Commands.waitUntil(elevatorArm::reachedSetpoint),
+        elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+        endEffector.stop(),
+        Commands.waitUntil(elevatorArm::reachedSetpoint),
+        canal.stop(),
+        elevatorArm.setSetpoint(Setpoint.kArmHover));
 
   private final Command autoL1 =
       Commands.sequence(
-          intake.autoOuttakeGamepiece(), Commands.waitSeconds(0.25), intake.stopIntake());
+          intake.autoOuttakeGamepiece(), Commands.waitSeconds(0.2), intake.stopIntake());
 
   private final Command autoL2 =
       Commands.either(
@@ -184,7 +191,6 @@ public class RobotContainer {
 
   private final Command autoElevatorArmIdle =
       Commands.sequence(
-          led.setBasicPattern(),
           elevatorArm.setSetpoint(Setpoint.kArmIdle),
           Commands.waitUntil(elevatorArm::reachedSetpoint),
           elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
@@ -212,6 +218,7 @@ public class RobotContainer {
     // canal.setDefaultCommand(canal.intake());
 
     NamedCommands.registerCommand("L1", autoL1);
+    NamedCommands.registerCommand("Hover", autoHover);
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);

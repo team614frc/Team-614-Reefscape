@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.173069992000693,
-        "y": 6.579632991072978
+        "x": 1.5626712328767125,
+        "y": 5.520055650684932
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.8014982876712327,
-        "y": 5.204516267123288
+        "x": 3.125342465753425,
+        "y": 4.167744006849315
       },
       "prevControl": {
-        "x": 3.974420778121269,
-        "y": 5.023967624656619
+        "x": 1.9232876712328766,
+        "y": 4.0926155821917805
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,20 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Idle Setpoint",
+      "waypointRelativePos": 0.033333333333333326,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "L2",
+      "waypointRelativePos": 0.6333333333333333,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 0.5,
     "maxAcceleration": 1.0,
@@ -42,7 +55,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -60.94539590092288
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "L3paths",

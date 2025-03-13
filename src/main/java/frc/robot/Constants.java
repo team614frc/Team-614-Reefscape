@@ -122,8 +122,8 @@ public final class Constants {
     public static final double kG = 0.02;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double ELEVATOR_HOVER_SETPOINT = 4.85; // 6.19
-    public static final double ELEVATOR_INTAKE_SETPOINT = 3.74;
+    public static final double ELEVATOR_HOVER_SETPOINT = 4.6; // 6.19
+    public static final double ELEVATOR_INTAKE_SETPOINT = 3.54;
     public static final double ELEVATOR_INTAKEUP_SETPOINT = 5.5;
     public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
     public static final double ELEVATOR_L1_SETPOINT = 0;
