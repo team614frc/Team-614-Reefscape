@@ -48,9 +48,9 @@ public final class Constants {
     public static final Boolean USE_LIMELIGHT_BACK = false;
     public static final String LIMELIGHT_FRONT_NAME = "limelight-front";
     public static final String LIMELIGHT_BACK_NAME = "limelight-back";
-    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(.5);
+    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(1);
     public static final LinearAcceleration MAX_ALIGNMENT_ACCELERATION =
-        MetersPerSecondPerSecond.of(.5);
+        MetersPerSecondPerSecond.of(1);
     public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
     public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
         DegreesPerSecondPerSecond.of(45);

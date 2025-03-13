@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -26,12 +27,11 @@ import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.AllianceFlipUtil;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.FieldConstants;
@@ -60,6 +60,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private LimelightSubsystem limelightBack;
 
+  private Field2d field = new Field2d();
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -83,7 +85,6 @@ public class SwerveSubsystem extends SubsystemBase {
         limelightFront = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_FRONT_NAME);
       if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK)
         limelightBack = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_BACK_NAME);
-
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -385,8 +386,8 @@ public class SwerveSubsystem extends SubsystemBase {
             swerveDrive.getGyro().getYawAngularVelocity())));
   }
 
-  public void addVisionReading(Pose2d pose2d) {
-    swerveDrive.addVisionMeasurement(pose2d, Timer.getFPGATimestamp());
+  public void addVisionReading(PoseEstimate pose) {
+    swerveDrive.addVisionMeasurement(pose.pose.toPose2d(), pose.timestampSeconds);
   }
 
   @Override
@@ -404,6 +405,12 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
     // SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
+    field.setRobotPose(getPose());
+    SmartDashboard.putNumber("Target X", getTarget(Direction.LEFT).getX());
+    SmartDashboard.putNumber("Target Y", getTarget(Direction.LEFT).getY());
+    SmartDashboard.putNumber(
+        "Target Angle", getTarget(Direction.LEFT).getRotation().getMeasure().in(Degrees));
+    SmartDashboard.putData(field);
   }
 
   public void updatePosition(Optional<PoseEstimate> visionEstimate) {
@@ -413,10 +420,12 @@ public class SwerveSubsystem extends SubsystemBase {
           // there are more than 0 tags in view,
           // and the average ambiguity between tags is less than 30% then we update the pose
           // estimation.
+          SmartDashboard.putNumber("Est X", poseEstimate.pose.toPose2d().getX());
+          SmartDashboard.putNumber("Est Y", poseEstimate.pose.toPose2d().getY());
           if (poseEstimate.avgTagDist < 4
               && poseEstimate.tagCount > 0
               && poseEstimate.getMinTagAmbiguity() < 0.3) {
-            addVisionReading(poseEstimate.pose.toPose2d());
+            addVisionReading(poseEstimate);
           }
         });
   }
@@ -441,20 +450,33 @@ public class SwerveSubsystem extends SubsystemBase {
     return AprilTagID;
   }
 
-  public Command driveReef(Direction direction) {
-    int position = FieldConstants.Reef.POSITION_MAP.get(findReefID()).get(direction);
-    Pose2d path =
-        FieldConstants.Reef.BRANCH_POSITIONS
-            .get(position)
-            .get(FieldConstants.ReefLevel.L1)
-            .toPose2d();
-    path = AllianceFlipUtil.apply(path);
-    return driveToPose(
-        path,
-        Constants.DrivebaseConstants.MAX_ALIGNMENT_VELOCITY,
-        Constants.DrivebaseConstants.MAX_ALIGNMENT_ACCELERATION,
-        Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_VELOCITY,
-        Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_ACCELERATION);
+  public Command driveReef(Supplier<Pose2d> path) {
+    PathConstraints constraints =
+        new PathConstraints(
+            DrivebaseConstants.MAX_ALIGNMENT_VELOCITY,
+            DrivebaseConstants.MAX_ALIGNMENT_ACCELERATION,
+            DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_VELOCITY,
+            DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_ACCELERATION);
+    // Since AutoBuilder is configured, we can use it to build pathfinding commands
+    return defer(
+        () ->
+            AutoBuilder.pathfindToPose(
+                path.get(),
+                constraints,
+                edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
+                ));
+  }
+
+  public Pose2d getTarget(Direction direction) {
+    Pose2d path = new Pose2d();
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isEmpty() || ally.get() == Alliance.Red) {
+      path = swerveDrive.getPose().nearest(FieldConstants.Reef.BRANCH_POSITIONS_RED.get(direction));
+    } else {
+      path =
+          swerveDrive.getPose().nearest(FieldConstants.Reef.BRANCH_POSITIONS_BLUE.get(direction));
+    }
+    return path;
   }
 
   public boolean isFieldCentric = true;

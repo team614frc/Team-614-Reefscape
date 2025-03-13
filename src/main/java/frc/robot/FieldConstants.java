@@ -3,7 +3,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
@@ -54,9 +53,10 @@ public class FieldConstants {
   }
 
   public static class Offsets {
-    public static final Pose3d CAMERA_OFFSET = Pose3d.kZero;
-    public static final double ADJUST_X = Units.inchesToMeters(0);
-    public static final double ADJUST_Y = Units.inchesToMeters(0);
+    public static final Pose3d CAMERA_OFFSET =
+        new Pose3d(new Translation3d(), new Rotation3d(0, 0, 0));
+    public static final Distance ADJUST_X = Inches.of(30.738);
+    public static final Distance ADJUST_Y = Inches.of(6.469);
   }
 
   public static class Reef {
@@ -109,53 +109,62 @@ public class FieldConstants {
     public static final List<Integer> CENTER_FACES_BLUE_IDS = List.of(18, 19, 20, 21, 22, 17);
 
     /** Starting at the right branch facing the driver station in clockwise * */
-    public static final List<Map<ReefLevel, Pose3d>> BRANCH_POSITIONS = new ArrayList<>(13);
+    public static final Map<Direction, List<Pose2d>> BRANCH_POSITIONS_BLUE = new HashMap<>(2);
+
+    public static final Map<Direction, List<Pose2d>> BRANCH_POSITIONS_RED = new HashMap<>(2);
 
     static {
       // Initialize branch positions
+      List<Pose2d> BRANCH_POSITIONS_LEFT_BLUE = new ArrayList<>();
+      List<Pose2d> BRANCH_POSITIONS_RIGHT_BLUE = new ArrayList<>();
+      List<Pose2d> BRANCH_POSITIONS_LEFT_RED = new ArrayList<>();
+      List<Pose2d> BRANCH_POSITIONS_RIGHT_RED = new ArrayList<>();
       for (int face = 0; face < 6; face++) {
-        Map<ReefLevel, Pose3d> fillRight = new HashMap<>();
-        Map<ReefLevel, Pose3d> fillLeft = new HashMap<>();
-        for (var level : ReefLevel.values()) {
-          Pose2d poseDirection = new Pose2d(CENTER, Rotation2d.fromDegrees(180 - (60 * face)));
-
-          fillRight.put(
-              level,
-              new Pose3d(
-                  new Translation3d(
-                      poseDirection
-                          .transformBy(
-                              new Transform2d(Offsets.ADJUST_X, Offsets.ADJUST_Y, new Rotation2d()))
-                          .getX(),
-                      poseDirection
-                          .transformBy(
-                              new Transform2d(Offsets.ADJUST_X, Offsets.ADJUST_Y, new Rotation2d()))
-                          .getY(),
-                      level.height.in(Meters)),
-                  new Rotation3d(
-                      0, level.pitch.in(Radians), poseDirection.getRotation().getRadians())));
-
-          fillLeft.put(
-              level,
-              new Pose3d(
-                  new Translation3d(
-                      poseDirection
-                          .transformBy(
-                              new Transform2d(
-                                  Offsets.ADJUST_X, -Offsets.ADJUST_Y, new Rotation2d()))
-                          .getX(),
-                      poseDirection
-                          .transformBy(
-                              new Transform2d(
-                                  Offsets.ADJUST_X, -Offsets.ADJUST_Y, new Rotation2d()))
-                          .getY(),
-                      level.height.in(Meters)),
-                  new Rotation3d(
-                      0, level.pitch.in(Radians), poseDirection.getRotation().getRadians())));
-        }
-        BRANCH_POSITIONS.add(fillLeft);
-        BRANCH_POSITIONS.add(fillRight);
+        Pose2d poseDirection = new Pose2d(CENTER, Rotation2d.fromDegrees(180 - (60 * face)));
+        BRANCH_POSITIONS_RIGHT_BLUE.add(
+            new Pose2d(
+                new Translation2d(
+                    poseDirection
+                        .transformBy(
+                            new Transform2d(
+                                Offsets.ADJUST_X.in(Meters),
+                                Offsets.ADJUST_Y.in(Meters),
+                                new Rotation2d()))
+                        .getX(),
+                    poseDirection
+                        .transformBy(
+                            new Transform2d(
+                                Offsets.ADJUST_X.in(Meters),
+                                Offsets.ADJUST_Y.in(Meters),
+                                new Rotation2d()))
+                        .getY()),
+                new Rotation2d(poseDirection.getRotation().getRadians())));
+        BRANCH_POSITIONS_RIGHT_RED.add(
+            AllianceFlipUtil.apply(BRANCH_POSITIONS_RIGHT_BLUE.get(face)));
+        BRANCH_POSITIONS_LEFT_BLUE.add(
+            new Pose2d(
+                new Translation2d(
+                    poseDirection
+                        .transformBy(
+                            new Transform2d(
+                                Offsets.ADJUST_X.in(Meters),
+                                -Offsets.ADJUST_Y.in(Meters),
+                                new Rotation2d()))
+                        .getX(),
+                    poseDirection
+                        .transformBy(
+                            new Transform2d(
+                                Offsets.ADJUST_X.in(Meters),
+                                -Offsets.ADJUST_Y.in(Meters),
+                                new Rotation2d()))
+                        .getY()),
+                new Rotation2d(poseDirection.getRotation().getRadians())));
+        BRANCH_POSITIONS_LEFT_RED.add(AllianceFlipUtil.apply(BRANCH_POSITIONS_LEFT_BLUE.get(face)));
       }
+      BRANCH_POSITIONS_BLUE.put(Direction.RIGHT, BRANCH_POSITIONS_RIGHT_BLUE);
+      BRANCH_POSITIONS_BLUE.put(Direction.LEFT, BRANCH_POSITIONS_LEFT_BLUE);
+      BRANCH_POSITIONS_RED.put(Direction.RIGHT, BRANCH_POSITIONS_RIGHT_RED);
+      BRANCH_POSITIONS_RED.put(Direction.LEFT, BRANCH_POSITIONS_LEFT_RED);
     }
 
     public static final Map<Integer, Map<Direction, Integer>> POSITION_MAP =

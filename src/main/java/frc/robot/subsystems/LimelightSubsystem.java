@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
 import java.util.Optional;
@@ -20,12 +21,13 @@ public class LimelightSubsystem extends SubsystemBase {
         .withLimelightLEDMode(LEDMode.PipelineControl)
         .withCameraOffset(FieldConstants.Offsets.CAMERA_OFFSET)
         .save();
+
     poseEstimator = limelight.getPoseEstimator(true);
     limelightTargetData = new LimelightTargetData(limelight);
   }
 
   public Optional<PoseEstimate> getVisionEstimate() {
-    return poseEstimator.getPoseEstimate(); // BotPose.BLUE_MEGATAG2.get(limelight);
+    return poseEstimator.getPoseEstimate();
   }
 
   public int getID() {
@@ -42,7 +44,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // SmartDashboard.putBoolean("Sees AprilTag", hasTarget());
-    // SmartDashboard.putNumber("AprilTag ID", getID());
+    SmartDashboard.putBoolean("Sees AprilTag", hasTarget());
+    SmartDashboard.putNumber("AprilTag ID", getID());
   }
 }
