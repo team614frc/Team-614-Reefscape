@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2_pieceright#1"
+            "pathName": "FRONT_#1"
           }
         },
         {
@@ -19,25 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2_pieceright#2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Canal Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2_pieceright#3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score Coral"
+            "pathName": "FRONT_#2"
           }
         }
       ]

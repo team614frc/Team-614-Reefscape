@@ -140,20 +140,55 @@ public class RobotContainer {
           elevatorArm.setSetpoint(Setpoint.kArmHover));
 
   private final Command autoCanalIntake =
-      Commands.sequence(
-          canal.intake(),
-          Commands.waitUntil(canal::gamePieceDetected),
-          elevatorArm.setSetpoint(Setpoint.kElevatorIntakeUp),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kArmIntakeUp),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          Commands.parallel(elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-          endEffector.stop(),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          canal.stop(),
-          elevatorArm.setSetpoint(Setpoint.kArmHover));
+      Commands.either(
+          Commands.sequence(
+              canal.intake(),
+              Commands.waitUntil(canal::gamePieceDetected),
+              Commands.parallel(
+                  rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
+                  canal.slow()),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIntakeUp),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kArmIntakeUp),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              Commands.parallel(elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+              endEffector.stop(),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              canal.stop(),
+              elevatorArm.setSetpoint(Setpoint.kArmHover),
+              elevatorArm.setSetpoint(Setpoint.kArmIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              endEffector.stop(),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
+          Commands.sequence(
+              elevatorArm.setSetpoint(Setpoint.kPushArm),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              canal.intake(),
+              elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kArmHover),
+              Commands.waitUntil(canal::gamePieceDetected),
+              Commands.parallel(
+                  rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
+                  canal.slow()),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIntakeUp),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kArmIntakeUp),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              Commands.parallel(elevatorArm.setSetpoint(Setpoint.kIntake), endEffector.intake()),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+              endEffector.stop(),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              canal.stop(),
+              elevatorArm.setSetpoint(Setpoint.kArmHover),
+              elevatorArm.setSetpoint(Setpoint.kArmIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              endEffector.stop(),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
+          () -> elevatorArm.isBelowHorizontal());
 
   private final Command autoL1 =
       Commands.sequence(
@@ -227,10 +262,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Up", autoIntakeUp);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
-    autoChooser = AutoBuilder.buildAutoChooser();
+    // autoChooser = AutoBuilder.buildAutoChooser();
 
     // Another option that allows you to specify the default auto by its name
-    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+    autoChooser = AutoBuilder.buildAutoChooser("2 pieceright");
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putNumber("Git Revision", BuildConstants.GIT_REVISION);
     SmartDashboard.putString("Git Sha", BuildConstants.GIT_SHA);
@@ -254,13 +289,13 @@ public class RobotContainer {
     // driverXbox.b().whileTrue(driveRightReef);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
+    driverXbox.povUp().whileTrue(intake.passthrough());
     driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
     driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
     driverXbox
         .leftTrigger()
         .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
         .onFalse(Commands.sequence(intakePivot.pivotOuttakeAlgae()));
-    driverXbox.povUp().whileTrue(intake.intakeGamepiece());
     // Commands.waitUntil(intakePivot::reachedSetpoint),
     // intakePivot.pivotIdle()));
     driverXbox

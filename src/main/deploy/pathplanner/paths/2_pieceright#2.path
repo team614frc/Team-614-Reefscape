@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 1.472,
-        "y": 5.824
+        "x": 1.279,
+        "y": 7.08705836704799
       },
       "prevControl": {
-        "x": 2.030059210526316,
-        "y": 5.833621710526317
+        "x": 1.837059210526316,
+        "y": 7.096680077574307
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,17 +31,10 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "autoIntakeDownAndIntake",
-      "waypointRelativePos": 0.629679144385027,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 0.5,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 5400.0,
     "maxAngularAcceleration": 7200.0,
     "nominalVoltage": 12.0,
@@ -49,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -55.0
   },
   "reversed": false,
-  "folder": "2gamepiecetest",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 119.99999999999999

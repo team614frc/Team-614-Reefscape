@@ -40,8 +40,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 0.5,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 5400.0,
     "maxAngularAcceleration": 7200.0,
     "nominalVoltage": 12.0,
@@ -52,7 +52,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "2gamepiecetest",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

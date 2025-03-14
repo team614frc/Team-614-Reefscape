@@ -54,11 +54,11 @@ public final class Configs {
 
     static {
       INTAKE_PIVOT_CONFIG_LEFT
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .inverted(true)
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_PIVOT_CURRENT_LIMIT.in(Amp));
       INTAKE_PIVOT_CONFIG_RIGHT
-          .idleMode(IdleMode.kCoast)
+          .idleMode(IdleMode.kBrake)
           .follow(28, true)
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_PIVOT_CURRENT_LIMIT.in(Amp));
     }

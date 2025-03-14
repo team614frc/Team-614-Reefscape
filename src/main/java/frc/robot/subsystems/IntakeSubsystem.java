@@ -65,6 +65,16 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
+  public Command passthrough() {
+    return this.runEnd(
+        () -> {
+          set(IntakeConstants.PASSTHROUGH_SPEED);
+        },
+        () -> {
+          set(IntakeConstants.OUTTAKE_REST_SPEED);
+        });
+  }
+
   public Command autoOuttakeGamepiece() {
     return this.runOnce(() -> set(IntakeConstants.OUTTAKE_SPEED));
   }
