@@ -50,6 +50,7 @@ public final class Constants {
     public static final Current INTAKE_CURRENT_LIMIT = Amp.of(80);
     public static final Current INTAKE_PIVOT_CURRENT_LIMIT = Amp.of(40);
     public static final double OUTTAKE_SPEED = -0.2;
+    public static final double PASSTHROUGH_SPEED = 0.7;
     public static final double FAST_OUTTAKE_SPEED = -0.3;
     public static final double INTAKE_SPEED = 0.3;
     public static final double INTAKE_REST_SPEED = 0;
