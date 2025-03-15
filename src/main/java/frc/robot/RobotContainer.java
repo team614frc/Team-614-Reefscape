@@ -228,8 +228,18 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox.x().whileTrue(drivebase.driveReef(() -> drivebase.getTarget(Direction.LEFT)));
-    driverXbox.b().whileTrue(drivebase.driveReef(() -> (drivebase.getTarget(Direction.RIGHT))));
+    driverXbox
+        .x()
+        .whileTrue(
+            drivebase
+                .driveReef(() -> drivebase.getTarget(Direction.LEFT))
+                .until(() -> drivebase.reachedTarget(Direction.LEFT)));
+    driverXbox
+        .b()
+        .whileTrue(
+            drivebase
+                .driveReef(() -> (drivebase.getTarget(Direction.RIGHT)))
+                .until(() -> drivebase.reachedTarget(Direction.RIGHT)));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
     // driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
@@ -438,7 +448,7 @@ public class RobotContainer {
     configureBindings();
   }
 
-  //   public void setMotorBrake(boolean brake) {
-  //     drivebase.setMotorBrake(brake);
-  //   }
+  public void setMotorBrake(boolean brake) {
+    drivebase.setMotorBrake(brake);
+  }
 }

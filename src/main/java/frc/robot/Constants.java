@@ -54,6 +54,7 @@ public final class Constants {
     public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
     public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
         DegreesPerSecondPerSecond.of(45);
+    public static final Distance ALIGNMENT_TOLERANCE = Meters.of(.25);
   }
 
   public static final class IntakeConstants {
