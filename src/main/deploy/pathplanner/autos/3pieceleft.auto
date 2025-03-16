@@ -7,6 +7,12 @@
         {
           "type": "path",
           "data": {
+            "pathName": "2_piecepushback"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "2_pieceright#1"
           }
         },

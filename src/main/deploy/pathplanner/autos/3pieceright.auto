@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2_pieceright#1"
+            "pathName": "2_pieceleft#1"
           }
         },
         {
@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2_pieceright#2"
+                  "pathName": "2_pieceleft#2"
                 }
               },
               {
@@ -44,13 +44,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2_pieceright#3"
+            "pathName": "2_pieceleft#3"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Score Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3_pieceleft#4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3_pieceleft#5"
           }
         }
       ]
