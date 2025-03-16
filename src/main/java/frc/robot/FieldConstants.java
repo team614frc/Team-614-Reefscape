@@ -108,21 +108,21 @@ public class FieldConstants {
     public static final List<Integer> CENTER_FACES_BLUE_IDS = List.of(18, 19, 20, 21, 22, 17);
 
     /** Starting at the right branch facing the driver station in clockwise * */
-    public static final Map<Direction, List<Pose2d>> BRANCH_POSITIONS_BLUE = new HashMap<>(2);
+    public static final Map<Direction, List<Pose2d>> BRANCH_POSITIONS_LIST = new HashMap<>(2);
 
-    public static final Map<Direction, List<Pose2d>> BRANCH_POSITIONS_RED = new HashMap<>(2);
-
-    public static Map<Direction, Map<Integer, Pose2d>> DUMB_BRANCH_POSITIONS_BLUE = new HashMap<>();
-
-    public static Map<Direction, Map<Integer, Pose2d>> DUMB_BRANCH_POSITIONS_RED = new HashMap<>();
+    public static Map<Direction, Map<Integer, Pose2d>> BRANCH_POSITIONS = new HashMap<>(2);
 
     static {
+      HashMap<Integer, Pose2d> RIGHT_BRANCH_POSITIONS = new HashMap<>();
       HashMap<Integer, Pose2d> LEFT_BRANCH_POSITIONS = new HashMap<>();
       LEFT_BRANCH_POSITIONS.put(7, new Pose2d(new Translation2d(13.5, 3.9), new Rotation2d(0)));
-      HashMap<Integer, Pose2d> RIGHT_BRANCH_POSITIONS = new HashMap<>();
       RIGHT_BRANCH_POSITIONS.put(7, new Pose2d(new Translation2d(13.5, 3.9), new Rotation2d(0)));
-      DUMB_BRANCH_POSITIONS_BLUE.put(Direction.LEFT, LEFT_BRANCH_POSITIONS);
-      DUMB_BRANCH_POSITIONS_BLUE.put(Direction.RIGHT, RIGHT_BRANCH_POSITIONS);
+      BRANCH_POSITIONS.put(Direction.LEFT, LEFT_BRANCH_POSITIONS);
+      BRANCH_POSITIONS.put(Direction.RIGHT, RIGHT_BRANCH_POSITIONS);
+      ArrayList<Pose2d> list = new ArrayList<>();
+      list.add(new Pose2d(new Translation2d(13.5, 3.9), new Rotation2d(0)));
+      BRANCH_POSITIONS_LIST.put(Direction.LEFT, list);
+      BRANCH_POSITIONS_LIST.put(Direction.RIGHT, list);
     }
 
     // static {

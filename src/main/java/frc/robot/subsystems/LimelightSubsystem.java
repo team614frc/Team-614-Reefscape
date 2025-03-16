@@ -27,7 +27,7 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   public Optional<PoseEstimate> getVisionEstimate() {
-    return poseEstimator.getPoseEstimate();
+    return poseEstimator.getAlliancePoseEstimate();
   }
 
   public int getID() {

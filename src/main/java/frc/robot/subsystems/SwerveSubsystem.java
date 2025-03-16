@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.Meters;
@@ -27,7 +26,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -407,12 +405,6 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
     // SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
     field.setRobotPose(getPose());
-    SmartDashboard.putNumber("Target X L", getTarget(Direction.LEFT).getX());
-    SmartDashboard.putNumber("Target Y L ", getTarget(Direction.LEFT).getY());
-    SmartDashboard.putNumber("Target X R ", getTarget(Direction.RIGHT).getX());
-    SmartDashboard.putNumber("Target Y R", getTarget(Direction.RIGHT).getY());
-    SmartDashboard.putNumber(
-        "Target Angle", getTarget(Direction.LEFT).getRotation().getMeasure().in(Degrees));
     SmartDashboard.putData(field);
   }
 
@@ -434,21 +426,13 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public int findReefID() {
-    Optional<Alliance> ally = DriverStation.getAlliance();
     int index;
     int AprilTagID;
     List<Integer> apriltags;
-    if (ally.isEmpty() || ally.get() == Alliance.Red) {
-      index =
-          FieldConstants.Reef.CENTER_FACES_RED.indexOf(
-              swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES_BLUE));
-      apriltags = FieldConstants.Reef.CENTER_FACES_RED_IDS;
-    } else {
-      index =
-          FieldConstants.Reef.CENTER_FACES_BLUE.indexOf(
-              swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES_BLUE));
-      apriltags = FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
-    }
+    index =
+        FieldConstants.Reef.CENTER_FACES_BLUE.indexOf(
+            swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES_BLUE));
+    apriltags = FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
     AprilTagID = apriltags.get(index);
     return AprilTagID;
   }
@@ -463,7 +447,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return defer(
         () ->
-            (limelightFront.hasTarget())
+            (!Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT || limelightFront.hasTarget())
                 ? AutoBuilder.pathfindToPose(
                     path.get(),
                     constraints,
@@ -489,20 +473,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Pose2d getTarget(Direction direction) {
     Pose2d path = new Pose2d();
-    Optional<Alliance> ally = DriverStation.getAlliance();
-    if (ally.isEmpty()
-        || ally.get() == Alliance.Red && Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
-      if (limelightFront.hasTarget())
-        path =
-            FieldConstants.Reef.DUMB_BRANCH_POSITIONS_BLUE
-                .get(direction)
-                .get(limelightFront.getID());
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && limelightFront.hasTarget()) {
+      path = FieldConstants.Reef.BRANCH_POSITIONS.get(direction).get(limelightFront.getID());
     } else {
-      if (limelightFront.hasTarget())
-        path =
-            FieldConstants.Reef.DUMB_BRANCH_POSITIONS_BLUE
-                .get(direction)
-                .get(limelightFront.getID());
+      path = FieldConstants.Reef.BRANCH_POSITIONS.get(direction).get(findReefID());
     }
     return path;
   }
