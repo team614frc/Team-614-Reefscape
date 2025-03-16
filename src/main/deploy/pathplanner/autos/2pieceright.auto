@@ -13,13 +13,32 @@
         {
           "type": "named",
           "data": {
-            "name": "autoL1"
+            "name": "L1"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "2_pieceleft#2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2_pieceleft#2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Hover"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Canal Intake"
           }
         },
         {
@@ -31,7 +50,7 @@
         {
           "type": "named",
           "data": {
-            "name": "autoL1"
+            "name": "Score Coral"
           }
         }
       ]

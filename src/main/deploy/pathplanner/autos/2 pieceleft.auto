@@ -7,6 +7,12 @@
         {
           "type": "path",
           "data": {
+            "pathName": "2_piecepushback"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "2_pieceright#1"
           }
         },
@@ -17,9 +23,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "2_pieceright#2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2_pieceright#2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Hover"
+                }
+              }
+            ]
           }
         },
         {

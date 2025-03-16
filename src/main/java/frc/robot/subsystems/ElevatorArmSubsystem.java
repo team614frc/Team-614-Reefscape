@@ -64,7 +64,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kOuttakeArmAlgaeL3,
     kPuke,
     kElevatorIntakeUp,
-    kArmIntakeUp;
+    kArmIntakeUp,
+    kAutoElevatorHover;
   }
 
   // Elevator Motor
@@ -350,6 +351,8 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               break;
             case kArmIntakeUp:
               armSetpoint = ArmConstants.ARM_INTAKE_UP_SETPOINT;
+            case kAutoElevatorHover:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_AUTO_HOVER_SETPOINT;
           }
         });
   }

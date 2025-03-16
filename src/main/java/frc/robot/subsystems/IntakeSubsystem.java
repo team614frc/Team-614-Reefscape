@@ -55,6 +55,26 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
+  public Command intakeAlgae() {
+    return this.runEnd(
+        () -> {
+          set(IntakeConstants.ALGAE_INTAKE_SPEED);
+        },
+        () -> {
+          set(IntakeConstants.INTAKE_REST_SPEED);
+        });
+  }
+
+  public Command outtakeAlgae() {
+    return this.runEnd(
+        () -> {
+          set(IntakeConstants.ALGAE_OUTTAKE_SPEED);
+        },
+        () -> {
+          set(IntakeConstants.OUTTAKE_REST_SPEED);
+        });
+  }
+
   public Command fastOuttakeGamepiece() {
     return this.runEnd(
         () -> {
