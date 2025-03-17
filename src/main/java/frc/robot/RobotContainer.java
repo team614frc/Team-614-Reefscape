@@ -330,12 +330,6 @@ public class RobotContainer {
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     endEffector.outtake(),
                     Commands.waitUntil(elevatorArm::reachedSetpoint)),
-                // elevatorArm.setSetpoint(Setpoint.kArmL2),
-                // elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-                // Commands.waitUntil(elevatorArm::reachedSetpoint),
-                // elevatorArm.setSetpoint(Setpoint.kArmIdle),
-                // Commands.waitUntil(elevatorArm::reachedSetpoint),
-                // endEffector.stop()),
                 () -> elevatorArm.checkL3()));
     driverXbox
         .povUp()
