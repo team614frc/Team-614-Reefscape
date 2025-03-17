@@ -13,25 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "autoL1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2_pieceleft#2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2_pieceleft#3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoL1"
+            "name": "L1"
           }
         }
       ]
