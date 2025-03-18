@@ -26,6 +26,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -395,11 +396,11 @@ public class SwerveSubsystem extends SubsystemBase {
       limelightFront.updateSettings(getOrientation3d());
       updatePosition(limelightFront.getVisionEstimate());
     }
-    // if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK) {
-    //   limelightBack.updateSettings(getOrientation3d());
-    //   updatePosition(limelightBack.getVisionEstimate());
-    // }
-    // SmartDashboard.putNumber("Closest AprilTagID", findReefID());
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK) {
+      limelightBack.updateSettings(getOrientation3d());
+      updatePosition(limelightBack.getVisionEstimate());
+    }
+    SmartDashboard.putNumber("Closest AprilTagID", findReefID());
     SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
@@ -429,10 +430,13 @@ public class SwerveSubsystem extends SubsystemBase {
     int index;
     int AprilTagID;
     List<Integer> apriltags;
+    Optional<Alliance> ally = DriverStation.getAlliance();
     index =
-        FieldConstants.Reef.CENTER_FACES_BLUE.indexOf(
-            swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES_BLUE));
-    apriltags = FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
+        FieldConstants.Reef.CENTER_FACES.indexOf(
+            swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES));
+    if (ally.isPresent() && ally.get() == DriverStation.Alliance.Red)
+      apriltags = FieldConstants.Reef.CENTER_FACES_RED_IDS;
+    else apriltags = FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
     AprilTagID = apriltags.get(index);
     return AprilTagID;
   }

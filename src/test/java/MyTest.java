@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 class MyTest {
   @Test
   void myTest() {
-    System.out.println(FieldConstants.Reef.BRANCH_POSITIONS_BLUE);
-    System.out.println(FieldConstants.Reef.BRANCH_POSITIONS_RED);
+    System.out.println(FieldConstants.Reef.BRANCH_POSITIONS);
     assert (false);
   }
 }

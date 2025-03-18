@@ -1,13 +1,10 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +50,7 @@ public class FieldConstants {
 
   public static class Offsets {
     public static final Pose3d CAMERA_OFFSET =
-        new Pose3d(new Translation3d(), new Rotation3d(0, 0, 0));
+        new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
     public static final Distance ADJUST_X = Inches.of(30.738);
     public static final Distance ADJUST_Y = Inches.of(6.469);
   }
@@ -66,7 +63,7 @@ public class FieldConstants {
     public static final double FACE_TO_ZONE_LINE = Units.inchesToMeters(12);
 
     /** Starting facing the driver station in clockwise order * */
-    public static final List<Pose2d> CENTER_FACES_BLUE =
+    public static final List<Pose2d> CENTER_FACES =
         List.of(
             new Pose2d(
                 Units.inchesToMeters(144.003),
@@ -93,121 +90,88 @@ public class FieldConstants {
                 Units.inchesToMeters(130.144),
                 Rotation2d.fromDegrees(-120)));
 
-    public static final List<Pose2d> CENTER_FACES_RED = new ArrayList<>(5);
-
-    static {
-      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(0)));
-      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(1)));
-      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(2)));
-      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(3)));
-      CENTER_FACES_RED.add(AllianceFlipUtil.apply(CENTER_FACES_BLUE.get(4)));
-    }
-
     public static final List<Integer> CENTER_FACES_RED_IDS = List.of(7, 8, 9, 10, 11, 6);
 
     public static final List<Integer> CENTER_FACES_BLUE_IDS = List.of(18, 19, 20, 21, 22, 17);
 
     /** Starting at the right branch facing the driver station in clockwise * */
-    public static final Map<Direction, List<Pose2d>> BRANCH_POSITIONS_LIST = new HashMap<>(2);
-
     public static Map<Direction, Map<Integer, Pose2d>> BRANCH_POSITIONS = new HashMap<>(2);
+
+    public static final Pose2d ID17REEFRIGHTBRANCH =
+        new Pose2d(3.3, 4.2, Rotation2d.fromDegrees(60));
+    public static final Pose2d ID17REEFLEFTBRANCH =
+        new Pose2d(3.2, 3.9, Rotation2d.fromDegrees(60));
+
+    public static final Pose2d ID18REEFRIGHTBRANCH =
+        new Pose2d(3.3, 4.2, Rotation2d.fromDegrees(0));
+    public static final Pose2d ID18REEFLEFTBRANCH = new Pose2d(3.2, 4.2, Rotation2d.fromDegrees(0));
+
+    public static final Pose2d ID19REEFRIGHTBRANCH =
+        new Pose2d(3.7, 5, Rotation2d.fromDegrees(-60));
+    public static final Pose2d ID19REEFLEFTBRANCH = new Pose2d(4, 5.1, Rotation2d.fromDegrees(-60));
+
+    public static final Pose2d ID20REEFRIGHTTBRANCH =
+        new Pose2d(5, 5.2, Rotation2d.fromDegrees(-120));
+    public static final Pose2d ID20REEFLEFTBRANCH =
+        new Pose2d(5.3, 5, Rotation2d.fromDegrees(-120));
+
+    public static final Pose2d ID21REEFRIGHTTBRANCH =
+        new Pose2d(5.8, 4.2, Rotation2d.fromDegrees(-180));
+    public static final Pose2d ID21REEFLEFTBRANCH =
+        new Pose2d(5.8, 4.2, Rotation2d.fromDegrees(-180));
+
+    public static final Pose2d ID22REEFRIGHTBRANCH =
+        new Pose2d(5.5, 2.6, Rotation2d.fromDegrees(120));
+    public static final Pose2d ID22REEFLEFTBRANCH =
+        new Pose2d(5.2, 2.3, Rotation2d.fromDegrees(120));
 
     static {
       HashMap<Integer, Pose2d> RIGHT_BRANCH_POSITIONS = new HashMap<>();
       HashMap<Integer, Pose2d> LEFT_BRANCH_POSITIONS = new HashMap<>();
-      LEFT_BRANCH_POSITIONS.put(7, new Pose2d(new Translation2d(13.5, 3.9), new Rotation2d(0)));
-      RIGHT_BRANCH_POSITIONS.put(7, new Pose2d(new Translation2d(13.5, 3.9), new Rotation2d(0)));
+
+      LEFT_BRANCH_POSITIONS.put(17, ID17REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(17, ID17REEFRIGHTBRANCH);
+      LEFT_BRANCH_POSITIONS.put(6, ID17REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(6, ID17REEFRIGHTBRANCH);
+
+      LEFT_BRANCH_POSITIONS.put(18, ID18REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(18, ID18REEFRIGHTBRANCH);
+      LEFT_BRANCH_POSITIONS.put(7, ID18REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(7, ID18REEFRIGHTBRANCH);
+
+      LEFT_BRANCH_POSITIONS.put(19, ID19REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(19, ID19REEFRIGHTBRANCH);
+      LEFT_BRANCH_POSITIONS.put(8, ID19REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(8, ID19REEFRIGHTBRANCH);
+
+      LEFT_BRANCH_POSITIONS.put(20, ID20REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(20, ID20REEFRIGHTTBRANCH);
+      LEFT_BRANCH_POSITIONS.put(9, ID20REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(9, ID20REEFRIGHTTBRANCH);
+
+      LEFT_BRANCH_POSITIONS.put(21, ID21REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(21, ID21REEFRIGHTTBRANCH);
+      LEFT_BRANCH_POSITIONS.put(10, ID21REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(10, ID21REEFRIGHTTBRANCH);
+
+      LEFT_BRANCH_POSITIONS.put(22, ID22REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(22, ID22REEFRIGHTBRANCH);
+      LEFT_BRANCH_POSITIONS.put(11, ID22REEFLEFTBRANCH);
+      RIGHT_BRANCH_POSITIONS.put(11, ID22REEFRIGHTBRANCH);
+
       BRANCH_POSITIONS.put(Direction.LEFT, LEFT_BRANCH_POSITIONS);
       BRANCH_POSITIONS.put(Direction.RIGHT, RIGHT_BRANCH_POSITIONS);
-      ArrayList<Pose2d> list = new ArrayList<>();
-      list.add(new Pose2d(new Translation2d(13.5, 3.9), new Rotation2d(0)));
-      BRANCH_POSITIONS_LIST.put(Direction.LEFT, list);
-      BRANCH_POSITIONS_LIST.put(Direction.RIGHT, list);
     }
 
-    // static {
-    //   // Initialize branch positions
-    //   List<Pose2d> BRANCH_POSITIONS_LEFT_BLUE = new ArrayList<>();
-    //   List<Pose2d> BRANCH_POSITIONS_RIGHT_BLUE = new ArrayList<>();
-    //   List<Pose2d> BRANCH_POSITIONS_LEFT_RED = new ArrayList<>();
-    //   List<Pose2d> BRANCH_POSITIONS_RIGHT_RED = new ArrayList<>();
-    //   for (int face = 0; face < 6; face++) {
-    //     Pose2d poseDirection = new Pose2d(CENTER, Rotation2d.fromDegrees(180 - (60 * face)));
-    //     BRANCH_POSITIONS_RIGHT_BLUE.add(
-    //         new Pose2d(
-    //             new Translation2d(
-    //                 poseDirection
-    //                     .transformBy(
-    //                         new Transform2d(
-    //                             Offsets.ADJUST_X.in(Meters),
-    //                             Offsets.ADJUST_Y.in(Meters),
-    //                             new Rotation2d()))
-    //                     .getX(),
-    //                 poseDirection
-    //                     .transformBy(
-    //                         new Transform2d(
-    //                             Offsets.ADJUST_X.in(Meters),
-    //                             Offsets.ADJUST_Y.in(Meters),
-    //                             new Rotation2d()))
-    //                     .getY()),
-    //             new Rotation2d(poseDirection.getRotation().getRadians())));
-    //     BRANCH_POSITIONS_RIGHT_RED.add(
-    //         AllianceFlipUtil.apply(BRANCH_POSITIONS_RIGHT_BLUE.get(face)));
-    //     System.out.print(BRANCH_POSITIONS_RIGHT_BLUE.get(face));
-    //     System.out.print(BRANCH_POSITIONS_RIGHT_RED.get(face));
-    //     BRANCH_POSITIONS_LEFT_BLUE.add(
-    //         new Pose2d(
-    //             new Translation2d(
-    //                 poseDirection
-    //                     .transformBy(
-    //                         new Transform2d(
-    //                             Offsets.ADJUST_X.in(Meters),
-    //                             -Offsets.ADJUST_Y.in(Meters),
-    //                             new Rotation2d()))
-    //                     .getX(),
-    //                 poseDirection
-    //                     .transformBy(
-    //                         new Transform2d(
-    //                             Offsets.ADJUST_X.in(Meters),
-    //                             -Offsets.ADJUST_Y.in(Meters),
-    //                             new Rotation2d()))
-    //                     .getY()),
-    //             new Rotation2d(poseDirection.getRotation().getRadians())));
-    //
-    // BRANCH_POSITIONS_LEFT_RED.add(AllianceFlipUtil.apply(BRANCH_POSITIONS_LEFT_BLUE.get(face)));
-    //     System.out.print(BRANCH_POSITIONS_LEFT_BLUE.get(face));
-    //     System.out.print(BRANCH_POSITIONS_LEFT_RED.get(face));
-    //   }
-    //   BRANCH_POSITIONS_BLUE.put(Direction.RIGHT, BRANCH_POSITIONS_RIGHT_BLUE);
-    //   BRANCH_POSITIONS_BLUE.put(Direction.LEFT, BRANCH_POSITIONS_LEFT_BLUE);
-    //   BRANCH_POSITIONS_RED.put(Direction.RIGHT, BRANCH_POSITIONS_RIGHT_RED);
-    //   BRANCH_POSITIONS_RED.put(Direction.LEFT, BRANCH_POSITIONS_LEFT_RED);
-    // }
-
-    public static final Map<Integer, Map<Direction, Integer>> POSITION_MAP =
-        Map.ofEntries(
-            Map.entry(7, Map.of(Direction.RIGHT, 0, Direction.LEFT, 1)),
-            Map.entry(18, Map.of(Direction.RIGHT, 0, Direction.LEFT, 1)),
-            Map.entry(6, Map.of(Direction.RIGHT, 2, Direction.LEFT, 3)),
-            Map.entry(17, Map.of(Direction.RIGHT, 2, Direction.LEFT, 3)),
-            Map.entry(11, Map.of(Direction.RIGHT, 4, Direction.LEFT, 5)),
-            Map.entry(22, Map.of(Direction.RIGHT, 4, Direction.LEFT, 5)),
-            Map.entry(10, Map.of(Direction.RIGHT, 6, Direction.LEFT, 7)),
-            Map.entry(21, Map.of(Direction.RIGHT, 6, Direction.LEFT, 7)),
-            Map.entry(9, Map.of(Direction.RIGHT, 8, Direction.LEFT, 9)),
-            Map.entry(20, Map.of(Direction.RIGHT, 8, Direction.LEFT, 9)),
-            Map.entry(8, Map.of(Direction.RIGHT, 10, Direction.LEFT, 11)),
-            Map.entry(19, Map.of(Direction.RIGHT, 10, Direction.LEFT, 11)));
-  }
-
-  /** Measured from the center of the ice cream * */
-  public static class StagingPositions {
-    public static final Pose2d LEFT_ICE_CREAM =
-        new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(230.5), new Rotation2d());
-    public static final Pose2d MIDDLE_ICE_CREAM =
-        new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(158.5), new Rotation2d());
-    public static final Pose2d RIGHT_ICE_CREAM =
-        new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(86.5), new Rotation2d());
+    /** Measured from the center of the ice cream * */
+    public static class StagingPositions {
+      public static final Pose2d LEFT_ICE_CREAM =
+          new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(230.5), new Rotation2d());
+      public static final Pose2d MIDDLE_ICE_CREAM =
+          new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(158.5), new Rotation2d());
+      public static final Pose2d RIGHT_ICE_CREAM =
+          new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(86.5), new Rotation2d());
+    }
   }
 
   public enum Direction {
@@ -218,20 +182,5 @@ public class FieldConstants {
   public enum DetectionMode {
     CORAL,
     APRILTAG;
-  }
-
-  public enum ReefLevel {
-    L4(Inches.of(72), Degrees.of(-90)),
-    L3(Inches.of(47.625), Degrees.of(-35)),
-    L2(Inches.of(31.875), Degrees.of(-35)),
-    L1(Inches.of(18), Degrees.of(0));
-
-    ReefLevel(Distance height, Angle pitch) {
-      this.height = height;
-      this.pitch = pitch;
-    }
-
-    public final Distance height;
-    public final Angle pitch;
   }
 }
