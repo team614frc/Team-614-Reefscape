@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "FRONT_LEFT_#0"
+            "pathName": "2_pieceright#1"
           }
         },
         {
@@ -20,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "FrontLeft",
+  "folder": null,
   "choreoAuto": false
 }

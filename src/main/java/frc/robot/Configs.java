@@ -15,7 +15,7 @@ public final class Configs {
     static {
       ELEVATOR_CONFIG
           .idleMode(IdleMode.kBrake)
-          .inverted(true)
+          .inverted(false)
           .smartCurrentLimit((int) Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT.in(Amp));
 
       ARM_CONFIG
@@ -49,11 +49,17 @@ public final class Configs {
   }
 
   public static final class IntakePivotConfig {
-    public static final SparkFlexConfig INTAKE_PIVOT_CONFIG = new SparkFlexConfig();
+    public static final SparkFlexConfig INTAKE_PIVOT_CONFIG_LEFT = new SparkFlexConfig();
+    public static final SparkFlexConfig INTAKE_PIVOT_CONFIG_RIGHT = new SparkFlexConfig();
 
     static {
-      INTAKE_PIVOT_CONFIG
+      INTAKE_PIVOT_CONFIG_LEFT
           .idleMode(IdleMode.kBrake)
+          .inverted(true)
+          .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_PIVOT_CURRENT_LIMIT.in(Amp));
+      INTAKE_PIVOT_CONFIG_RIGHT
+          .idleMode(IdleMode.kBrake)
+          .follow(28, true)
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_PIVOT_CURRENT_LIMIT.in(Amp));
     }
   }

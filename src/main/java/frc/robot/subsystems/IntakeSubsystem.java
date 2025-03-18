@@ -9,7 +9,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.IntakeConstants;
@@ -37,7 +36,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command intakeGamepiece() {
-    return Commands.runEnd(
+    return this.runEnd(
         () -> {
           set(IntakeConstants.INTAKE_SPEED);
         },
@@ -47,7 +46,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command outtakeGamepiece() {
-    return Commands.runEnd(
+    return this.runEnd(
         () -> {
           set(IntakeConstants.OUTTAKE_SPEED);
         },
@@ -56,8 +55,28 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
+  public Command intakeAlgae() {
+    return this.runEnd(
+        () -> {
+          set(IntakeConstants.ALGAE_INTAKE_SPEED);
+        },
+        () -> {
+          set(IntakeConstants.INTAKE_REST_SPEED);
+        });
+  }
+
+  public Command outtakeAlgae() {
+    return this.runEnd(
+        () -> {
+          set(IntakeConstants.ALGAE_OUTTAKE_SPEED);
+        },
+        () -> {
+          set(IntakeConstants.OUTTAKE_REST_SPEED);
+        });
+  }
+
   public Command fastOuttakeGamepiece() {
-    return Commands.runEnd(
+    return this.runEnd(
         () -> {
           set(IntakeConstants.FAST_OUTTAKE_SPEED);
         },
@@ -66,11 +85,21 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
+  public Command passthrough() {
+    return this.runEnd(
+        () -> {
+          set(IntakeConstants.PASSTHROUGH_SPEED);
+        },
+        () -> {
+          set(IntakeConstants.OUTTAKE_REST_SPEED);
+        });
+  }
+
   public Command autoOuttakeGamepiece() {
-    return Commands.runOnce(() -> set(IntakeConstants.OUTTAKE_SPEED));
+    return this.runOnce(() -> set(IntakeConstants.OUTTAKE_SPEED));
   }
 
   public Command stopIntake() {
-    return Commands.runOnce(() -> set(IntakeConstants.INTAKE_REST_SPEED));
+    return this.runOnce(() -> set(IntakeConstants.INTAKE_REST_SPEED));
   }
 }

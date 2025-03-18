@@ -59,33 +59,39 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR = 24;
-    public static final int INTAKE_PIVOT_MOTOR = 26;
+    public static final int LEFT_INTAKE_PIVOT_MOTOR = 28;
+    public static final int RIGHT_INTAKE_PIVOT_MOTOR = 26;
     public static final Current INTAKE_CURRENT_LIMIT = Amp.of(80);
     public static final Current INTAKE_PIVOT_CURRENT_LIMIT = Amp.of(40);
     public static final double OUTTAKE_SPEED = -0.2;
+    public static final double PASSTHROUGH_SPEED = 0.7;
     public static final double FAST_OUTTAKE_SPEED = -0.3;
-    public static final double INTAKE_SPEED = 0.3;
+    public static final double INTAKE_SPEED = 0.25;
+    public static final double ALGAE_INTAKE_SPEED = -0.3;
+    public static final double ALGAE_OUTTAKE_SPEED = 0.3;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
+    public static final double PIVOT_GEAR_RATIO = 60;
 
-    public static final double PIVOT_kP = 0.8;
+    public static final double PIVOT_kP = 0.125;
     public static final double PIVOT_kI = 0;
-    public static final double PIVOT_kD = 0.01;
+    public static final double PIVOT_kD = 0;
     public static final double PIVOT_kS = 0;
-    public static final double PIVOT_kG = 0.8;
+    public static final double PIVOT_kG = 0.4;
     public static final double PIVOT_kV = 0;
     public static final double PIVOT_kA = 0;
+
     public static final double GEAR_RATIO = 60;
     public static final double PIVOT_UP = -1.5;
-    public static final double PIVOT_DOWN = -7.2;
-    public static final double PIVOT_INTAKE_ALGAE = -4.4;
-    public static final double PIVOT_OUTTAKE_ALGAE = -2.6;
+    public static final double PIVOT_DOWN = -15;
+    public static final double PIVOT_INTAKE_ALGAE = -5.8;
+    public static final double PIVOT_OUTTAKE_ALGAE = -1.15;
     public static final Mass PIVOT_WEIGHT = Kilogram.of(9.55);
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final double PIVOT_MAX_VELOCITY = 8;
-    public static final double PIVOT_MAX_ACCELERATION = 12;
-    public static final double PIVOT_FEEDFORWARD_OFFSET = -6.3;
+    public static final double PIVOT_MAX_VELOCITY = 85;
+    public static final double PIVOT_MAX_ACCELERATION = 110;
+    public static final double PIVOT_FEEDFORWARD_OFFSET = -16.4;
     public static final double PIVOT_TOLERANCE = 0.75;
   }
 
@@ -106,12 +112,12 @@ public final class Constants {
     public static final int CANAL_MOTOR = 23;
     public static final Current CANAL_CURRENT_LIMIT = Amp.of(80);
     public static final double BACKWARDS_SPEED = -0.095;
-    public static final double INTAKE_SPEED = 0.1;
+    public static final double INTAKE_SPEED = 0.215;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final double CANAL_FAST_SPEED = 0.3;
     public static final int CANAL_REST_SPEED = 0;
-    public static final double CANAL_SLOW_SPEED = 0.06;
+    public static final double CANAL_SLOW_SPEED = 0.085;
     public static final int LASER_MAX_DISTANCE = 180;
   }
 
@@ -125,8 +131,10 @@ public final class Constants {
     public static final double kG = 0.02;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double ELEVATOR_HOVER_SETPOINT = 6.19;
-    public static final double ELEVATOR_INTAKE_SETPOINT = 3.74;
+    public static final double ELEVATOR_HOVER_SETPOINT = 4.65; // 6.19
+    public static final double ELEVATOR_AUTO_HOVER_SETPOINT = 4.75;
+    public static final double ELEVATOR_INTAKE_SETPOINT = 3.54;
+    public static final double ELEVATOR_INTAKE_UP_SETPOINT = 5.5;
     public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
     public static final double ELEVATOR_L1_SETPOINT = 0;
     public static final double ELEVATOR_L2_SETPOINT = 0.4;
@@ -156,6 +164,7 @@ public final class Constants {
     public static final double kA = 0;
     public static final double ARM_HOVER_SETPOINT = 0.03;
     public static final double ARM_INTAKE_SETPOINT = 0.03;
+    public static final double ARM_INTAKE_UP_SETPOINT = 0.015;
     public static final double ARM_PUSH_SETPOINT = 0.465;
     public static final double ARM_IDLE_SETPOINT = 0.49;
     public static final double ARM_START_SETPOINT = 0.5;
@@ -164,7 +173,7 @@ public final class Constants {
     public static final double ARM_L3_SETPOINT = 0.475;
     public static final double ARM_L4_SETPOINT = 0;
     public static final double ARM_L3_SCORE_SETPOINT = 0.390;
-    public static final double ARM_L2_SCORE_SETPOINT = 0.380;
+    public static final double ARM_L2_SCORE_SETPOINT = 0.376;
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
     public static final double ARM_PUKE_SETPOINT = 0.175;
     public static final int ARM_ZERO_ENCODER = 0;

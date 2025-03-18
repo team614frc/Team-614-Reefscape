@@ -15,15 +15,17 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakePivotSubsystem extends SubsystemBase {
-  private final SparkFlex intakePivotMotor =
-      new SparkFlex(IntakeConstants.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
-  private RelativeEncoder intakePivotEncoder = intakePivotMotor.getEncoder();
+  private final SparkFlex intakePivotMotorRight =
+      new SparkFlex(IntakeConstants.RIGHT_INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
+  private RelativeEncoder intakePivotEncoderRight = intakePivotMotorRight.getEncoder();
+  private final SparkFlex intakePivotMotorLeft =
+      new SparkFlex(IntakeConstants.LEFT_INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
+  private RelativeEncoder intakePivotEncoderLeft = intakePivotMotorLeft.getEncoder();
 
   private final ProfiledPIDController pid =
       new ProfiledPIDController(
@@ -44,35 +46,41 @@ public class IntakePivotSubsystem extends SubsystemBase {
   private double pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
 
   public IntakePivotSubsystem() {
-    intakePivotMotor.configure(
-        Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG,
+    intakePivotMotorLeft.configure(
+        Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG_LEFT,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-
-    intakePivotEncoder.setPosition(0);
+    intakePivotMotorRight.configure(
+        Configs.IntakePivotConfig.INTAKE_PIVOT_CONFIG_RIGHT,
+        ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+    intakePivotEncoderRight.setPosition(0);
+    intakePivotEncoderLeft.setPosition(0);
   }
 
   public boolean reachedSetpoint() {
-    return Math.abs(intakePivotEncoder.getPosition() - pivotSetpoint)
+    return Math.abs(intakePivotEncoderLeft.getPosition() - pivotSetpoint)
         <= IntakeConstants.PIVOT_TOLERANCE;
   }
 
   private double getPivotAngleRadians() {
-    return Units.rotationsToRadians(intakePivotEncoder.getPosition());
+    return Units.rotationsToRadians(intakePivotEncoderLeft.getPosition());
   }
 
   private void pivotPIDControl() {
+
+    double delta =
+        Units.radiansToRotations(pid.getSetpoint().position)
+            - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET;
+    delta /= IntakeConstants.PIVOT_GEAR_RATIO;
+
     double armFeedforwardVoltage =
-        feedforward.calculate(
-            (Units.radiansToRotations(pid.getSetpoint().position)
-                    - IntakeConstants.PIVOT_FEEDFORWARD_OFFSET)
-                * 0.254,
-            pid.getSetpoint().velocity);
+        feedforward.calculate(Units.rotationsToRadians(delta), pid.getSetpoint().velocity);
 
     double pivotPidOutput =
         pid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(pivotSetpoint));
 
-    intakePivotMotor.setVoltage(pivotPidOutput + armFeedforwardVoltage);
+    intakePivotMotorLeft.setVoltage(pivotPidOutput + armFeedforwardVoltage);
 
     SmartDashboard.putNumber("Pivot FF", armFeedforwardVoltage);
   }
@@ -80,35 +88,35 @@ public class IntakePivotSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     pivotPIDControl();
-
     SmartDashboard.putData(pid);
-    SmartDashboard.putNumber("Pivot Goal", pid.getGoal().position);
-    SmartDashboard.putNumber("Pivot Position", intakePivotEncoder.getPosition());
+    SmartDashboard.putNumber("Left Pivot Goal", pid.getGoal().position);
+    SmartDashboard.putNumber("Left Pivot Position", intakePivotEncoderLeft.getPosition());
+    SmartDashboard.putNumber("Right Pivot Position", intakePivotEncoderRight.getPosition());
   }
 
   public Command pivotDown() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_DOWN;
         });
   }
 
   public Command pivotIdle() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_UP;
         });
   }
 
   public Command pivotIntakeAlgae() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_INTAKE_ALGAE;
         });
   }
 
   public Command pivotOuttakeAlgae() {
-    return Commands.runOnce(
+    return this.runOnce(
         () -> {
           pivotSetpoint = IntakeConstants.PIVOT_OUTTAKE_ALGAE;
         });
