@@ -14,10 +14,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.TargetingSystem;
-import frc.robot.subsystems.TargetingSystem.ReefBranch;
-import frc.robot.subsystems.TargetingSystem.ReefBranchLevel;
 import frc.robot.subsystems.TargetingSystem.ReefBranchSide;
 import java.io.File;
+import java.util.Set;
 import swervelib.SwerveInputStream;
 
 /**
@@ -277,36 +276,45 @@ public class RobotContainer {
    */
   private void configureBindings() {
     driverXbox
-        .leftBumper()
+        .x()
         .whileTrue(
-            targetingSystem
-                .setBranchSide(ReefBranchSide.LEFT)
-                .andThen(targetingSystem.setBranchLevel(ReefBranchLevel.L1))
-                .andThen(targetingSystem.setBranchCommand(ReefBranch.A))
-                .andThen(
-                    Commands.runOnce(
-                        () ->
-                            drivebase
-                                .getSwerveDrive()
-                                .field
-                                .getObject("target")
-                                .setPose(targetingSystem.getCoralTargetPose()))));
+            Commands.defer(
+                () ->
+                    targetingSystem
+                        .autoTargetCommand(drivebase::getPose)
+                        .andThen(targetingSystem.setBranchSide(ReefBranchSide.LEFT))
+                        .andThen(
+                            Commands.runOnce(
+                                () -> {
+                                  drivebase
+                                      .getSwerveDrive()
+                                      .field
+                                      .getObject("target")
+                                      .setPose(targetingSystem.getCoralTargetPose());
+                                }))
+                        .andThen(drivebase.driveToPose(targetingSystem.getCoralTargetPose())),
+                Set.of(drivebase)));
+
     driverXbox
-        .rightBumper()
+        .y()
         .whileTrue(
-            targetingSystem
-                .setBranchSide(ReefBranchSide.RIGHT)
-                .andThen(targetingSystem.setBranchLevel(ReefBranchLevel.L1))
-                .andThen(targetingSystem.setBranchCommand(ReefBranch.A))
-                .andThen(
-                    Commands.runOnce(
-                        () ->
-                            drivebase
-                                .getSwerveDrive()
-                                .field
-                                .getObject("target")
-                                .setPose(targetingSystem.getCoralTargetPose()))));
-    driverXbox.x().whileTrue(targetingSystem.driveToCoralTarget(drivebase));
+            Commands.defer(
+                () ->
+                    targetingSystem
+                        .autoTargetCommand(drivebase::getPose)
+                        .andThen(targetingSystem.setBranchSide(ReefBranchSide.RIGHT))
+                        .andThen(
+                            Commands.runOnce(
+                                () -> {
+                                  drivebase
+                                      .getSwerveDrive()
+                                      .field
+                                      .getObject("target")
+                                      .setPose(targetingSystem.getCoralTargetPose());
+                                }))
+                        .andThen(drivebase.driveToPose(targetingSystem.getCoralTargetPose())),
+                Set.of(drivebase)));
+    driverXbox.b().whileTrue(targetingSystem.driveToCoralTarget(drivebase));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
     // driverXbox.leftBumper().whileTrue(intake.passthrough());

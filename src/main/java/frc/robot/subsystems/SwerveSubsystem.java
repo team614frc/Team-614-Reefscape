@@ -16,11 +16,16 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -388,9 +393,10 @@ public class SwerveSubsystem extends SubsystemBase {
   public void addVisionReading(PoseEstimate pose) {
     swerveDrive.addVisionMeasurement(pose.pose.toPose2d(), pose.timestampSeconds);
   }
-
+  
   @Override
   public void periodic() {
+    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
     if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
       limelightFront.updateSettings(getOrientation3d());
       updatePosition(limelightFront.getVisionEstimate());
