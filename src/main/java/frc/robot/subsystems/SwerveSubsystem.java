@@ -16,11 +16,15 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +36,7 @@ import java.io.File;
 import java.util.Optional;
 import java.util.function.Supplier;
 import limelight.networktables.AngularVelocity3d;
+import limelight.networktables.LimelightResults;
 import limelight.networktables.Orientation3d;
 import limelight.networktables.PoseEstimate;
 import swervelib.SwerveDrive;
@@ -52,6 +57,10 @@ public class SwerveSubsystem extends SubsystemBase {
   private LimelightSubsystem limelightBack;
 
   private Field2d field = new Field2d();
+
+  private int outofAreaReading = 0;
+
+  private boolean initialReading = false;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -377,12 +386,10 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Orientation3d getOrientation3d() {
-    return (new Orientation3d(
-        swerveDrive.getGyroRotation3d(),
+    return new Orientation3d(
+        new Rotation3d(swerveDrive.getOdometryHeading().rotateBy(Rotation2d.kZero)),
         new AngularVelocity3d(
-            DegreesPerSecond.of(0),
-            DegreesPerSecond.of(0),
-            swerveDrive.getGyro().getYawAngularVelocity())));
+            DegreesPerSecond.of(0), DegreesPerSecond.of(0), DegreesPerSecond.of(0)));
   }
 
   public void addVisionReading(PoseEstimate pose) {
@@ -393,12 +400,13 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
       limelightFront.updateSettings(getOrientation3d());
-      updatePosition(limelightFront.getVisionEstimate());
+      updatePosition(limelightFront.getResults(), limelightFront.getVisionEstimate());
     }
     if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK) {
       limelightBack.updateSettings(getOrientation3d());
-      updatePosition(limelightBack.getVisionEstimate());
+      updatePosition(limelightBack.getResults(), limelightBack.getVisionEstimate());
     }
+    swerveDrive.updateOdometry();
     // SmartDashboard.putNumber("Closest AprilTagID", findReefID());
     SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
@@ -408,21 +416,43 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putData(field);
   }
 
-  public void updatePosition(Optional<PoseEstimate> visionEstimate) {
-    visionEstimate.ifPresent(
-        (PoseEstimate poseEstimate) -> {
-          // If the average tag distance is less than 4 meters,
-          // there are more than 0 tags in view,
-          // and the average ambiguity between tags is less than 30% then we update the pose
-          // estimation.
-          SmartDashboard.putNumber("Est X", poseEstimate.pose.toPose2d().getX());
-          SmartDashboard.putNumber("Est Y", poseEstimate.pose.toPose2d().getY());
-          if (poseEstimate.avgTagDist < 4
-              && poseEstimate.tagCount > 0
-              && poseEstimate.getMinTagAmbiguity() < 0.3) {
-            addVisionReading(poseEstimate);
+  public void updatePosition(
+      Optional<LimelightResults> results, Optional<PoseEstimate> poseEstimates) {
+
+    if (results.isPresent() && poseEstimates.isPresent()) {
+      LimelightResults result = results.get();
+      PoseEstimate poseEstimate = poseEstimates.get();
+      SmartDashboard.putNumber("Avg Tag Ambiguity", poseEstimate.getAvgTagAmbiguity());
+      SmartDashboard.putNumber("Min Tag Ambiguity", poseEstimate.getMinTagAmbiguity());
+      SmartDashboard.putNumber("Max Tag Ambiguity", poseEstimate.getMaxTagAmbiguity());
+      SmartDashboard.putNumber("Avg Distance", poseEstimate.avgTagDist);
+      SmartDashboard.putNumber("Avg Tag Area", poseEstimate.avgTagArea);
+      SmartDashboard.putNumber("Odom Pose/x", swerveDrive.getPose().getX());
+      SmartDashboard.putNumber("Odom Pose/y", swerveDrive.getPose().getY());
+      SmartDashboard.putNumber(
+          "Odom Pose/degrees", swerveDrive.getPose().getRotation().getDegrees());
+      SmartDashboard.putNumber("Limelight Pose/x", poseEstimate.pose.getX());
+      SmartDashboard.putNumber("Limelight Pose/y", poseEstimate.pose.getY());
+      SmartDashboard.putNumber(
+          "Limelight Pose/degrees", poseEstimate.pose.toPose2d().getRotation().getDegrees());
+      if (result.valid) {
+        Pose2d usefulPose = result.getBotPose2d(Alliance.Blue);
+        double distanceToPose =
+            usefulPose.getTranslation().getDistance(swerveDrive.getPose().getTranslation());
+        if (distanceToPose < 0.5
+            || (outofAreaReading > 10)
+            || (outofAreaReading > 10 && !initialReading)) {
+          if (!initialReading) {
+            initialReading = true;
           }
-        });
+          outofAreaReading = 0;
+          swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(0.05, 0.05, 0.022));
+          swerveDrive.addVisionMeasurement(usefulPose, Timer.getTimestamp());
+        } else {
+          outofAreaReading += 1;
+        }
+      }
+    }
   }
 
   // public Pose2d getTarget(Direction direction) {
