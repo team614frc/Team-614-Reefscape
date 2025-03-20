@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -21,12 +20,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.AngularAcceleration;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearAcceleration;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,10 +28,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivebaseConstants;
-import frc.robot.FieldConstants;
-import frc.robot.FieldConstants.Direction;
 import java.io.File;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import limelight.networktables.AngularVelocity3d;
@@ -209,23 +200,31 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param pose Target {@link Pose2d} to go to.
    * @return PathFinding command
    */
-  public Command driveToPose(
-      Pose2d pose,
-      LinearVelocity maxvelocity,
-      LinearAcceleration maxacceleration,
-      AngularVelocity maxangularvelocity,
-      AngularAcceleration maxangularacceleration) {
+  public Command printCurrentPose() {
+    return Commands.none(); // dCommands.deferredProxy(()->Commands.print("Current Pose:
+    // "+getPose().toString()));
+  }
+
+  public Command driveToPose(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints =
         new PathConstraints(
-            maxvelocity, maxacceleration, maxangularvelocity, maxangularacceleration);
-
+            Constants.DrivebaseConstants.MAX_ALIGNMENT_VELOCITY,
+                Constants.DrivebaseConstants.MAX_ALIGNMENT_ACCELERATION,
+            Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_VELOCITY,
+                Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_ACCELERATION);
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return AutoBuilder.pathfindToPose(
         pose,
         constraints,
         edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
         );
+  }
+
+  public Command driveToPose(Supplier<Pose2d> pose) {
+    double tooCloseMeters =
+        0.5; // If the bot is too close by this much it needs to drive back a little bit.
+    return defer(() -> driveToPose(pose.get()));
   }
 
   /**
@@ -400,7 +399,7 @@ public class SwerveSubsystem extends SubsystemBase {
       limelightBack.updateSettings(getOrientation3d());
       updatePosition(limelightBack.getVisionEstimate());
     }
-    SmartDashboard.putNumber("Closest AprilTagID", findReefID());
+    // SmartDashboard.putNumber("Closest AprilTagID", findReefID());
     SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
@@ -426,41 +425,6 @@ public class SwerveSubsystem extends SubsystemBase {
         });
   }
 
-  public int findReefID() {
-    int index;
-    int AprilTagID;
-    List<Integer> apriltags;
-    Optional<Alliance> ally = DriverStation.getAlliance();
-    index =
-        FieldConstants.Reef.CENTER_FACES.indexOf(
-            swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES));
-    if (ally.isPresent() && ally.get() == DriverStation.Alliance.Red)
-      apriltags = FieldConstants.Reef.CENTER_FACES_RED_IDS;
-    else apriltags = FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
-    AprilTagID = apriltags.get(index);
-    return AprilTagID;
-  }
-
-  public Command driveReef(Supplier<Pose2d> path) {
-    PathConstraints constraints =
-        new PathConstraints(
-            DrivebaseConstants.MAX_ALIGNMENT_VELOCITY,
-            DrivebaseConstants.MAX_ALIGNMENT_ACCELERATION,
-            DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_VELOCITY,
-            DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_ACCELERATION);
-    // Since AutoBuilder is configured, we can use it to build pathfinding commands
-    return defer(
-        () ->
-            (!Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT || limelightFront.hasTarget())
-                ? AutoBuilder.pathfindToPose(
-                    path.get(),
-                    constraints,
-                    edu.wpi.first.units.Units.MetersPerSecond.of(
-                        0) // Goal end velocity in meters/sec
-                    )
-                : Commands.none());
-  }
-
   // public Pose2d getTarget(Direction direction) {
   //   Pose2d path = new Pose2d();
   //   Optional<Alliance> ally = DriverStation.getAlliance();
@@ -474,23 +438,6 @@ public class SwerveSubsystem extends SubsystemBase {
   //   }
   //   return path;
   // }
-
-  public Pose2d getTarget(Direction direction) {
-    Pose2d path = new Pose2d();
-    if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && limelightFront.hasTarget()) {
-      path = FieldConstants.Reef.BRANCH_POSITIONS.get(direction).get(limelightFront.getID());
-    } else {
-      path = FieldConstants.Reef.BRANCH_POSITIONS.get(direction).get(findReefID());
-    }
-    return path;
-  }
-
-  public boolean reachedTarget(Direction direction) {
-    return Math.abs(swerveDrive.getPose().getX() - getTarget(direction).getX())
-            <= DrivebaseConstants.ALIGNMENT_TOLERANCE.in(Meters)
-        && Math.abs(swerveDrive.getPose().getY() - getTarget(direction).getY())
-            <= DrivebaseConstants.ALIGNMENT_TOLERANCE.in(Meters);
-  }
 
   public boolean isFieldCentric = true;
 

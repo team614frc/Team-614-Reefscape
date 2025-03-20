@@ -15,11 +15,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 public class AllianceFlipUtil {
 
   public static double applyX(double x) {
-    return shouldFlip() ? FieldConstants.FIELD_LENGTH - x : x;
+    return shouldFlip() ? FieldConstants.fieldLength - x : x;
   }
 
   public static double applyY(double y) {
-    return shouldFlip() ? FieldConstants.FIELD_WIDTH - y : y;
+    return shouldFlip() ? FieldConstants.fieldWidth - y : y;
   }
 
   public static Translation2d apply(Translation2d translation) {
@@ -34,6 +34,10 @@ public class AllianceFlipUtil {
     return shouldFlip()
         ? new Pose2d(apply(pose.getTranslation()), apply(pose.getRotation()))
         : pose;
+  }
+
+  public static Pose2d flip(Pose2d pose) {
+    return new Pose2d(apply(pose.getTranslation()), apply(pose.getRotation()));
   }
 
   public static boolean shouldFlip() {

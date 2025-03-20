@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.FieldConstants;
+import frc.robot.Constants;
 import java.util.Optional;
 import limelight.Limelight;
 import limelight.networktables.*;
@@ -19,7 +19,7 @@ public class LimelightSubsystem extends SubsystemBase {
     limelight
         .getSettings()
         .withLimelightLEDMode(LEDMode.PipelineControl)
-        .withCameraOffset(FieldConstants.Offsets.CAMERA_OFFSET)
+        .withCameraOffset(Constants.CAMERA_OFFSET)
         .save();
 
     poseEstimator = limelight.getPoseEstimator(true);

@@ -1,186 +1,176 @@
+// Copyright (c) 2025 FRC 6328
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file at
+// the root directory of this project.
+
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Inches;
-
-import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Distance;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+/**
+ * Contains various field dimensions and useful reference points. All units are in meters and poses
+ * have a blue alliance origin.
+ */
 public class FieldConstants {
-  public static final double FIELD_LENGTH = Units.inchesToMeters(690.876);
-  public static final double FIELD_WIDTH = Units.inchesToMeters(317);
 
-  /** Measured from the inside of starting line * */
-  public static final double STARTING_LINE_X = Units.inchesToMeters(299.438);
+  public static final double fieldLength = Units.inchesToMeters(690.876);
+  public static final double fieldWidth = Units.inchesToMeters(317);
+  public static final double startingLineX =
+      Units.inchesToMeters(299.438); // Measured from the inside of starting line
+
+  public enum ReefHeight {
+    L4(Units.inchesToMeters(54), 44),
+    L3(Units.inchesToMeters(48), 14),
+    L2(Units.inchesToMeters(42), -14),
+    L1(Units.inchesToMeters(42), -56);
+
+    public final double height;
+    public final double pitch;
+
+    ReefHeight(double height, double pitch) {
+      this.height = height;
+      this.pitch = pitch; // in degrees
+    }
+  }
 
   public static class Processor {
-    public static final Pose2d CENTER_FACE =
+
+    public static final Pose2d centerFace =
         new Pose2d(Units.inchesToMeters(235.726), 0, Rotation2d.fromDegrees(90));
   }
 
   public static class Barge {
-    public static final Translation2d FAR_CAGE =
+
+    public static final Translation2d farCage =
         new Translation2d(Units.inchesToMeters(345.428), Units.inchesToMeters(286.779));
-    public static final Translation2d MIDDLE_CAGE =
+    public static final Translation2d middleCage =
         new Translation2d(Units.inchesToMeters(345.428), Units.inchesToMeters(242.855));
-    public static final Translation2d CLOSE_CAGE =
+    public static final Translation2d closeCage =
         new Translation2d(Units.inchesToMeters(345.428), Units.inchesToMeters(199.947));
 
-    /** Measured from floor to bottom of cage * */
-    public static final double DEEP_HEIGHT = Units.inchesToMeters(3.125);
-
-    public static final double SHALLOW_HEIGHT = Units.inchesToMeters(30.125);
+    // Measured from floor to bottom of cage
+    public static final double deepHeight = Units.inchesToMeters(3.125);
+    public static final double shallowHeight = Units.inchesToMeters(30.125);
   }
 
   public static class CoralStation {
-    public static final Pose2d LEFT_CENTER_FACE =
-        new Pose2d(
-            Units.inchesToMeters(33.526),
-            Units.inchesToMeters(291.176),
-            Rotation2d.fromDegrees(90 - 144.011));
-    public static final Pose2d RIGHT_CENTER_FACE =
+    public static final double stationLength = Units.inchesToMeters(79.750);
+    public static final Pose2d rightCenterFace =
         new Pose2d(
             Units.inchesToMeters(33.526),
             Units.inchesToMeters(25.824),
             Rotation2d.fromDegrees(144.011 - 90));
-  }
-
-  public static class Offsets {
-    public static final Pose3d CAMERA_OFFSET =
-        new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
-    public static final Distance ADJUST_X = Inches.of(30.738);
-    public static final Distance ADJUST_Y = Inches.of(6.469);
+    public static final Pose2d leftCenterFace =
+        new Pose2d(
+            rightCenterFace.getX(),
+            fieldWidth - rightCenterFace.getY(),
+            Rotation2d.fromRadians(-rightCenterFace.getRotation().getRadians()));
   }
 
   public static class Reef {
-    public static final Translation2d CENTER =
+
+    public static final Translation2d center =
         new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
+    public static final double faceToZoneLine =
+        Units.inchesToMeters(12); // Side of the reef to the inside of the reef zone line
 
-    /** Side of the reef to the inside of the reef zone line * */
-    public static final double FACE_TO_ZONE_LINE = Units.inchesToMeters(12);
-
-    /** Starting facing the driver station in clockwise order * */
-    public static final List<Pose2d> CENTER_FACES =
-        List.of(
-            new Pose2d(
-                Units.inchesToMeters(144.003),
-                Units.inchesToMeters(158.500),
-                Rotation2d.fromDegrees(180)),
-            new Pose2d(
-                Units.inchesToMeters(160.373),
-                Units.inchesToMeters(186.857),
-                Rotation2d.fromDegrees(120)),
-            new Pose2d(
-                Units.inchesToMeters(193.116),
-                Units.inchesToMeters(186.858),
-                Rotation2d.fromDegrees(60)),
-            new Pose2d(
-                Units.inchesToMeters(209.489),
-                Units.inchesToMeters(158.502),
-                Rotation2d.fromDegrees(0)),
-            new Pose2d(
-                Units.inchesToMeters(193.118),
-                Units.inchesToMeters(130.145),
-                Rotation2d.fromDegrees(-60)),
-            new Pose2d(
-                Units.inchesToMeters(160.375),
-                Units.inchesToMeters(130.144),
-                Rotation2d.fromDegrees(-120)));
-
-    public static final List<Integer> CENTER_FACES_RED_IDS = List.of(7, 8, 9, 10, 11, 6);
-
-    public static final List<Integer> CENTER_FACES_BLUE_IDS = List.of(18, 19, 20, 21, 22, 17);
-
-    /** Starting at the right branch facing the driver station in clockwise * */
-    public static Map<Direction, Map<Integer, Pose2d>> BRANCH_POSITIONS = new HashMap<>(2);
-
-    public static final Pose2d ID17REEFRIGHTBRANCH =
-        new Pose2d(3.3, 4.2, Rotation2d.fromDegrees(60));
-    public static final Pose2d ID17REEFLEFTBRANCH =
-        new Pose2d(3.2, 3.9, Rotation2d.fromDegrees(60));
-
-    public static final Pose2d ID18REEFRIGHTBRANCH =
-        new Pose2d(3.3, 4.2, Rotation2d.fromDegrees(0));
-    public static final Pose2d ID18REEFLEFTBRANCH = new Pose2d(3.2, 4.2, Rotation2d.fromDegrees(0));
-
-    public static final Pose2d ID19REEFRIGHTBRANCH =
-        new Pose2d(3.7, 5, Rotation2d.fromDegrees(-60));
-    public static final Pose2d ID19REEFLEFTBRANCH = new Pose2d(4, 5.1, Rotation2d.fromDegrees(-60));
-
-    public static final Pose2d ID20REEFRIGHTTBRANCH =
-        new Pose2d(5, 5.2, Rotation2d.fromDegrees(-120));
-    public static final Pose2d ID20REEFLEFTBRANCH =
-        new Pose2d(5.3, 5, Rotation2d.fromDegrees(-120));
-
-    public static final Pose2d ID21REEFRIGHTTBRANCH =
-        new Pose2d(5.8, 4.2, Rotation2d.fromDegrees(-180));
-    public static final Pose2d ID21REEFLEFTBRANCH =
-        new Pose2d(5.8, 4.2, Rotation2d.fromDegrees(-180));
-
-    public static final Pose2d ID22REEFRIGHTBRANCH =
-        new Pose2d(5.5, 2.6, Rotation2d.fromDegrees(120));
-    public static final Pose2d ID22REEFLEFTBRANCH =
-        new Pose2d(5.2, 2.3, Rotation2d.fromDegrees(120));
+    public static final Pose2d[] centerFaces =
+        new Pose2d[] {
+          new Pose2d(
+              Units.inchesToMeters(144.003),
+              Units.inchesToMeters(158.500),
+              Rotation2d.fromDegrees(180)),
+          new Pose2d(
+              Units.inchesToMeters(160.373),
+              Units.inchesToMeters(186.857),
+              Rotation2d.fromDegrees(120)),
+          new Pose2d(
+              Units.inchesToMeters(193.116),
+              Units.inchesToMeters(186.858),
+              Rotation2d.fromDegrees(60)),
+          new Pose2d(
+              Units.inchesToMeters(209.489),
+              Units.inchesToMeters(158.502),
+              Rotation2d.fromDegrees(0)),
+          new Pose2d(
+              Units.inchesToMeters(193.118),
+              Units.inchesToMeters(130.145),
+              Rotation2d.fromDegrees(-60)),
+          new Pose2d(
+              Units.inchesToMeters(160.375),
+              Units.inchesToMeters(130.144),
+              Rotation2d.fromDegrees(-120))
+        }; // Starting facing the driver station in clockwise order
+    public static final ArrayList<Map<ReefHeight, Pose3d>> branchPositions =
+        new ArrayList<>(13); // Starting at the right branch facing the driver station in clockwise
 
     static {
-      HashMap<Integer, Pose2d> RIGHT_BRANCH_POSITIONS = new HashMap<>();
-      HashMap<Integer, Pose2d> LEFT_BRANCH_POSITIONS = new HashMap<>();
+      // Initialize branch positions
+      for (int face = 0; face < 6; face++) {
+        Map<ReefHeight, Pose3d> fillRight = new HashMap<>();
+        Map<ReefHeight, Pose3d> fillLeft = new HashMap<>();
+        for (var level : ReefHeight.values()) {
+          Pose2d poseDirection = new Pose2d(center, Rotation2d.fromDegrees(180 - (60 * face)));
+          double adjustX = Units.inchesToMeters(30.738);
+          double adjustY = Units.inchesToMeters(6.469);
 
-      LEFT_BRANCH_POSITIONS.put(17, ID17REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(17, ID17REEFRIGHTBRANCH);
-      LEFT_BRANCH_POSITIONS.put(6, ID17REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(6, ID17REEFRIGHTBRANCH);
-
-      LEFT_BRANCH_POSITIONS.put(18, ID18REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(18, ID18REEFRIGHTBRANCH);
-      LEFT_BRANCH_POSITIONS.put(7, ID18REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(7, ID18REEFRIGHTBRANCH);
-
-      LEFT_BRANCH_POSITIONS.put(19, ID19REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(19, ID19REEFRIGHTBRANCH);
-      LEFT_BRANCH_POSITIONS.put(8, ID19REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(8, ID19REEFRIGHTBRANCH);
-
-      LEFT_BRANCH_POSITIONS.put(20, ID20REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(20, ID20REEFRIGHTTBRANCH);
-      LEFT_BRANCH_POSITIONS.put(9, ID20REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(9, ID20REEFRIGHTTBRANCH);
-
-      LEFT_BRANCH_POSITIONS.put(21, ID21REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(21, ID21REEFRIGHTTBRANCH);
-      LEFT_BRANCH_POSITIONS.put(10, ID21REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(10, ID21REEFRIGHTTBRANCH);
-
-      LEFT_BRANCH_POSITIONS.put(22, ID22REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(22, ID22REEFRIGHTBRANCH);
-      LEFT_BRANCH_POSITIONS.put(11, ID22REEFLEFTBRANCH);
-      RIGHT_BRANCH_POSITIONS.put(11, ID22REEFRIGHTBRANCH);
-
-      BRANCH_POSITIONS.put(Direction.LEFT, LEFT_BRANCH_POSITIONS);
-      BRANCH_POSITIONS.put(Direction.RIGHT, RIGHT_BRANCH_POSITIONS);
-    }
-
-    /** Measured from the center of the ice cream * */
-    public static class StagingPositions {
-      public static final Pose2d LEFT_ICE_CREAM =
-          new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(230.5), new Rotation2d());
-      public static final Pose2d MIDDLE_ICE_CREAM =
-          new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(158.5), new Rotation2d());
-      public static final Pose2d RIGHT_ICE_CREAM =
-          new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(86.5), new Rotation2d());
+          fillRight.put(
+              level,
+              new Pose3d(
+                  new Translation3d(
+                      poseDirection
+                          .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+                          .getX(),
+                      poseDirection
+                          .transformBy(new Transform2d(adjustX, adjustY, new Rotation2d()))
+                          .getY(),
+                      level.height),
+                  new Rotation3d(
+                      0,
+                      Units.degreesToRadians(level.pitch),
+                      poseDirection.getRotation().getRadians())));
+          fillLeft.put(
+              level,
+              new Pose3d(
+                  new Translation3d(
+                      poseDirection
+                          .transformBy(new Transform2d(adjustX, -adjustY, new Rotation2d()))
+                          .getX(),
+                      poseDirection
+                          .transformBy(new Transform2d(adjustX, -adjustY, new Rotation2d()))
+                          .getY(),
+                      level.height),
+                  new Rotation3d(
+                      0,
+                      Units.degreesToRadians(level.pitch),
+                      poseDirection.getRotation().getRadians())));
+        }
+        branchPositions.add(fillLeft);
+        branchPositions.add(fillRight);
+      }
     }
   }
 
-  public enum Direction {
-    RIGHT,
-    LEFT;
-  }
+  public static class StagingPositions {
 
-  public enum DetectionMode {
-    CORAL,
-    APRILTAG;
+    // Measured from the center of the ice cream
+    public static final Pose2d leftIceCream =
+        new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(230.5), new Rotation2d());
+    public static final Pose2d middleIceCream =
+        new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(158.5), new Rotation2d());
+    public static final Pose2d rightIceCream =
+        new Pose2d(Units.inchesToMeters(48), Units.inchesToMeters(86.5), new Rotation2d());
   }
 }
