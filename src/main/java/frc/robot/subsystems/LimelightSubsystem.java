@@ -1,30 +1,41 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.FieldConstants;
+import frc.robot.Constants;
+import java.util.List;
 import java.util.Optional;
 import limelight.Limelight;
 import limelight.networktables.*;
 import limelight.networktables.LimelightSettings.LEDMode;
 
 public class LimelightSubsystem extends SubsystemBase {
-  private final Limelight limelight = new Limelight("limelight-april");
+  private Limelight limelight;
 
   private LimelightPoseEstimator poseEstimator;
   private LimelightTargetData limelightTargetData;
 
-  public LimelightSubsystem() {
+  public LimelightSubsystem(String name) {
+    limelight = new Limelight(name);
     limelight
         .getSettings()
+        .withPipelineIndex(0)
         .withLimelightLEDMode(LEDMode.PipelineControl)
-        .withCameraOffset(FieldConstants.Offsets.CAMERA_OFFSET)
+        .withCameraOffset(Constants.CAMERA_OFFSET)
+        .withArilTagIdFilter(
+            List.of(17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0))
         .save();
+
     poseEstimator = limelight.getPoseEstimator(true);
     limelightTargetData = new LimelightTargetData(limelight);
   }
 
   public Optional<PoseEstimate> getVisionEstimate() {
-    return poseEstimator.getPoseEstimate(); // BotPose.BLUE_MEGATAG2.get(limelight);
+    return poseEstimator.getPoseEstimate();
+  }
+
+  public Optional<LimelightResults> getResults() {
+    return limelight.getLatestResults();
   }
 
   public int getID() {
@@ -41,7 +52,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // SmartDashboard.putBoolean("Sees AprilTag", hasTarget());
-    // SmartDashboard.putNumber("AprilTag ID", getID());
+    SmartDashboard.putBoolean("Sees AprilTag", hasTarget());
+    SmartDashboard.putNumber("AprilTag ID", getID());
   }
 }

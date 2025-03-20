@@ -25,7 +25,10 @@ import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.TargetingSystem;
+import frc.robot.subsystems.TargetingSystem.ReefBranchSide;
 import java.io.File;
+import java.util.Set;
 import swervelib.SwerveInputStream;
 
 /**
@@ -42,7 +45,7 @@ public class RobotContainer {
   private final ClimberSubsystem climber = new ClimberSubsystem();
   private final CanalSubsystem canal = new CanalSubsystem();
   private final LEDSubsystem led = new LEDSubsystem();
-
+  private final TargetingSystem targetingSystem = new TargetingSystem();
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -238,18 +241,12 @@ public class RobotContainer {
           Commands.waitUntil(intakePivot::reachedSetpoint),
           intakePivot.pivotIdle());
 
-  //   private final Command driveLeftReef =
-  //       Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT));
-
-  //   private final Command driveRightReef =
-  //       Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT));
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
 
-    // canal.setDefaultCommand(canal.intake());
+    canal.setDefaultCommand(canal.intake());
 
     NamedCommands.registerCommand("L1", autoL1);
     NamedCommands.registerCommand("Hover", autoHover);
@@ -286,8 +283,45 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // driverXbox.x().whileTrue(driveLeftReef);
-    // driverXbox.b().whileTrue(driveRightReef);
+    driverXbox
+        .x()
+        .whileTrue(
+            Commands.defer(
+                () ->
+                    targetingSystem
+                        .autoTargetCommand(drivebase::getPose)
+                        .andThen(targetingSystem.setBranchSide(ReefBranchSide.LEFT))
+                        .andThen(
+                            Commands.runOnce(
+                                () -> {
+                                  drivebase
+                                      .getSwerveDrive()
+                                      .field
+                                      .getObject("target")
+                                      .setPose(targetingSystem.getCoralTargetPose());
+                                }))
+                        .andThen(drivebase.driveToPose(targetingSystem.getCoralTargetPose())),
+                Set.of(drivebase)));
+
+    driverXbox
+        .b()
+        .whileTrue(
+            Commands.defer(
+                () ->
+                    targetingSystem
+                        .autoTargetCommand(drivebase::getPose)
+                        .andThen(targetingSystem.setBranchSide(ReefBranchSide.RIGHT))
+                        .andThen(
+                            Commands.runOnce(
+                                () -> {
+                                  drivebase
+                                      .getSwerveDrive()
+                                      .field
+                                      .getObject("target")
+                                      .setPose(targetingSystem.getCoralTargetPose());
+                                }))
+                        .andThen(drivebase.driveToPose(targetingSystem.getCoralTargetPose())),
+                Set.of(drivebase)));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
     driverXbox.leftBumper().whileTrue(intake.passthrough());
@@ -298,7 +332,7 @@ public class RobotContainer {
         .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
         .onFalse(Commands.sequence(intakePivot.pivotOuttakeAlgae()));
     // Commands.waitUntil(intakePivot::reachedSetpoint),
-    // intakePivot.pivotIdle()));
+    // intakePivot.pivotIdle();
     driverXbox
         .rightTrigger()
         .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.outtakeGamepiece()));
@@ -519,7 +553,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    return Commands.none();
   }
 
   public void setDriveMode() {

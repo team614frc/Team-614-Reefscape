@@ -6,11 +6,16 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
@@ -27,6 +32,10 @@ import swervelib.math.Matter;
  */
 public final class Constants {
   public static final Mass ROBOT_MASS = Pounds.of(60);
+  public static final Pose3d CAMERA_OFFSET =
+      new Pose3d(
+          new Translation3d(Meters.of(.2), Meters.of(.2), Meters.of(.2)),
+          new Rotation3d(0, 0, Units.degreesToRadians(45)));
   public static final Matter CHASSIS =
       new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS.in(Kilogram));
   public static final Time LOOP_TIME = Seconds.of(0.13); // s, 20ms + 110ms sprk max velocity lag
@@ -41,6 +50,17 @@ public final class Constants {
     public static final double AUTO_ROTATION_kP = 6;
     public static final double AUTO_ROTATION_kI = 0.0;
     public static final double AUTO_ROTATION_kD = 0.0;
+    public static final Boolean USE_LIMELIGHT_FRONT = false;
+    public static final Boolean USE_LIMELIGHT_BACK = false;
+    public static final String LIMELIGHT_FRONT_NAME = "limelight-front";
+    public static final String LIMELIGHT_BACK_NAME = "limelight-back";
+    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(1);
+    public static final LinearAcceleration MAX_ALIGNMENT_ACCELERATION =
+        MetersPerSecondPerSecond.of(1);
+    public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
+    public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
+        DegreesPerSecondPerSecond.of(45);
+    public static final Distance ALIGNMENT_TOLERANCE = Meters.of(.25);
   }
 
   public static final class IntakeConstants {
