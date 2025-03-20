@@ -34,6 +34,10 @@ public class LimelightSubsystem extends SubsystemBase {
     return poseEstimator.getPoseEstimate();
   }
 
+  public Optional<LimelightResults> getResults() {
+    return limelight.getLatestResults();
+  }
+
   public int getID() {
     return (int) limelightTargetData.getAprilTagID();
   }
