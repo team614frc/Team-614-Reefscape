@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
 import java.util.List;
 import java.util.Optional;
 import limelight.Limelight;
@@ -23,7 +22,8 @@ public class LimelightSubsystem extends SubsystemBase {
         .withPipelineIndex(0)
         .withLimelightLEDMode(LEDMode.PipelineControl)
         .withCameraOffset(Constants.CAMERA_OFFSET)
-        .withArilTagIdFilter(List.of(17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0))
+        .withArilTagIdFilter(
+            List.of(17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0))
         .save();
 
     poseEstimator = limelight.getPoseEstimator(true);
