@@ -296,7 +296,7 @@ public class RobotContainer {
                 Set.of(drivebase)));
 
     driverXbox
-        .y()
+        .b()
         .whileTrue(
             Commands.defer(
                 () ->
@@ -314,7 +314,6 @@ public class RobotContainer {
                                 }))
                         .andThen(drivebase.driveToPose(targetingSystem.getCoralTargetPose())),
                 Set.of(drivebase)));
-    driverXbox.b().whileTrue(targetingSystem.driveToCoralTarget(drivebase));
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
     // driverXbox.leftBumper().whileTrue(intake.passthrough());
