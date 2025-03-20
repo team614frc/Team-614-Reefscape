@@ -396,7 +396,6 @@ public class SwerveSubsystem extends SubsystemBase {
   
   @Override
   public void periodic() {
-    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
     if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
       limelightFront.updateSettings(getOrientation3d());
       updatePosition(limelightFront.getVisionEstimate());
