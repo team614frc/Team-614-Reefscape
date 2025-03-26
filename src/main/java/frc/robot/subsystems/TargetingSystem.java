@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -80,8 +82,6 @@ public class TargetingSystem extends SubsystemBase {
   public void periodic() {
     if (targetReefBranchSide != null) {
       SmartDashboard.putString("Target Branch", targetReefBranchSide.toString());
-      SmartDashboard.putNumber("Target Pose X ", getCoralTargetPose().getX());
-      SmartDashboard.putNumber("Target Pose Y", getCoralTargetPose().getY());
     }
   }
 
@@ -132,7 +132,7 @@ public class TargetingSystem extends SubsystemBase {
             () -> {
               swerveDrive.getSwerveDrive().field.getObject("target").setPose(getCoralTargetPose());
             }))
-        .andThen(swerveDrive.driveToPose(this::getCoralTargetPose));
+        .andThen(swerveDrive.driveToPose(getCoralTargetPose()));
   }
 
   public Command driveToAlgaeTarget(SwerveSubsystem swerveDrive) {
@@ -151,10 +151,30 @@ public class TargetingSystem extends SubsystemBase {
               Reef.branchPositions.get(getTargetBranchOrdinal()).get(ReefHeight.L2).toPose2d());
       SmartDashboard.putString(
           "Targetted Coral Pose without Offset (Meters)", startingPose.toString());
-      scoringPose = startingPose.plus(AutoScoring.Reef.coralOffset);
+      if (targetReefBranchSide == ReefBranchSide.LEFT)
+        scoringPose = startingPose.plus(AutoScoring.Reef.coralOffset);
+      else
+        scoringPose =
+            startingPose.plus(
+                new Transform2d(
+                    AutoScoring.Reef.coralOffset.getX(),
+                    -AutoScoring.Reef.coralOffset.getY(),
+                    AutoScoring.Reef.coralOffset.getRotation()));
       SmartDashboard.putString("Targetted Coral Pose with Offset (Meters)", scoringPose.toString());
     }
     return scoringPose;
+  }
+
+  public Pose2d getInterTargetPose(Supplier<Pose2d> robotpose) {
+    Pose2d targetPose = getCoralTargetPose();
+    return targetPose.plus(new Transform2d(0, .5, new Rotation2d(180)));
+  }
+
+  public boolean nearTarget(Supplier<Pose2d> robotpose) {
+    Pose2d scoringPose = getCoralTargetPose();
+    if ((Math.abs(robotpose.get().getX() - scoringPose.getX()) < 3)
+        && (Math.abs(robotpose.get().getX() - scoringPose.getX()) < 3)) return true;
+    else return false;
   }
 
   public Pose2d getAlgaeTargetPose() {
@@ -195,25 +215,33 @@ public class TargetingSystem extends SubsystemBase {
     }
   }
 
-  public void printTargetPose(ReefBranchSide side) {
+  // public void printTargetPose(ReefBranchSide side) {
 
-    targetReefBranchSide = side;
+  //   targetReefBranchSide = side;
 
-    // autoTarget(pose);
-    System.out.println(
-        "Coral Branch: "
-            + targetBranch.toString()
-            + " Target Pose: "
-            + getCoralTargetPose().toString());
-  }
+  //   // autoTarget(pose);
+  //   System.out.println(
+  //       "Coral Branch: "
+  //           + targetBranch.toString()
+  //           + " Target Pose: "
+  //           + getCoralTargetPose().toString());
+  // }
 
-  public void printTargetPose(ReefBranch branch, ReefBranchSide side) {
-    targetBranch = branch;
-    printTargetPose(side);
-  }
+  // public void printTargetPose(ReefBranch branch, ReefBranchSide side) {
+  //   targetBranch = branch;
+  //   printTargetPose(side);
+  // }
 
   public void setCoralTargetOnField(SwerveSubsystem swerveDrive) {
     swerveDrive.getSwerveDrive().field.getObject("target").setPose(getCoralTargetPose());
+  }
+
+  public void setInterTargetOnField(SwerveSubsystem swerveDrive) {
+    swerveDrive
+        .getSwerveDrive()
+        .field
+        .getObject("target")
+        .setPose(getInterTargetPose(() -> swerveDrive.getPose()));
   }
 
   public void setAlgaeTargetOnField(SwerveSubsystem swerveDrive) {
