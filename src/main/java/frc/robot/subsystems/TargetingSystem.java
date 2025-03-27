@@ -1,9 +1,10 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.AllianceFlipUtil;
+import frc.robot.Constants;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.FieldConstants.ReefHeight;
 import frc.robot.Setpoints.AutoScoring;
@@ -165,15 +167,17 @@ public class TargetingSystem extends SubsystemBase {
     return scoringPose;
   }
 
-  public Pose2d getInterTargetPose(Supplier<Pose2d> robotpose) {
+  public Pose2d getTargetShiftPose(Supplier<Pose2d> robotpose) {
     Pose2d targetPose = getCoralTargetPose();
-    return targetPose.plus(new Transform2d(0, .5, new Rotation2d(180)));
+    return targetPose.plus(AutoScoring.Reef.coralShiftOffset);
   }
 
   public boolean nearTarget(Supplier<Pose2d> robotpose) {
     Pose2d scoringPose = getCoralTargetPose();
-    if ((Math.abs(robotpose.get().getX() - scoringPose.getX()) < 3)
-        && (Math.abs(robotpose.get().getX() - scoringPose.getX()) < 3)) return true;
+    if ((Math.abs(robotpose.get().getX() - scoringPose.getX())
+            < Constants.DrivebaseConstants.ALIGNMENT_SHIFT_TOLERANCE.in(Meters))
+        && (Math.abs(robotpose.get().getX() - scoringPose.getX())
+            < Constants.DrivebaseConstants.ALIGNMENT_SHIFT_TOLERANCE.in(Meters))) return true;
     else return false;
   }
 
@@ -236,12 +240,12 @@ public class TargetingSystem extends SubsystemBase {
     swerveDrive.getSwerveDrive().field.getObject("target").setPose(getCoralTargetPose());
   }
 
-  public void setInterTargetOnField(SwerveSubsystem swerveDrive) {
+  public void setShiftTargetOnField(SwerveSubsystem swerveDrive) {
     swerveDrive
         .getSwerveDrive()
         .field
         .getObject("target")
-        .setPose(getInterTargetPose(() -> swerveDrive.getPose()));
+        .setPose(getTargetShiftPose(() -> swerveDrive.getPose()));
   }
 
   public void setAlgaeTargetOnField(SwerveSubsystem swerveDrive) {

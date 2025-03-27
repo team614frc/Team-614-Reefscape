@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -93,6 +94,19 @@ public class RobotContainer {
                   .setRumble(RumbleType.kBothRumble, OperatorConstants.RUMBLE_REST);
             });
   }
+
+  private final Command toggleReefOrbit =
+      drivebase
+          .flipFieldAndRobotRelative()
+          .andThen(
+              Commands.either(
+                  drivebase.driveFieldOriented(driveRobotOriented),
+                  drivebase.driveReefOriented(
+                      driveAngularVelocity,
+                      new Translation2d(
+                          AllianceFlipUtil.apply(FieldConstants.Reef.center).getX(),
+                          AllianceFlipUtil.apply(FieldConstants.Reef.center).getY())),
+                  () -> drivebase.isFieldCentric));
 
   private final Command toggleDriveMode =
       drivebase
@@ -244,13 +258,13 @@ public class RobotContainer {
                         .getSwerveDrive()
                         .field
                         .getObject("target")
-                        .setPose(targetingSystem.getInterTargetPose(() -> drivebase.getPose()));
+                        .setPose(targetingSystem.getTargetShiftPose(() -> drivebase.getPose()));
                   })
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
           Commands.defer(
                   () ->
                       drivebase.driveToPose(
-                          targetingSystem.getInterTargetPose(() -> drivebase.getPose())),
+                          targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
                   Set.of(drivebase))
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
           Commands.runOnce(
@@ -275,13 +289,13 @@ public class RobotContainer {
                         .getSwerveDrive()
                         .field
                         .getObject("target")
-                        .setPose(targetingSystem.getInterTargetPose(() -> drivebase.getPose()));
+                        .setPose(targetingSystem.getTargetShiftPose(() -> drivebase.getPose()));
                   })
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
           Commands.defer(
                   () ->
                       drivebase.driveToPose(
-                          targetingSystem.getInterTargetPose(() -> drivebase.getPose())),
+                          targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
                   Set.of(drivebase))
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
           Commands.runOnce(
@@ -342,6 +356,7 @@ public class RobotContainer {
     driverXbox.b().whileTrue(driveReefRight);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
+    driverXbox.y().onTrue(toggleReefOrbit);
     // driverXbox.leftBumper().whileTrue(intake.passthrough());
     // driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
     // driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));

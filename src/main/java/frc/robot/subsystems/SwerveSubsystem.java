@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivebaseConstants;
+import frc.robot.Robot;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -81,9 +82,9 @@ public class SwerveSubsystem extends SubsystemBase {
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
       // angleConversionFactor, driveConversionFactor);
-      if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT)
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal())
         limelightFront = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_FRONT_NAME);
-      if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK)
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK && Robot.isReal())
         limelightBack = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_BACK_NAME);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -271,6 +272,13 @@ public class SwerveSubsystem extends SubsystemBase {
         });
   }
 
+  public Command driveReefOriented(Supplier<ChassisSpeeds> velocity, Translation2d reef) {
+    return run(
+        () -> {
+          swerveDrive.driveFieldOriented(velocity.get(), reef);
+        });
+  }
+
   /**
    * Resets odometry to the given pose. Gyro angle and module positions do not need to be reset when
    * calling this method. However, if either gyro angle or module position is reset, this must be
@@ -398,11 +406,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal()) {
       limelightFront.updateSettings(getOrientation3d());
       updatePosition(limelightFront.getResults(), limelightFront.getVisionEstimate());
     }
-    if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK) {
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK && Robot.isReal()) {
       limelightBack.updateSettings(getOrientation3d());
       updatePosition(limelightBack.getResults(), limelightBack.getVisionEstimate());
     }
@@ -473,6 +481,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Command flipFieldAndRobotRelative() {
     return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
+  }
+
+  public boolean isOrbitingReef = false;
+
+  public Command flipReefOrbit() {
+    return Commands.runOnce(() -> isOrbitingReef = !isOrbitingReef);
   }
 
   /**
