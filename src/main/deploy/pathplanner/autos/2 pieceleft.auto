@@ -17,22 +17,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "2_pieceright#2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Hover"
-                }
-              }
-            ]
+            "pathName": "2_pieceright#2"
           }
         },
         {

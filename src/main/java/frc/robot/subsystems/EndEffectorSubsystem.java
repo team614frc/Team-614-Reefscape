@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Rotations;
-
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -28,6 +26,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     super.periodic();
 
+    SmartDashboard.putNumber("End Effector Current", endEffectorCurrent());
     SmartDashboard.putBoolean("End Effector Has Game Piece", hasGamePiece());
   }
 
@@ -65,13 +64,14 @@ public class EndEffectorSubsystem extends SubsystemBase {
   }
 
   public boolean hasGamePiece() {
-    double velocity = endEffectorMotor.getEncoder().getVelocity();
+    double current = endEffectorMotor.getOutputCurrent();
     double output = endEffectorMotor.get();
 
     return (output > EndEffectorConstants.END_EFFECTOR_MIN_OUTPUT)
-        && (velocity
-            < EndEffectorConstants.END_EFFECTOR_MIN_RPM.in(
-                Rotations)); // velocty ensures the motor is running before detecting a
-    // stall
+        && (current > EndEffectorConstants.MIN_CURRENT);
+  }
+
+  private double endEffectorCurrent() {
+    return endEffectorMotor.getOutputCurrent();
   }
 }
