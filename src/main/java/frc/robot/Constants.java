@@ -110,16 +110,16 @@ public final class Constants {
   }
 
   public static class EndEffectorConstants {
+    public static final int END_EFFECTOR_MOTOR = 25;
     public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(80);
-    public static final double OUTTAKE_SPEED = -0.35;
-    public static final double INTAKE_SPEED = 0.125;
+    public static final double OUTTAKE_SPEED = -0.45;
+    public static final double INTAKE_SPEED = 0.35;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_ALGAE = -0.75;
-    public static final int END_EFFECTOR_MOTOR = 25;
-    public static final double END_EFFECTOR_MIN_OUTPUT = 0.15;
-    public static final Angle END_EFFECTOR_MIN_RPM = Rotations.of(50);
+    public static final double END_EFFECTOR_MIN_OUTPUT = 0.075;
     public static final double STALL_SPEED = 0.1;
+    public static final double MIN_CURRENT = 23.5;
   }
 
   public static final class CanalConstants {
@@ -132,7 +132,7 @@ public final class Constants {
     public static final double CANAL_FAST_SPEED = 0.3;
     public static final int CANAL_REST_SPEED = 0;
     public static final double CANAL_SLOW_SPEED = 0.085;
-    public static final int LASER_MAX_DISTANCE = 180;
+    public static final int LASER_MAX_DISTANCE = 200;
   }
 
   public static final class ElevatorConstants {
@@ -145,10 +145,8 @@ public final class Constants {
     public static final double kG = 0.02;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double ELEVATOR_HOVER_SETPOINT = 4.65; // 6.19
-    public static final double ELEVATOR_AUTO_HOVER_SETPOINT = 4.75;
-    public static final double ELEVATOR_INTAKE_SETPOINT = 3.54;
-    public static final double ELEVATOR_INTAKE_UP_SETPOINT = 5.5;
+    public static final double ELEVATOR_HOVER_SETPOINT = 4.175;
+    public static final double ELEVATOR_INTAKE_SETPOINT = 3.5;
     public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
     public static final double ELEVATOR_L1_SETPOINT = 0;
     public static final double ELEVATOR_L2_SETPOINT = 0.4;
@@ -177,12 +175,10 @@ public final class Constants {
     public static final double kV = 0;
     public static final double kA = 0;
     public static final double ARM_HOVER_SETPOINT = 0.03;
-    public static final double ARM_INTAKE_SETPOINT = 0.03;
-    public static final double ARM_INTAKE_UP_SETPOINT = 0.015;
+    public static final double ARM_INTAKE_SETPOINT = 0.0285;
     public static final double ARM_PUSH_SETPOINT = 0.465;
     public static final double ARM_IDLE_SETPOINT = 0.49;
     public static final double ARM_START_SETPOINT = 0.5;
-    public static final double ARM_L1_SETPOINT = 0;
     public static final double ARM_L2_SETPOINT = 0.465;
     public static final double ARM_L3_SETPOINT = 0.475;
     public static final double ARM_L4_SETPOINT = 0;
@@ -230,7 +226,7 @@ public final class Constants {
   public static final class ClimberConstants {
     public static final int CLIMBER_MOTOR = 27;
     public static final Current CLIMBER_CURRENT_LIMIT = Amp.of(80);
-    public static final double CLIMB_SPEED = 0.5;
+    public static final double CLIMB_SPEED = 0.75;
     public static final double REVERSE_CLIMB_SPEED = -0.5;
     public static final double CLIMB_REST_SPEED = 0;
   }
