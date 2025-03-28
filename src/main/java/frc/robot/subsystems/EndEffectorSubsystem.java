@@ -71,7 +71,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         && (current > EndEffectorConstants.MIN_CURRENT);
   }
 
-  private double endEffectorCurrent() {
+  private double getEndEffectorCurrent() {
     return endEffectorMotor.getOutputCurrent();
   }
 }
