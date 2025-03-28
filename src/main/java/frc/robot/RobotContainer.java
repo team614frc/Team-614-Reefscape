@@ -6,6 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -68,6 +71,20 @@ public class RobotContainer {
           .scaleTranslation(1)
           .allianceRelativeControl(true);
 
+  private final SwerveInputStream driveReefAim =
+      SwerveInputStream.of(
+              drivebase.getSwerveDrive(),
+              () -> -driverXbox.getLeftY(),
+              () -> -driverXbox.getLeftX())
+          .withControllerRotationAxis(() -> -driverXbox.getRightX())
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(1)
+          .aim(new Pose2d(AllianceFlipUtil.apply(FieldConstants.Reef.center), new Rotation2d(0)))
+          .aimWhile(true)
+          .allianceRelativeControl(true);
+
+  private final Command driveFieldOrientedReef = drivebase.driveFieldOriented(driveReefAim);
+
   private final Command driveFieldOrientedAnglularVelocity =
       drivebase.driveFieldOriented(driveAngularVelocity);
 
@@ -110,7 +127,16 @@ public class RobotContainer {
               Commands.either(
                   drivebase.driveFieldOriented(driveRobotOriented),
                   drivebase.driveFieldOriented(driveAngularVelocity),
-                  () -> drivebase.isFieldCentric));
+                  drivebase::isFieldCentric));
+
+  private final Command toggleReefAim =
+      drivebase
+          .flipOrbitingReef()
+          .andThen(
+              Commands.either(
+                  drivebase.driveFieldOriented(driveReefAim),
+                  drivebase.driveFieldOriented(driveAngularVelocity),
+                  drivebase::isOrbitingReef));
 
   private final Command autoOuttakeCoral =
       Commands.either(
@@ -241,6 +267,68 @@ public class RobotContainer {
           Commands.waitUntil(intakePivot::reachedSetpoint),
           intakePivot.pivotIdle());
 
+  private final Command driveReefLeft =
+      Commands.sequence(
+          targetingSystem.autoTargetCommand(drivebase::getPose),
+          targetingSystem.setBranchSide(ReefBranchSide.LEFT),
+          Commands.runOnce(
+                  () -> {
+                    drivebase
+                        .getSwerveDrive()
+                        .field
+                        .getObject("target")
+                        .setPose(targetingSystem.getTargetShiftPose(() -> drivebase.getPose()));
+                  })
+              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
+          Commands.defer(
+                  () ->
+                      drivebase.driveToPose(
+                          targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
+                  Set.of(drivebase))
+              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
+          Commands.runOnce(
+              () -> {
+                drivebase
+                    .getSwerveDrive()
+                    .field
+                    .getObject("target")
+                    .setPose(targetingSystem.getCoralTargetPose());
+              }),
+          Commands.defer(
+              () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+              Set.of(drivebase)));
+
+  private final Command driveReefRight =
+      Commands.sequence(
+          targetingSystem.autoTargetCommand(drivebase::getPose),
+          targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
+          Commands.runOnce(
+                  () -> {
+                    drivebase
+                        .getSwerveDrive()
+                        .field
+                        .getObject("target")
+                        .setPose(targetingSystem.getTargetShiftPose(() -> drivebase.getPose()));
+                  })
+              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
+          Commands.defer(
+                  () ->
+                      drivebase.driveToPose(
+                          targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
+                  Set.of(drivebase))
+              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
+          Commands.runOnce(
+              () -> {
+                drivebase
+                    .getSwerveDrive()
+                    .field
+                    .getObject("target")
+                    .setPose(targetingSystem.getCoralTargetPose());
+              }),
+          Commands.defer(
+              () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+              Set.of(drivebase)));
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -283,54 +371,18 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverXbox
-        .x()
-        .whileTrue(
-            Commands.defer(
-                () ->
-                    targetingSystem
-                        .autoTargetCommand(drivebase::getPose)
-                        .andThen(targetingSystem.setBranchSide(ReefBranchSide.LEFT))
-                        .andThen(
-                            Commands.runOnce(
-                                () -> {
-                                  drivebase
-                                      .getSwerveDrive()
-                                      .field
-                                      .getObject("target")
-                                      .setPose(targetingSystem.getCoralTargetPose());
-                                }))
-                        .andThen(drivebase.driveToPose(targetingSystem.getCoralTargetPose())),
-                Set.of(drivebase)));
-
-    driverXbox
-        .b()
-        .whileTrue(
-            Commands.defer(
-                () ->
-                    targetingSystem
-                        .autoTargetCommand(drivebase::getPose)
-                        .andThen(targetingSystem.setBranchSide(ReefBranchSide.RIGHT))
-                        .andThen(
-                            Commands.runOnce(
-                                () -> {
-                                  drivebase
-                                      .getSwerveDrive()
-                                      .field
-                                      .getObject("target")
-                                      .setPose(targetingSystem.getCoralTargetPose());
-                                }))
-                        .andThen(drivebase.driveToPose(targetingSystem.getCoralTargetPose())),
-                Set.of(drivebase)));
+    driverXbox.x().whileTrue(driveReefLeft);
+    driverXbox.b().whileTrue(driveReefRight);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
-    driverXbox.back().onTrue(toggleDriveMode);
-    driverXbox.leftBumper().whileTrue(intake.passthrough());
-    driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
-    driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
-    driverXbox
-        .leftTrigger()
-        .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
-        .onFalse(Commands.sequence(intakePivot.pivotOuttakeAlgae()));
+    driverXbox.y().onTrue(toggleReefAim);
+    driverXbox.a().whileTrue(drivebase.driveCoral()); // .until(canal::gamePieceDetected);
+    // driverXbox.leftBumper().whileTrue(intake.passthrough());
+    // driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
+    // driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
+    // driverXbox
+    //     .leftTrigger()
+    //     .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
+    //     .onFalse(Commands.sequence(intakePivot.pivotOuttakeAlgae()));
     // Commands.waitUntil(intakePivot::reachedSetpoint),
     // intakePivot.pivotIdle();
     driverXbox

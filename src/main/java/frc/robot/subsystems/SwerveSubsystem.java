@@ -32,6 +32,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivebaseConstants;
+import frc.robot.Constants.DrivebaseConstants.DetectionMode;
+import frc.robot.Robot;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -81,9 +83,9 @@ public class SwerveSubsystem extends SubsystemBase {
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
       // angleConversionFactor, driveConversionFactor);
-      if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT)
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal())
         limelightFront = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_FRONT_NAME);
-      if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK)
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK && Robot.isReal())
         limelightBack = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_BACK_NAME);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -334,6 +336,20 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setMotorIdleMode(brake);
   }
 
+  public Command driveCoral() {
+    return runEnd(
+        () -> {
+          if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal())
+            limelightFront.setPipeline(DetectionMode.CORAL);
+          if (limelightFront.hasTarget())
+          swerveDrive.drive(Constants.DrivebaseConstants.CORAL_DRIVE_SPEED);
+        },
+        () -> {
+          limelightFront.setPipeline(DetectionMode.APRILTAG);
+        }
+        );
+  }
+
   /**
    * Gets the current yaw angle of the robot, as reported by the swerve pose estimator in the
    * underlying drivebase. Note, this is not the raw gyro reading, this may be corrected from calls
@@ -398,20 +414,18 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT) {
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal()) {
       limelightFront.updateSettings(getOrientation3d());
       updatePosition(limelightFront.getResults(), limelightFront.getVisionEstimate());
     }
-    if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK) {
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK && Robot.isReal()) {
       limelightBack.updateSettings(getOrientation3d());
       updatePosition(limelightBack.getResults(), limelightBack.getVisionEstimate());
     }
     swerveDrive.updateOdometry();
-    // SmartDashboard.putNumber("Closest AprilTagID", findReefID());
     SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
-    // SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
     field.setRobotPose(getPose());
     SmartDashboard.putData(field);
   }
@@ -455,24 +469,24 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
-  // public Pose2d getTarget(Direction direction) {
-  //   Pose2d path = new Pose2d();
-  //   Optional<Alliance> ally = DriverStation.getAlliance();
-  //   if (ally.isEmpty() || ally.get() == Alliance.Red) {
-  //     path =
-  // swerveDrive.getPose().nearest(FieldConstants.Reef.BRANCH_POSITIONS_RED.get(direction));
-  //   } else {
-  //     path =
-  //
-  // swerveDrive.getPose().nearest(FieldConstants.Reef.BRANCH_POSITIONS_BLUE.get(direction));
-  //   }
-  //   return path;
-  // }
-
   public boolean isFieldCentric = true;
+
+  public boolean isFieldCentric() {
+    return isFieldCentric;
+  }
 
   public Command flipFieldAndRobotRelative() {
     return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
+  }
+
+  private boolean isOrbitingReef = false;
+
+  public Command flipOrbitingReef() {
+    return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
+  }
+
+  public boolean isOrbitingReef() {
+    return isOrbitingReef;
   }
 
   /**
