@@ -5,7 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -60,6 +61,20 @@ public class RobotContainer {
           .scaleTranslation(1)
           .allianceRelativeControl(true);
 
+  private final SwerveInputStream driveReefAim =
+      SwerveInputStream.of(
+              drivebase.getSwerveDrive(),
+              () -> -driverXbox.getLeftY(),
+              () -> -driverXbox.getLeftX())
+          .withControllerRotationAxis(() -> -driverXbox.getRightX())
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(1)
+          .aim(new Pose2d(AllianceFlipUtil.apply(FieldConstants.Reef.center), new Rotation2d(0)))
+          .aimWhile(true)
+          .allianceRelativeControl(true);
+
+  private final Command driveFieldOrientedReef = drivebase.driveFieldOriented(driveReefAim);
+
   private final Command driveFieldOrientedAnglularVelocity =
       drivebase.driveFieldOriented(driveAngularVelocity);
 
@@ -71,6 +86,8 @@ public class RobotContainer {
           .withControllerRotationAxis(() -> driverXbox.getRawAxis(4))
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(1)
+          .aim(new Pose2d(AllianceFlipUtil.apply(FieldConstants.Reef.center), new Rotation2d(0)))
+          .aimWhile(true)
           .allianceRelativeControl(true);
 
   private final Command driveFieldOrientedAngularVelocitySim =
@@ -95,19 +112,6 @@ public class RobotContainer {
             });
   }
 
-  private final Command toggleReefOrbit =
-      drivebase
-          .flipFieldAndRobotRelative()
-          .andThen(
-              Commands.either(
-                  drivebase.driveFieldOriented(driveRobotOriented),
-                  drivebase.driveReefOriented(
-                      driveAngularVelocity,
-                      new Translation2d(
-                          AllianceFlipUtil.apply(FieldConstants.Reef.center).getX(),
-                          AllianceFlipUtil.apply(FieldConstants.Reef.center).getY())),
-                  () -> drivebase.isFieldCentric));
-
   private final Command toggleDriveMode =
       drivebase
           .flipFieldAndRobotRelative()
@@ -115,7 +119,16 @@ public class RobotContainer {
               Commands.either(
                   drivebase.driveFieldOriented(driveRobotOriented),
                   drivebase.driveFieldOriented(driveAngularVelocity),
-                  () -> drivebase.isFieldCentric));
+                  drivebase::isFieldCentric));
+
+  private final Command toggleReefAim =
+      drivebase
+          .flipOrbitingReef()
+          .andThen(
+              Commands.either(
+                  drivebase.driveFieldOriented(driveReefAim),
+                  drivebase.driveFieldOriented(driveAngularVelocity),
+                  drivebase::isOrbitingReef));
 
   //   private final Command autoOuttakeCoral =
   //       Commands.either(
@@ -355,8 +368,8 @@ public class RobotContainer {
     driverXbox.x().whileTrue(driveReefLeft);
     driverXbox.b().whileTrue(driveReefRight);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
-    driverXbox.back().onTrue(toggleDriveMode);
-    driverXbox.y().onTrue(toggleReefOrbit);
+    driverXbox.y().onTrue(toggleReefAim);
+    // driverXbox.y().onTrue(drivebase.toggleReefOrbit);
     // driverXbox.leftBumper().whileTrue(intake.passthrough());
     // driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
     // driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));

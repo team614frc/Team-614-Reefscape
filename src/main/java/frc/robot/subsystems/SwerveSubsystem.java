@@ -272,13 +272,6 @@ public class SwerveSubsystem extends SubsystemBase {
         });
   }
 
-  public Command driveReefOriented(Supplier<ChassisSpeeds> velocity, Translation2d reef) {
-    return run(
-        () -> {
-          swerveDrive.driveFieldOriented(velocity.get(), reef);
-        });
-  }
-
   /**
    * Resets odometry to the given pose. Gyro angle and module positions do not need to be reset when
    * calling this method. However, if either gyro angle or module position is reset, this must be
@@ -415,11 +408,9 @@ public class SwerveSubsystem extends SubsystemBase {
       updatePosition(limelightBack.getResults(), limelightBack.getVisionEstimate());
     }
     swerveDrive.updateOdometry();
-    // SmartDashboard.putNumber("Closest AprilTagID", findReefID());
     SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
     SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
-    // SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
     field.setRobotPose(getPose());
     SmartDashboard.putData(field);
   }
@@ -463,30 +454,24 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
-  // public Pose2d getTarget(Direction direction) {
-  //   Pose2d path = new Pose2d();
-  //   Optional<Alliance> ally = DriverStation.getAlliance();
-  //   if (ally.isEmpty() || ally.get() == Alliance.Red) {
-  //     path =
-  // swerveDrive.getPose().nearest(FieldConstants.Reef.BRANCH_POSITIONS_RED.get(direction));
-  //   } else {
-  //     path =
-  //
-  // swerveDrive.getPose().nearest(FieldConstants.Reef.BRANCH_POSITIONS_BLUE.get(direction));
-  //   }
-  //   return path;
-  // }
-
   public boolean isFieldCentric = true;
+
+  public boolean isFieldCentric() {
+    return isFieldCentric;
+  }
 
   public Command flipFieldAndRobotRelative() {
     return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
   }
 
-  public boolean isOrbitingReef = false;
+  private boolean isOrbitingReef = false;
 
-  public Command flipReefOrbit() {
-    return Commands.runOnce(() -> isOrbitingReef = !isOrbitingReef);
+  public Command flipOrbitingReef() {
+    return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
+  }
+
+  public boolean isOrbitingReef() {
+    return isOrbitingReef;
   }
 
   /**
