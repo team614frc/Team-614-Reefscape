@@ -103,4 +103,10 @@ public class CanalSubsystem extends SubsystemBase {
         && distance.distance_mm < CanalConstants.LASER_MAX_DISTANCE
         && distance.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
   }
+
+  public boolean gamePieceGone() {
+    return (distance != null
+        && distance.distance_mm > CanalConstants.LASER_MAX_DISTANCE
+        && distance.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT);
+  }
 }

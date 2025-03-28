@@ -42,19 +42,13 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   public enum Setpoint {
     kArmIdle,
     kElevatorIdle,
-    kArmHover,
+    kElevatorIntake,
     kElevatorHover,
-    kHover,
-    kIntake,
-    kIdleSetpoint,
-    kL1,
-    kL2,
+    kArmIntake,
     kArmL2,
     kElevatorL2,
     kArmL3,
     kElevatorL3,
-    kL3,
-    kL4,
     kPushArm,
     kScoreL3Arm,
     kScoreL2Arm,
@@ -62,10 +56,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kOuttakeElevatorAlgae,
     kOuttakeArmAlgaeL2,
     kOuttakeArmAlgaeL3,
-    kPuke,
-    kElevatorIntakeUp,
-    kArmIntakeUp,
-    kAutoElevatorHover;
+    kPuke;
   }
 
   // Elevator Motor
@@ -197,7 +188,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   }
 
   public Command setElevatorResetSpeed() {
-    return Commands.runEnd(
+    return this.runEnd(
         () -> {
           elevatorMotor.set(ElevatorConstants.ELEVATOR_SLOW_DOWN_SPEED);
         },
@@ -278,29 +269,14 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             case kElevatorIdle:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_IDLE_SETPOINT;
               break;
-            case kArmHover:
-              armSetpoint = ArmConstants.ARM_HOVER_SETPOINT;
+            case kElevatorIntake:
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
+              break;
+            case kArmIntake:
+              armSetpoint = ArmConstants.ARM_INTAKE_SETPOINT;
               break;
             case kElevatorHover:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
-            case kHover:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_HOVER_SETPOINT;
-              armSetpoint = ArmConstants.ARM_HOVER_SETPOINT;
-              break;
-            case kIntake:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_INTAKE_SETPOINT;
-              break;
-            case kIdleSetpoint:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_SETPOINT;
-              armSetpoint = ArmConstants.ARM_IDLE_SETPOINT;
-              break;
-            case kL1:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_L1_SETPOINT;
-              armSetpoint = ArmConstants.ARM_L1_SETPOINT;
-              break;
-            case kL2:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_SETPOINT;
-              armSetpoint = ArmConstants.ARM_L2_SETPOINT;
               break;
             case kElevatorL2:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_SETPOINT;
@@ -308,19 +284,11 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             case kArmL2:
               armSetpoint = ArmConstants.ARM_L2_SETPOINT;
               break;
-            case kL3:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
-              armSetpoint = ArmConstants.ARM_L3_SETPOINT;
-              break;
             case kElevatorL3:
               elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
               break;
             case kArmL3:
               armSetpoint = ArmConstants.ARM_L3_SETPOINT;
-              break;
-            case kL4:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_L4_SETPOINT;
-              armSetpoint = ArmConstants.ARM_L4_SETPOINT;
               break;
             case kPushArm:
               armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
@@ -346,13 +314,6 @@ public class ElevatorArmSubsystem extends SubsystemBase {
             case kPuke:
               armSetpoint = ArmConstants.ARM_PUKE_SETPOINT;
               break;
-            case kElevatorIntakeUp:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_INTAKE_UP_SETPOINT;
-              break;
-            case kArmIntakeUp:
-              armSetpoint = ArmConstants.ARM_INTAKE_UP_SETPOINT;
-            case kAutoElevatorHover:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_AUTO_HOVER_SETPOINT;
           }
         });
   }
