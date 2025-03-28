@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -329,6 +328,10 @@ public class RobotContainer {
               () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
               Set.of(drivebase)));
 
+  private Command driveCoral =
+      Commands.parallel(drivebase.driveCoral(), autoIntakeDownAndIntake)
+          .until(canal::gamePieceDetected);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -375,7 +378,7 @@ public class RobotContainer {
     driverXbox.b().whileTrue(driveReefRight);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.y().onTrue(toggleReefAim);
-    driverXbox.a().whileTrue(drivebase.driveCoral()); // .until(canal::gamePieceDetected);
+    driverXbox.a().whileTrue(driveCoral);
     // driverXbox.leftBumper().whileTrue(intake.passthrough());
     // driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
     // driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
