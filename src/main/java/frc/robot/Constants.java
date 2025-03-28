@@ -218,6 +218,7 @@ public final class Constants {
     public static final Color TELEOP_COLOR = Color.kOrange;
     public static final Color ENDGAME_COLOR = Color.kOrange;
     public static final Color ALIGNMENT_COLOR = Color.kOrange;
+    public static final Color READY_COLOR = Color.kLightGreen;
     public static final Distance SPACING = Meters.of(1 / 120.0);
     public static final LinearVelocity SCROLL_SPEED = MetersPerSecond.of(1);
     public static final Time BREATHE_TIME = Seconds.of(2);

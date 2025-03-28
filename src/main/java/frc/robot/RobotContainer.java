@@ -120,7 +120,8 @@ public class RobotContainer {
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmIdle),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
-              endEffector.stop()),
+              endEffector.stop(),
+              led.setBasicPattern()),
           Commands.sequence(
               elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
@@ -129,7 +130,8 @@ public class RobotContainer {
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kArmIdle),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
-              endEffector.stop()),
+              endEffector.stop(),
+              led.setBasicPattern()),
           () -> elevatorArm.checkL3());
 
   private final Command prepCanal =
@@ -145,6 +147,7 @@ public class RobotContainer {
   private final Command canalIntake =
       Commands.either(
           Commands.sequence(
+              led.canalPattern(),
               canal.intake(),
               endEffector.intake(),
               elevatorArm.setSetpoint(Setpoint.kArmIntake),
@@ -157,8 +160,10 @@ public class RobotContainer {
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
                   canal.stop(),
                   elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                  endEffector.stop())),
+                  endEffector.stop(),
+                  led.hasGamePiece())),
           Commands.sequence(
+              led.canalPattern(),
               endEffector.intake(),
               elevatorArm.setSetpoint(Setpoint.kPushArm),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
@@ -174,7 +179,8 @@ public class RobotContainer {
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
                   canal.stop(),
                   elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                  endEffector.stop())),
+                  endEffector.stop(),
+                  led.hasGamePiece())),
           () -> elevatorArm.isBelowHorizontal());
 
   private final Command autoL1 =
@@ -302,7 +308,7 @@ public class RobotContainer {
         .povUp()
         .whileTrue(
             Commands.either(
-                Commands.parallel(
+                Commands.sequence(
                     elevatorArm.setSetpoint(Setpoint.kElevatorHover),
                     elevatorArm.setSetpoint(Setpoint.kPuke),
                     canal.fast(),
