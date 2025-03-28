@@ -326,7 +326,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    canal.setDefaultCommand(canal.intake());
+    // canal.setDefaultCommand(canal.intake());
 
     NamedCommands.registerCommand("L1", autoL1);
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
