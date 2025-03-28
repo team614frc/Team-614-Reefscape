@@ -378,11 +378,11 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.outtakeGamepiece()));
     driverXbox
-        .x()
+        .a()
         .whileTrue(Commands.parallel(intakePivot.pivotIntakeAlgae(), intake.intakeAlgae()))
         .onFalse(intakePivot.pivotOuttakeAlgae());
     driverXbox
-        .b()
+        .y()
         .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.outtakeAlgae()))
         .onFalse(intakePivot.pivotOuttakeAlgae());
     driverXbox.rightBumper().onTrue(outtakeCoral);
