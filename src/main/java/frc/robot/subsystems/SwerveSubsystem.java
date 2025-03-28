@@ -337,13 +337,17 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Command driveCoral() {
-    return run(
+    return runEnd(
         () -> {
           if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal())
             limelightFront.setPipeline(DetectionMode.CORAL);
           if (limelightFront.hasTarget())
           swerveDrive.drive(Constants.DrivebaseConstants.CORAL_DRIVE_SPEED);
-        });
+        },
+        () -> {
+          limelightFront.setPipeline(DetectionMode.APRILTAG);
+        }
+        );
   }
 
   /**

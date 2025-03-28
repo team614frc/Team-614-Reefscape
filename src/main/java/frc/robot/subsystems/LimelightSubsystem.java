@@ -20,7 +20,7 @@ public class LimelightSubsystem extends SubsystemBase {
     limelight = new Limelight(name);
     limelight
         .getSettings()
-        .withPipelineIndex(0)
+        .withPipelineIndex(DetectionMode.APRILTAG.ordinal())
         .withLimelightLEDMode(LEDMode.PipelineControl)
         .withCameraOffset(Constants.CAMERA_OFFSET)
         .withArilTagIdFilter(
