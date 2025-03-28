@@ -302,7 +302,7 @@ public class RobotContainer {
         .povUp()
         .whileTrue(
             Commands.either(
-                Commands.parallel(
+                Commands.sequence(
                     elevatorArm.setSetpoint(Setpoint.kElevatorHover),
                     elevatorArm.setSetpoint(Setpoint.kPuke),
                     canal.fast(),
