@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivebaseConstants;
+import frc.robot.Constants.DrivebaseConstants.DetectionMode;
 import frc.robot.Robot;
 import java.io.File;
 import java.util.Optional;
@@ -333,6 +334,16 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void setMotorBrake(boolean brake) {
     swerveDrive.setMotorIdleMode(brake);
+  }
+
+  public Command driveCoral() {
+    return run(
+        () -> {
+          if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal())
+            limelightFront.setPipeline(DetectionMode.CORAL);
+          if (limelightFront.hasTarget())
+          swerveDrive.drive(Constants.DrivebaseConstants.CORAL_DRIVE_SPEED);
+        });
   }
 
   /**

@@ -86,8 +86,6 @@ public class RobotContainer {
           .withControllerRotationAxis(() -> driverXbox.getRawAxis(4))
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(1)
-          .aim(new Pose2d(AllianceFlipUtil.apply(FieldConstants.Reef.center), new Rotation2d(0)))
-          .aimWhile(true)
           .allianceRelativeControl(true);
 
   private final Command driveFieldOrientedAngularVelocitySim =
@@ -369,6 +367,7 @@ public class RobotContainer {
     driverXbox.b().whileTrue(driveReefRight);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.y().onTrue(toggleReefAim);
+    driverXbox.a().whileTrue(drivebase.driveCoral()); // .until(canal::gamePieceDetected);
     // driverXbox.y().onTrue(drivebase.toggleReefOrbit);
     // driverXbox.leftBumper().whileTrue(intake.passthrough());
     // driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));

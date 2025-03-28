@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
@@ -62,6 +63,12 @@ public final class Constants {
         DegreesPerSecondPerSecond.of(45);
     public static final Distance ALIGNMENT_TOLERANCE = Meters.of(.25);
     public static final Distance ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.6);
+    public static final ChassisSpeeds CORAL_DRIVE_SPEED = new ChassisSpeeds(-1, 0, 0);
+
+    public static enum DetectionMode {
+      APRILTAG,
+      CORAL
+    }
   }
 
   public static final class IntakeConstants {
