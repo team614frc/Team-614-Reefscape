@@ -75,14 +75,14 @@ public final class Configs {
     }
   }
 
-   public static final class ClimberConfig {
-     public static final SparkFlexConfig CLIMBER_CONFIG = new SparkFlexConfig();
+  public static final class ClimberConfig {
+    public static final SparkFlexConfig CLIMBER_CONFIG = new SparkFlexConfig();
 
-     static {
-       CLIMBER_CONFIG
-         .idleMode(IdleMode.kBrake)
-         .inverted(true)
-         .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
-     }
-   }
+    static {
+      CLIMBER_CONFIG
+          .idleMode(IdleMode.kBrake)
+          .inverted(true)
+          .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_CURRENT_LIMIT.in(Amp));
+    }
+  }
 }
