@@ -101,7 +101,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
     return this.runOnce(
         () -> {
           leftPivotSetpoint = IntakeConstants.PIVOT_DOWN;
-          rightPivotSetpoint = .339;
+          rightPivotSetpoint = IntakeConstants.RIGHT_PIVOT_DOWN;
         });
   }
 
