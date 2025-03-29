@@ -62,7 +62,7 @@ public final class Constants {
     public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
         DegreesPerSecondPerSecond.of(45);
     public static final Distance ALIGNMENT_TOLERANCE = Meters.of(.25);
-    public static final Distance ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.8);
+    public static final Distance ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.6);
     public static final ChassisSpeeds CORAL_DRIVE_SPEED = new ChassisSpeeds(-1, 0, 0);
 
     public static enum DetectionMode {
