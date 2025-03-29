@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -24,7 +26,10 @@ import frc.robot.subsystems.IntakePivotSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.TargetingSystem;
+import frc.robot.subsystems.TargetingSystem.ReefBranchSide;
 import java.io.File;
+import java.util.Set;
 import swervelib.SwerveInputStream;
 
 /**
@@ -41,7 +46,7 @@ public class RobotContainer {
   //   private final ClimberSubsystem climber = new ClimberSubsystem();
   private final CanalSubsystem canal = new CanalSubsystem();
   private final LEDSubsystem led = new LEDSubsystem();
-
+  private final TargetingSystem targetingSystem = new TargetingSystem();
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -63,6 +68,20 @@ public class RobotContainer {
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(1)
           .allianceRelativeControl(true);
+
+  private final SwerveInputStream driveReefAim =
+      SwerveInputStream.of(
+              drivebase.getSwerveDrive(),
+              () -> -driverXbox.getLeftY(),
+              () -> -driverXbox.getLeftX())
+          .withControllerRotationAxis(() -> -driverXbox.getRightX())
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(1)
+          .aim(new Pose2d(AllianceFlipUtil.apply(FieldConstants.Reef.CENTER), new Rotation2d(0)))
+          .aimWhile(true)
+          .allianceRelativeControl(true);
+
+  private final Command driveFieldOrientedReef = drivebase.driveFieldOriented(driveReefAim);
 
   private final Command driveFieldOrientedAnglularVelocity =
       drivebase.driveFieldOriented(driveAngularVelocity);
@@ -106,7 +125,16 @@ public class RobotContainer {
               Commands.either(
                   drivebase.driveFieldOriented(driveRobotOriented),
                   drivebase.driveFieldOriented(driveAngularVelocity),
-                  () -> drivebase.isFieldCentric));
+                  drivebase::isFieldCentric));
+
+  private final Command toggleReefAim =
+      drivebase
+          .flipOrbitingReef()
+          .andThen(
+              Commands.either(
+                  drivebase.driveFieldOriented(driveReefAim),
+                  drivebase.driveFieldOriented(driveAngularVelocity),
+                  drivebase::isOrbitingReef));
 
   private final Command outtakeCoral =
       Commands.either(
@@ -211,8 +239,6 @@ public class RobotContainer {
 
   private final Command elevatorArmIdle =
       Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
           elevatorArm.setSetpoint(Setpoint.kArmIdle),
           Commands.waitUntil(elevatorArm::reachedSetpoint),
           endEffector.stop(),
@@ -227,11 +253,71 @@ public class RobotContainer {
           Commands.waitUntil(intakePivot::reachedSetpoint),
           intakePivot.pivotIdle());
 
-  //   private final Command driveLeftReef =
-  //       Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.LEFT));
+  private final Command driveReefLeft =
+      Commands.sequence(
+          targetingSystem.autoTargetCommand(drivebase::getPose),
+          targetingSystem.setBranchSide(ReefBranchSide.LEFT),
+          Commands.runOnce(
+                  () -> {
+                    drivebase
+                        .getSwerveDrive()
+                        .field
+                        .getObject("target")
+                        .setPose(targetingSystem.getTargetShiftPose(() -> drivebase.getPose()));
+                  })
+              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
+          Commands.defer(
+                  () ->
+                      drivebase.driveToPose(
+                          targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
+                  Set.of(drivebase))
+              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
+          Commands.runOnce(
+              () -> {
+                drivebase
+                    .getSwerveDrive()
+                    .field
+                    .getObject("target")
+                    .setPose(targetingSystem.getCoralTargetPose());
+              }),
+          Commands.defer(
+              () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+              Set.of(drivebase)));
 
-  //   private final Command driveRightReef =
-  //       Commands.deferredProxy(() -> drivebase.driveReef(FieldConstants.Direction.RIGHT));
+  private final Command driveReefRight =
+      Commands.sequence(
+          targetingSystem.autoTargetCommand(drivebase::getPose),
+          targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
+          Commands.runOnce(
+                  () -> {
+                    drivebase
+                        .getSwerveDrive()
+                        .field
+                        .getObject("target")
+                        .setPose(targetingSystem.getTargetShiftPose(() -> drivebase.getPose()));
+                  })
+              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
+          Commands.defer(
+                  () ->
+                      drivebase.driveToPose(
+                          targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
+                  Set.of(drivebase))
+              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
+          Commands.runOnce(
+              () -> {
+                drivebase
+                    .getSwerveDrive()
+                    .field
+                    .getObject("target")
+                    .setPose(targetingSystem.getCoralTargetPose());
+              }),
+          Commands.defer(
+              () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+              Set.of(drivebase)));
+
+  private Command driveCoral =
+      Commands.parallel(drivebase.driveCoral(), autoIntakeDownAndIntake)
+          .until(canal::gamePieceDetected);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -243,6 +329,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("L1", autoL1);
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
     NamedCommands.registerCommand("L2", autoL2);
+    NamedCommands.registerCommand("L3", autoL3);
+    NamedCommands.registerCommand("driveReefLeft", driveReefLeft);
+    NamedCommands.registerCommand("driveReeRight", driveReefRight);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("Canal Intake", canalIntake);
     NamedCommands.registerCommand("Score Coral", outtakeCoral);
@@ -275,8 +364,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // driverXbox.x().whileTrue(driveLeftReef);
-    // driverXbox.b().whileTrue(driveRightReef);
+    driverXbox.x().whileTrue(driveReefLeft);
+    driverXbox.b().whileTrue(driveReefRight);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
     driverXbox.back().onTrue(toggleDriveMode);
     driverXbox.leftBumper().whileTrue(intake.passthrough());
