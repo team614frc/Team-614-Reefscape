@@ -239,8 +239,6 @@ public class RobotContainer {
 
   private final Command elevatorArmIdle =
       Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
           elevatorArm.setSetpoint(Setpoint.kArmIdle),
           Commands.waitUntil(elevatorArm::reachedSetpoint),
           endEffector.stop(),

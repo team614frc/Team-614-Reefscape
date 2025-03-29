@@ -55,14 +55,14 @@ public final class Constants {
     public static final Boolean USE_LIMELIGHT_BACK = false;
     public static final String LIMELIGHT_FRONT_NAME = "limelight-front";
     public static final String LIMELIGHT_BACK_NAME = "limelight-back";
-    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(1);
+    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(1.3);
     public static final LinearAcceleration MAX_ALIGNMENT_ACCELERATION =
         MetersPerSecondPerSecond.of(1);
     public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
     public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
         DegreesPerSecondPerSecond.of(45);
     public static final Distance ALIGNMENT_TOLERANCE = Meters.of(.25);
-    public static final Distance ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.6);
+    public static final Distance ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.8);
     public static final ChassisSpeeds CORAL_DRIVE_SPEED = new ChassisSpeeds(-1, 0, 0);
 
     public static enum DetectionMode {
@@ -182,8 +182,8 @@ public final class Constants {
     public static final double ARM_L2_SETPOINT = 0.465;
     public static final double ARM_L3_SETPOINT = 0.475;
     public static final double ARM_L4_SETPOINT = 0;
-    public static final double ARM_L3_SCORE_SETPOINT = 0.390;
-    public static final double ARM_L2_SCORE_SETPOINT = 0.376;
+    public static final double ARM_L3_SCORE_SETPOINT = 0.385;
+    public static final double ARM_L2_SCORE_SETPOINT = 0.371;
     public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
     public static final double ARM_PUKE_SETPOINT = 0.175;
     public static final int ARM_ZERO_ENCODER = 0;
