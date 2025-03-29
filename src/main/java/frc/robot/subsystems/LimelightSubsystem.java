@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivebaseConstants.DetectionMode;
-import java.util.List;
 import java.util.Optional;
 import limelight.Limelight;
 import limelight.networktables.*;
@@ -23,8 +22,7 @@ public class LimelightSubsystem extends SubsystemBase {
         .withPipelineIndex(DetectionMode.APRILTAG.ordinal())
         .withLimelightLEDMode(LEDMode.PipelineControl)
         .withCameraOffset(Constants.CAMERA_OFFSET)
-        .withArilTagIdFilter(
-            List.of(17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0))
+        .withArilTagIdFilter(Constants.DrivebaseConstants.APRIL_TAGS)
         .save();
 
     poseEstimator = limelight.getPoseEstimator(true);

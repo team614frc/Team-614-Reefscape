@@ -21,6 +21,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.util.Color;
+import java.util.List;
 import swervelib.math.Matter;
 
 /**
@@ -64,6 +65,8 @@ public final class Constants {
     public static final Distance ALIGNMENT_TOLERANCE = Meters.of(.25);
     public static final Distance ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.8);
     public static final ChassisSpeeds CORAL_DRIVE_SPEED = new ChassisSpeeds(-1, 0, 0);
+    public static final List<Double> APRIL_TAGS =
+        List.of(17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0);
 
     public static enum DetectionMode {
       APRILTAG,

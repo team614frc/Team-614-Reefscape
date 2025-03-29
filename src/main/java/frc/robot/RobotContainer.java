@@ -77,7 +77,7 @@ public class RobotContainer {
           .withControllerRotationAxis(() -> -driverXbox.getRightX())
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(1)
-          .aim(new Pose2d(AllianceFlipUtil.apply(FieldConstants.Reef.center), new Rotation2d(0)))
+          .aim(new Pose2d(AllianceFlipUtil.apply(FieldConstants.Reef.CENTER), new Rotation2d(0)))
           .aimWhile(true)
           .allianceRelativeControl(true);
 
@@ -329,6 +329,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("L1", autoL1);
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
     NamedCommands.registerCommand("L2", autoL2);
+    NamedCommands.registerCommand("L3", autoL3);
+    NamedCommands.registerCommand("driveReefLeft", driveReefLeft);
+    NamedCommands.registerCommand("driveReeRight", driveReefRight);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("Canal Intake", canalIntake);
     NamedCommands.registerCommand("Score Coral", outtakeCoral);

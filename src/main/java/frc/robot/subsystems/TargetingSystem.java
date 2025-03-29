@@ -32,7 +32,7 @@ public class TargetingSystem extends SubsystemBase {
   private ReefBranch targetBranch;
   private ReefBranchLevel targetBranchLevel;
   private ReefBranchSide targetReefBranchSide = ReefBranchSide.CLOSEST;
-
+  private Pose2d returnPose = new Pose2d();
   private List<Pose2d> reefBranches = null;
   private List<Pose2d> allianceRelativeReefBranches = null;
   private Map<Pose2d, ReefBranch> reefPoseToBranchMap = null;
@@ -41,9 +41,9 @@ public class TargetingSystem extends SubsystemBase {
     reefBranches = new ArrayList<>();
     reefPoseToBranchMap = new HashMap<>();
     for (int branchPositionIndex = 0;
-        branchPositionIndex < Reef.branchPositions.size();
+        branchPositionIndex < Reef.BRANCH_POSITIONS.size();
         branchPositionIndex++) {
-      Map<ReefHeight, Pose3d> branchPosition = Reef.branchPositions.get(branchPositionIndex);
+      Map<ReefHeight, Pose3d> branchPosition = Reef.BRANCH_POSITIONS.get(branchPositionIndex);
       Pose2d targetPose = branchPosition.get(ReefHeight.L4).toPose2d();
       reefBranches.add(targetPose);
       reefPoseToBranchMap.put(targetPose, ReefBranch.values()[branchPositionIndex]);
@@ -150,7 +150,7 @@ public class TargetingSystem extends SubsystemBase {
     if (targetBranch != null) {
       Pose2d startingPose =
           AllianceFlipUtil.apply(
-              Reef.branchPositions.get(getTargetBranchOrdinal()).get(ReefHeight.L2).toPose2d());
+              Reef.BRANCH_POSITIONS.get(getTargetBranchOrdinal()).get(ReefHeight.L2).toPose2d());
       SmartDashboard.putString(
           "Targetted Coral Pose without Offset (Meters)", startingPose.toString());
       if (targetReefBranchSide == ReefBranchSide.LEFT)
@@ -186,7 +186,7 @@ public class TargetingSystem extends SubsystemBase {
     if (targetBranch != null) {
       Pose2d startingPose =
           AllianceFlipUtil.apply(
-              Reef.branchPositions
+              Reef.BRANCH_POSITIONS
                   .get(rightBranchOrdinal(targetBranch))
                   .get(ReefHeight.L2)
                   .toPose2d());
