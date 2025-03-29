@@ -154,16 +154,19 @@ public class RobotContainer {
               Commands.waitUntil(elevatorArm::reachedSetpoint),
               elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
               canal.intake(),
+              endEffector.intake(),
+              elevatorArm.setSetpoint(Setpoint.kArmIntake),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
+              canal.intake(),
               Commands.waitUntil(canal::gamePieceDetected),
               Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
               Commands.parallel(
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
                   canal.stop(),
                   elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                  endEffector.stop(),
-                  led.hasGamePiece())),
+                  endEffector.stop())),
           Commands.sequence(
-              led.canalPattern(),
               endEffector.intake(),
               elevatorArm.setSetpoint(Setpoint.kPushArm),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
@@ -179,8 +182,7 @@ public class RobotContainer {
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
                   canal.stop(),
                   elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                  endEffector.stop(),
-                  led.hasGamePiece())),
+                  endEffector.stop())),
           () -> elevatorArm.isBelowHorizontal());
 
   private final Command autoL1 =
@@ -296,11 +298,11 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.outtakeGamepiece()));
     driverXbox
-        .x()
+        .a()
         .whileTrue(Commands.parallel(intakePivot.pivotIntakeAlgae(), intake.intakeAlgae()))
         .onFalse(intakePivot.pivotOuttakeAlgae());
     driverXbox
-        .b()
+        .y()
         .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.outtakeAlgae()))
         .onFalse(intakePivot.pivotOuttakeAlgae());
     driverXbox.rightBumper().onTrue(outtakeCoral);

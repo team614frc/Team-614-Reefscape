@@ -26,7 +26,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     super.periodic();
 
-    SmartDashboard.putNumber("End Effector Current", endEffectorCurrent());
+    SmartDashboard.putNumber("End Effector Current", getEndEffectorCurrent());
     SmartDashboard.putBoolean("End Effector Has Game Piece", hasGamePiece());
   }
 
@@ -71,7 +71,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         && (current > EndEffectorConstants.MIN_CURRENT);
   }
 
-  private double endEffectorCurrent() {
+  private double getEndEffectorCurrent() {
     return endEffectorMotor.getOutputCurrent();
   }
 }
