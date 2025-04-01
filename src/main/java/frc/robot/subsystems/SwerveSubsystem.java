@@ -21,6 +21,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -84,6 +85,10 @@ public class SwerveSubsystem extends SubsystemBase {
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
       // angleConversionFactor, driveConversionFactor);
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal())
+        limelightFront = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_FRONT_NAME);
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK && Robot.isReal())
+        limelightBack = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_BACK_NAME);
       if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal())
         limelightFront = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_FRONT_NAME);
       if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK && Robot.isReal())
