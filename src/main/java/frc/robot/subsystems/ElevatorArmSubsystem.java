@@ -303,7 +303,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               elevatorSetpoint = ElevatorConstants.ELEVATOR_OUTTAKE_SETPOINT;
               break;
             case kOuttakeElevatorAlgae:
-              elevatorSetpoint = ElevatorConstants.ELEVATOR_L3_SETPOINT;
+              elevatorSetpoint = ElevatorConstants.ELEVATOR_L2_ALGAE_SETPOINT;
               break;
             case kOuttakeArmAlgaeL2:
               armSetpoint = ArmConstants.ARM_FEEDFORWARD_OFFSET;

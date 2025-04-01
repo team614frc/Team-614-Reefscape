@@ -122,7 +122,7 @@ public final class Constants {
     public static final double OUTTAKE_ALGAE = -0.75;
     public static final double END_EFFECTOR_MIN_OUTPUT = 0.075;
     public static final double STALL_SPEED = 0.1;
-    public static final double MIN_CURRENT = 23.5;
+    public static final double MIN_CURRENT = 22.75;
   }
 
   public static final class CanalConstants {
@@ -153,11 +153,12 @@ public final class Constants {
     public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
     public static final double ELEVATOR_L1_SETPOINT = 0;
     public static final double ELEVATOR_L2_SETPOINT = 0.4;
+    public static final double ELEVATOR_L2_ALGAE_SETPOINT = 5.35;
     public static final double ELEVATOR_L3_SETPOINT = 6.19;
     public static final double ELEVATOR_L4_SETPOINT = 0;
     public static final double ELEVATOR_OUTTAKE_SETPOINT = 1.75;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
-    public static final double ELEVATOR_MAX_VELOCITY = 20;
+    public static final double ELEVATOR_MAX_VELOCITY = 23;
     public static final double ELEVATOR_MAX_ACCELERATION = 50;
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
     public static final Angle ELEVATOR_SIM_STARTING_ANGLE = Degrees.of(180);
@@ -191,7 +192,7 @@ public final class Constants {
     public static final double ARM_PUKE_SETPOINT = 0.175;
     public static final int ARM_ZERO_ENCODER = 0;
     public static final double ARM_MAX_VELOCITY = 4;
-    public static final double ARM_MAX_ACCELERATION = 1;
+    public static final double ARM_MAX_ACCELERATION = 1.25;
     public static final double ARM_MIN_RANGE = -1;
     public static final double ARM_MAX_RANGE = 1;
     public static final double ARM_LOOP_ERROR = 0.25;

@@ -331,7 +331,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("driveReefLeft", driveReefLeft);
-    NamedCommands.registerCommand("driveReeRight", driveReefRight);
+    NamedCommands.registerCommand("driveReefRight", driveReefRight);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("Canal Intake", canalIntake);
     NamedCommands.registerCommand("Score Coral", outtakeCoral);
@@ -429,7 +429,7 @@ public class RobotContainer {
         .y()
         .onTrue(
             Commands.sequence(
-                elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+                elevatorArm.setSetpoint(Setpoint.kElevatorL3),
                 Commands.waitUntil(elevatorArm::reachedSetpoint),
                 endEffector.punchAlgae(),
                 elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));
