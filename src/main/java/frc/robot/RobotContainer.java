@@ -257,24 +257,24 @@ public class RobotContainer {
       Commands.sequence(
           targetingSystem.autoTargetCommand(drivebase::getPose),
           targetingSystem.setBranchSide(ReefBranchSide.LEFT),
-          Commands.sequence(
-                  targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
-                  Commands.either(
-                      drivebase.shiftLeft(),
-                      Commands.sequence(
-                          Commands.runOnce(
-                              () -> {
-                                drivebase
-                                    .getSwerveDrive()
-                                    .field
-                                    .getObject("target")
-                                    .setPose(targetingSystem.getTargetShiftPose());
-                              }),
-                          Commands.defer(
-                              () -> drivebase.driveToPose(targetingSystem.getTargetShiftPose()),
-                              Set.of(drivebase))),
-                      () -> targetingSystem.nearTarget(drivebase::getPose)))
-              .onlyIf(() -> targetingSystem.nearTarget(drivebase::getPose)),
+        //   Commands.sequence(
+        //           targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
+        //           Commands.either(
+        //               drivebase.shiftLeft(),
+        //               Commands.sequence(
+        //                   Commands.runOnce(
+        //                       () -> {
+        //                         drivebase
+        //                             .getSwerveDrive()
+        //                             .field
+        //                             .getObject("target")
+        //                             .setPose(targetingSystem.getTargetShiftPose());
+        //                       }),
+        //                   Commands.defer(
+        //                       () -> drivebase.driveToPose(targetingSystem.getTargetShiftPose()),
+        //                       Set.of(drivebase))),
+        //               () -> targetingSystem.nearTarget(drivebase::getPose)))
+        //       .onlyIf(() -> targetingSystem.nearTarget(drivebase::getPose)),
           Commands.runOnce(
               () -> {
                 drivebase
@@ -291,24 +291,24 @@ public class RobotContainer {
       Commands.sequence(
           targetingSystem.autoTargetCommand(drivebase::getPose),
           targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
-          Commands.sequence(
-                  targetingSystem.setBranchSide(ReefBranchSide.LEFT),
-                  Commands.either(
-                      Commands.either(autoIntakeUp, drivebase.shiftRight(), null),
-                      Commands.sequence(
-                          Commands.runOnce(
-                              () -> {
-                                drivebase
-                                    .getSwerveDrive()
-                                    .field
-                                    .getObject("target")
-                                    .setPose(targetingSystem.getTargetShiftPose());
-                              }),
-                          Commands.defer(
-                              () -> drivebase.driveToPose(targetingSystem.getTargetShiftPose()),
-                              Set.of(drivebase))),
-                      () -> targetingSystem.nearTarget(drivebase::getPose)))
-              .onlyIf(() -> targetingSystem.nearTarget(drivebase::getPose)),
+        //   Commands.sequence(
+        //           targetingSystem.setBranchSide(ReefBranchSide.LEFT),
+        //           Commands.either(
+        //               Commands.either(autoIntakeUp, drivebase.shiftRight(), null),
+        //               Commands.sequence(
+        //                   Commands.runOnce(
+        //                       () -> {
+        //                         drivebase
+        //                             .getSwerveDrive()
+        //                             .field
+        //                             .getObject("target")
+        //                             .setPose(targetingSystem.getTargetShiftPose());
+        //                       }),
+        //                   Commands.defer(
+        //                       () -> drivebase.driveToPose(targetingSystem.getTargetShiftPose()),
+        //                       Set.of(drivebase))),
+        //               () -> targetingSystem.nearTarget(drivebase::getPose)))
+        //       .onlyIf(() -> targetingSystem.nearTarget(drivebase::getPose)),
           Commands.runOnce(
               () -> {
                 drivebase
