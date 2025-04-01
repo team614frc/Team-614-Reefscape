@@ -270,20 +270,20 @@ public class SwerveSubsystem extends SubsystemBase {
         false); // Open loop is disabled since it shouldn't be used most of the time.
   }
 
-  public Command shiftLeft() {
-    return Commands.runOnce(
-        () ->
-            drive(
-                new Translation2d(-Constants.DrivebaseConstants.ALIGNMENT_SHIFT.in(Meters), 0),
-                0,
-                false));
-  }
-
   public Command shiftRight() {
     return Commands.runOnce(
         () ->
             drive(
-                new Translation2d(Constants.DrivebaseConstants.ALIGNMENT_SHIFT.in(Meters), 0),
+                new Translation2d(0, -Constants.DrivebaseConstants.ALIGNMENT_SHIFT.in(Meters)),
+                0,
+                false));
+  }
+
+  public Command shiftLeft() {
+    return Commands.runOnce(
+        () ->
+            drive(
+                new Translation2d(0, Constants.DrivebaseConstants.ALIGNMENT_SHIFT.in(Meters)),
                 0,
                 false));
   }
@@ -297,6 +297,24 @@ public class SwerveSubsystem extends SubsystemBase {
     return run(
         () -> {
           swerveDrive.driveFieldOriented(velocity.get());
+        });
+  }
+
+  public Command driveReefAim(Supplier<ChassisSpeeds> velocity, Supplier<Pose2d> pose2d) {
+    return run(
+        () -> {
+          SmartDashboard.putNumber(
+              "Target Angular Velocity",
+              swerveDrive.swerveController.headingCalculate(
+                  getPose().getRotation().getRadians(), pose2d.get().getRotation().getRadians()));
+          SmartDashboard.putNumber("Target Degrees", pose2d.get().getRotation().getDegrees());
+          swerveDrive.driveFieldOriented(
+              new ChassisSpeeds(
+                  velocity.get().vxMetersPerSecond,
+                  velocity.get().vyMetersPerSecond,
+                  swerveDrive.swerveController.headingCalculate(
+                      getPose().getRotation().getRadians(),
+                      pose2d.get().getRotation().getRadians())));
         });
   }
 
@@ -505,7 +523,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
   }
 
-  private boolean isOrbitingReef = false;
+  private boolean isOrbitingReef = true;
 
   public Command flipOrbitingReef() {
     return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);

@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,6 +38,7 @@ public class TargetingSystem extends SubsystemBase {
   private List<Pose2d> reefBranches = null;
   private List<Pose2d> allianceRelativeReefBranches = null;
   private Map<Pose2d, ReefBranch> reefPoseToBranchMap = null;
+  private SwerveSubsystem drivebase;
 
   private void initializeBranchPoses() {
     reefBranches = new ArrayList<>();
@@ -86,10 +88,14 @@ public class TargetingSystem extends SubsystemBase {
     if (targetReefBranchSide != null) {
       SmartDashboard.putString("Target Branch", targetReefBranchSide.toString());
     }
+    // if (drivebase.isOrbitingReef()) {
+    autoTarget(drivebase::getPose);
+    // }
   }
 
-  public TargetingSystem() {
+  public TargetingSystem(SwerveSubsystem drivebase) {
     RobotModeTriggers.autonomous().onFalse(Commands.runOnce(this::initializeBranchPoses));
+    this.drivebase = drivebase;
   }
 
   public void setTarget(ReefBranch targetBranch, ReefBranchLevel targetBranchLevel) {
@@ -188,11 +194,14 @@ public class TargetingSystem extends SubsystemBase {
 
   public boolean atTarget(Supplier<Pose2d> robotpose) {
     Pose2d scoringPose = getCoralTargetPose();
-    ;
     return ((Math.abs(robotpose.get().getX() - scoringPose.getX())
             < Constants.DrivebaseConstants.CLOSE_ALIGNMENT_SHIFT_TOLERANCE.in(Meters))
         && (Math.abs(robotpose.get().getX() - scoringPose.getX())
             < Constants.DrivebaseConstants.CLOSE_ALIGNMENT_SHIFT_TOLERANCE.in(Meters)));
+  }
+
+  public Rotation2d getTargetAngle() {
+    return getCoralTargetPose().getRotation();
   }
 
   public Pose2d getAlgaeTargetPose() {
