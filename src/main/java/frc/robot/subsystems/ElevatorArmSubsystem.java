@@ -309,7 +309,7 @@ public class ElevatorArmSubsystem extends SubsystemBase {
               armSetpoint = ArmConstants.ARM_FEEDFORWARD_OFFSET;
               break;
             case kOuttakeArmAlgaeL3:
-              armSetpoint = ArmConstants.ARM_PUSH_SETPOINT;
+              armSetpoint = ArmConstants.ARM_ALGAE_PUNCH;
               break;
             case kPuke:
               armSetpoint = ArmConstants.ARM_PUKE_SETPOINT;

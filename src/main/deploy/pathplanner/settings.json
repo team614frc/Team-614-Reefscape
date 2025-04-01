@@ -8,8 +8,8 @@
     "Right Paths"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 1.65,
-  "defaultMaxAccel": 3.0,
+  "defaultMaxVel": 6.5,
+  "defaultMaxAccel": 3.1,
   "defaultMaxAngVel": 5400.0,
   "defaultMaxAngAccel": 7200.0,
   "defaultNominalVoltage": 12.0,

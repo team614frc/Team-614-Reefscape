@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.832,
-        "y": 5.114
+        "x": 1.5476455479452054,
+        "y": 7.323137842465753
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3992203947368416,
-        "y": 5.422365131578947
+        "x": 2.0925940315402407,
+        "y": 6.396332940905328
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "left_coral_station"
     },
     {
       "anchor": {
-        "x": 1.279,
-        "y": 7.08705836704799
+        "x": 1.878210616438356,
+        "y": 4.257898116438356
       },
       "prevControl": {
-        "x": 1.837059210526316,
-        "y": 7.096680077574307
+        "x": 1.9048548419109146,
+        "y": 5.362955414459469
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,14 +31,7 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Prep Canal",
-      "waypointRelativePos": 0.1904761904761904,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 6.5,
     "maxAcceleration": 3.1,
@@ -49,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -55.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Left Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -55.0
   },
   "useDefaultConstraints": true
 }

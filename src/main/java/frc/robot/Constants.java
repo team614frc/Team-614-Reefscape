@@ -56,9 +56,9 @@ public final class Constants {
     public static final Boolean USE_LIMELIGHT_BACK = false;
     public static final String LIMELIGHT_FRONT_NAME = "limelight-front";
     public static final String LIMELIGHT_BACK_NAME = "limelight-back";
-    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(1.3);
+    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(2.5);
     public static final LinearAcceleration MAX_ALIGNMENT_ACCELERATION =
-        MetersPerSecondPerSecond.of(1);
+        MetersPerSecondPerSecond.of(2);
     public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
     public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
         DegreesPerSecondPerSecond.of(45);
@@ -122,7 +122,7 @@ public final class Constants {
     public static final double OUTTAKE_ALGAE = -0.75;
     public static final double END_EFFECTOR_MIN_OUTPUT = 0.075;
     public static final double STALL_SPEED = 0.1;
-    public static final double MIN_CURRENT = 22.75;
+    public static final double MIN_CURRENT = 22.5;
   }
 
   public static final class CanalConstants {
@@ -181,6 +181,7 @@ public final class Constants {
     public static final double ARM_HOVER_SETPOINT = 0.03;
     public static final double ARM_INTAKE_SETPOINT = 0.0285;
     public static final double ARM_PUSH_SETPOINT = 0.465;
+    public static final double ARM_ALGAE_PUNCH = 0.4345;
     public static final double ARM_IDLE_SETPOINT = 0.49;
     public static final double ARM_START_SETPOINT = 0.5;
     public static final double ARM_L2_SETPOINT = 0.465;

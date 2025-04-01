@@ -319,6 +319,13 @@ public class RobotContainer {
       Commands.parallel(drivebase.driveCoral(), autoIntakeDownAndIntake)
           .until(canal::gamePieceDetected);
 
+  private final Command punchL3Algae =
+      Commands.sequence(
+          elevatorArm.setSetpoint(Setpoint.kElevatorL3),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          endEffector.punchAlgae(),
+          elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3));
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -339,6 +346,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Down", autoIntakeDownAndIntake);
     NamedCommands.registerCommand("Intake Up", autoIntakeUp);
     NamedCommands.registerCommand("Prep Canal", prepCanal);
+    NamedCommands.registerCommand("Punch L3 Algae", punchL3Algae);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     // autoChooser = AutoBuilder.buildAutoChooser();
