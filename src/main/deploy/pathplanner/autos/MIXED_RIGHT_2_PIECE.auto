@@ -35,7 +35,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Hover"
+                  "name": "Prep Canal"
                 }
               }
             ]
@@ -63,6 +63,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Other Autos",
   "choreoAuto": false
 }

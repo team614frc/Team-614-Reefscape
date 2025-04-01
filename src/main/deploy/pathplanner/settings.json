@@ -7,7 +7,10 @@
     "Left Paths",
     "Right Paths"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Limelight Autos",
+    "Other Autos"
+  ],
   "defaultMaxVel": 1.65,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 5400.0,

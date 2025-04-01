@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.MathUtil;
@@ -167,18 +168,31 @@ public class TargetingSystem extends SubsystemBase {
     return scoringPose;
   }
 
-  public Pose2d getTargetShiftPose(Supplier<Pose2d> robotpose) {
-    Pose2d targetPose = getCoralTargetPose();
-    return targetPose.plus(AutoScoring.Reef.coralShiftOffset);
+  public void setReturnPose(Supplier<Pose2d> returnPose) {
+    this.returnPose = returnPose.get();
+  }
+
+  public Pose2d getTargetShiftPose() {
+    Pose2d robotpose = getCoralTargetPose();
+    Pose2d targetShiftPose = robotpose.plus(AutoScoring.Reef.coralShiftOffset);
+    return targetShiftPose;
   }
 
   public boolean nearTarget(Supplier<Pose2d> robotpose) {
     Pose2d scoringPose = getCoralTargetPose();
-    if ((Math.abs(robotpose.get().getX() - scoringPose.getX())
-            < Constants.DrivebaseConstants.ALIGNMENT_SHIFT_TOLERANCE.in(Meters))
+    return ((Math.abs(robotpose.get().getX() - scoringPose.getX())
+            < Constants.DrivebaseConstants.FAR_ALIGNMENT_SHIFT_TOLERANCE.in(Meters))
         && (Math.abs(robotpose.get().getX() - scoringPose.getX())
-            < Constants.DrivebaseConstants.ALIGNMENT_SHIFT_TOLERANCE.in(Meters))) return true;
-    else return false;
+            < Constants.DrivebaseConstants.FAR_ALIGNMENT_SHIFT_TOLERANCE.in(Meters)));
+  }
+
+  public boolean atTarget(Supplier<Pose2d> robotpose) {
+    Pose2d scoringPose = getCoralTargetPose();
+    ;
+    return ((Math.abs(robotpose.get().getX() - scoringPose.getX())
+            < Constants.DrivebaseConstants.CLOSE_ALIGNMENT_SHIFT_TOLERANCE.in(Meters))
+        && (Math.abs(robotpose.get().getX() - scoringPose.getX())
+            < Constants.DrivebaseConstants.CLOSE_ALIGNMENT_SHIFT_TOLERANCE.in(Meters)));
   }
 
   public Pose2d getAlgaeTargetPose() {
@@ -202,7 +216,6 @@ public class TargetingSystem extends SubsystemBase {
     if (reefBranches == null) {
       initializeBranchPoses();
     }
-
     Pose2d selectedTargetPose = currentPose.get().nearest(allianceRelativeReefBranches);
     targetBranch = reefPoseToBranchMap.get(selectedTargetPose);
     return selectedTargetPose;
@@ -215,6 +228,13 @@ public class TargetingSystem extends SubsystemBase {
   public void increaseBranch() {
     if (targetBranch != null) {
       targetBranch = ReefBranch.values()[(targetBranch.ordinal() + 1) % 12];
+      // System.out.println("Branch Selected: "+targetBranch.toString());
+    }
+  }
+
+  public void decreaseBranch() {
+    if (targetBranch != null) {
+      targetBranch = ReefBranch.values()[(targetBranch.ordinal() - 1) % 12];
       // System.out.println("Branch Selected: "+targetBranch.toString());
     }
   }
@@ -241,15 +261,19 @@ public class TargetingSystem extends SubsystemBase {
   }
 
   public void setShiftTargetOnField(SwerveSubsystem swerveDrive) {
-    swerveDrive
-        .getSwerveDrive()
-        .field
-        .getObject("target")
-        .setPose(getTargetShiftPose(() -> swerveDrive.getPose()));
+    swerveDrive.getSwerveDrive().field.getObject("target").setPose(getTargetShiftPose());
   }
 
   public void setAlgaeTargetOnField(SwerveSubsystem swerveDrive) {
     swerveDrive.getSwerveDrive().field.getObject("target").setPose(getAlgaeTargetPose());
+  }
+
+  public boolean atTargetAngle(Supplier<Pose2d> pose) {
+    Pose2d targetPose = getCoralTargetPose();
+    Pose2d robotPose = pose.get();
+    if (Math.abs(targetPose.getRotation().getDegrees() - robotPose.getRotation().getDegrees())
+        < Constants.DrivebaseConstants.LOCK_ANGLE_TOLERANCE.in(Degrees)) return true;
+    else return false;
   }
 
   public enum ReefBranch {

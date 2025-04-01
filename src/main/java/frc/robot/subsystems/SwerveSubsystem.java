@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -233,9 +234,17 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Command driveToPose(Supplier<Pose2d> pose) {
-    double tooCloseMeters =
-        0.5; // If the bot is too close by this much it needs to drive back a little bit.
     return defer(() -> driveToPose(pose.get()));
+  }
+
+  public Command driveToPath(Supplier<PathPlannerPath> path) {
+    PathConstraints constraints =
+        new PathConstraints(
+            Constants.DrivebaseConstants.MAX_ALIGNMENT_VELOCITY,
+                Constants.DrivebaseConstants.MAX_ALIGNMENT_ACCELERATION,
+            Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_VELOCITY,
+                Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_ACCELERATION);
+    return defer(() -> AutoBuilder.pathfindThenFollowPath(path.get(), constraints));
   }
 
   /**
@@ -259,6 +268,24 @@ public class SwerveSubsystem extends SubsystemBase {
         rotation,
         fieldRelative,
         false); // Open loop is disabled since it shouldn't be used most of the time.
+  }
+
+  public Command shiftLeft() {
+    return Commands.runOnce(
+        () ->
+            drive(
+                new Translation2d(-Constants.DrivebaseConstants.ALIGNMENT_SHIFT.in(Meters), 0),
+                0,
+                false));
+  }
+
+  public Command shiftRight() {
+    return Commands.runOnce(
+        () ->
+            drive(
+                new Translation2d(Constants.DrivebaseConstants.ALIGNMENT_SHIFT.in(Meters), 0),
+                0,
+                false));
   }
 
   /**

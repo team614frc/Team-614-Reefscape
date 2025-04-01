@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2_pieceright#1"
+            "pathName": "2_pieceleft#1"
           }
         },
         {
@@ -20,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Other Autos",
   "choreoAuto": false
 }

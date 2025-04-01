@@ -257,21 +257,24 @@ public class RobotContainer {
       Commands.sequence(
           targetingSystem.autoTargetCommand(drivebase::getPose),
           targetingSystem.setBranchSide(ReefBranchSide.LEFT),
-          Commands.runOnce(
-                  () -> {
-                    drivebase
-                        .getSwerveDrive()
-                        .field
-                        .getObject("target")
-                        .setPose(targetingSystem.getTargetShiftPose(() -> drivebase.getPose()));
-                  })
-              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
-          Commands.defer(
-                  () ->
-                      drivebase.driveToPose(
-                          targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
-                  Set.of(drivebase))
-              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
+          Commands.sequence(
+                  targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
+                  Commands.either(
+                      drivebase.shiftLeft(),
+                      Commands.sequence(
+                          Commands.runOnce(
+                              () -> {
+                                drivebase
+                                    .getSwerveDrive()
+                                    .field
+                                    .getObject("target")
+                                    .setPose(targetingSystem.getTargetShiftPose());
+                              }),
+                          Commands.defer(
+                              () -> drivebase.driveToPose(targetingSystem.getTargetShiftPose()),
+                              Set.of(drivebase))),
+                      () -> targetingSystem.nearTarget(drivebase::getPose)))
+              .onlyIf(() -> targetingSystem.nearTarget(drivebase::getPose)),
           Commands.runOnce(
               () -> {
                 drivebase
@@ -288,21 +291,24 @@ public class RobotContainer {
       Commands.sequence(
           targetingSystem.autoTargetCommand(drivebase::getPose),
           targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
-          Commands.runOnce(
-                  () -> {
-                    drivebase
-                        .getSwerveDrive()
-                        .field
-                        .getObject("target")
-                        .setPose(targetingSystem.getTargetShiftPose(() -> drivebase.getPose()));
-                  })
-              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
-          Commands.defer(
-                  () ->
-                      drivebase.driveToPose(
-                          targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
-                  Set.of(drivebase))
-              .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
+          Commands.sequence(
+                  targetingSystem.setBranchSide(ReefBranchSide.LEFT),
+                  Commands.either(
+                      Commands.either(autoIntakeUp, drivebase.shiftRight(), null),
+                      Commands.sequence(
+                          Commands.runOnce(
+                              () -> {
+                                drivebase
+                                    .getSwerveDrive()
+                                    .field
+                                    .getObject("target")
+                                    .setPose(targetingSystem.getTargetShiftPose());
+                              }),
+                          Commands.defer(
+                              () -> drivebase.driveToPose(targetingSystem.getTargetShiftPose()),
+                              Set.of(drivebase))),
+                      () -> targetingSystem.nearTarget(drivebase::getPose)))
+              .onlyIf(() -> targetingSystem.nearTarget(drivebase::getPose)),
           Commands.runOnce(
               () -> {
                 drivebase
@@ -319,6 +325,20 @@ public class RobotContainer {
       Commands.parallel(drivebase.driveCoral(), autoIntakeDownAndIntake)
           .until(canal::gamePieceDetected);
 
+  private Command punchAlgaeL3 =
+      Commands.sequence(
+          elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          endEffector.punchAlgae(),
+          elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3));
+
+  private Command punchAlgaeL2 =
+      Commands.sequence(
+          elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          endEffector.punchAlgae(),
+          elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL2));
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -330,9 +350,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
-    NamedCommands.registerCommand("driveReefLeft", driveReefLeft);
-    NamedCommands.registerCommand("driveReeRight", driveReefRight);
+    NamedCommands.registerCommand("Drive Reef Left", driveReefLeft);
+    NamedCommands.registerCommand("Drive Reef Right", driveReefRight);
     NamedCommands.registerCommand("L3", autoL3);
+    NamedCommands.registerCommand("Punch Algae L3", punchAlgaeL3);
+    NamedCommands.registerCommand("Punch Algae L2", punchAlgaeL2);
     NamedCommands.registerCommand("Canal Intake", canalIntake);
     NamedCommands.registerCommand("Score Coral", outtakeCoral);
     NamedCommands.registerCommand("Idle Setpoint", elevatorArmIdle);
