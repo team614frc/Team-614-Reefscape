@@ -15,81 +15,6 @@
                 }
               },
               {
-                "type": "path",
-                "data": {
-                  "pathName": "apriltag19test"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "driveReefLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score Coral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Punch L3 Algae"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Copy of apriltag19test#2"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Canal Intake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "apriltag19test#2"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Copy of Copy of 3_pieceright#5"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "L3"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "driveReefRight"
@@ -103,11 +28,67 @@
           "data": {
             "name": "Score Coral"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "l2right#1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Prep Canal"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Canal Intake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "l2right#2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveReefRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "L2 Autos with Vision",
   "choreoAuto": false
 }

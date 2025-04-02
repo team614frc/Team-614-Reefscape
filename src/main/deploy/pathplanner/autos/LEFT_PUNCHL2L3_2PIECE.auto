@@ -9,24 +9,18 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "apriltag19test"
+                  "name": "L2"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L2"
+                  "name": "driveReefLeft"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "driveReefRight"
           }
         },
         {
@@ -36,28 +30,40 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Punch L3 Algae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "punchapriltag19test#3"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Canal Intake"
+                }
+              },
               {
                 "type": "path",
                 "data": {
                   "pathName": "apriltag19test#2"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Prep Canal"
-                }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Canal Intake"
+            "pathName": "punchapriltagtest#5"
           }
         },
         {
@@ -65,24 +71,18 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Copy of 3_pieceright#5"
+                  "name": "L3"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L2"
+                  "name": "driveReefRight"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "driveReefLeft"
           }
         },
         {
@@ -95,6 +95,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "L2 Autos with Vision",
   "choreoAuto": false
 }

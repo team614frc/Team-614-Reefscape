@@ -180,6 +180,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
               canal.intake(),
               Commands.waitUntil(canal::gamePieceDetected),
+              Commands.waitUntil(canal::gamePieceGone),
               Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
               Commands.parallel(
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
@@ -197,6 +198,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
               canal.intake(),
               Commands.waitUntil(canal::gamePieceDetected),
+              Commands.waitUntil(canal::gamePieceGone),
               Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
               Commands.parallel(
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
@@ -321,7 +323,14 @@ public class RobotContainer {
 
   private final Command punchL3Algae =
       Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kElevatorL3),
+          elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          endEffector.punchAlgae(),
+          elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3));
+
+  private final Command punchL2Algae =
+      Commands.sequence(
+          elevatorArm.setSetpoint(Setpoint.kElevatorL2),
           Commands.waitUntil(elevatorArm::reachedSetpoint),
           endEffector.punchAlgae(),
           elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3));
@@ -347,6 +356,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Up", autoIntakeUp);
     NamedCommands.registerCommand("Prep Canal", prepCanal);
     NamedCommands.registerCommand("Punch L3 Algae", punchL3Algae);
+    NamedCommands.registerCommand("Punch L2 Algae", punchL2Algae);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     // autoChooser = AutoBuilder.buildAutoChooser();

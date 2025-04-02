@@ -56,7 +56,7 @@ public final class Constants {
     public static final Boolean USE_LIMELIGHT_BACK = false;
     public static final String LIMELIGHT_FRONT_NAME = "limelight-front";
     public static final String LIMELIGHT_BACK_NAME = "limelight-back";
-    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(2.5);
+    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(3);
     public static final LinearAcceleration MAX_ALIGNMENT_ACCELERATION =
         MetersPerSecondPerSecond.of(2);
     public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
@@ -116,7 +116,7 @@ public final class Constants {
     public static final int END_EFFECTOR_MOTOR = 25;
     public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(80);
     public static final double OUTTAKE_SPEED = -0.45;
-    public static final double INTAKE_SPEED = 0.35;
+    public static final double INTAKE_SPEED = 0.365;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_ALGAE = -0.75;
@@ -153,7 +153,7 @@ public final class Constants {
     public static final double ELEVATOR_IDLE_SETPOINT = 0.05;
     public static final double ELEVATOR_L1_SETPOINT = 0;
     public static final double ELEVATOR_L2_SETPOINT = 0.4;
-    public static final double ELEVATOR_L2_ALGAE_SETPOINT = 5.35;
+    public static final double ELEVATOR_L2_ALGAE_SETPOINT = 5.7;
     public static final double ELEVATOR_L3_SETPOINT = 6.19;
     public static final double ELEVATOR_L4_SETPOINT = 0;
     public static final double ELEVATOR_OUTTAKE_SETPOINT = 1.75;
