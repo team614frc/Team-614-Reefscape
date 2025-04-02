@@ -8,11 +8,12 @@
     "Right Paths"
   ],
   "autoFolders": [
-    "Limelight Autos",
-    "Other Autos"
+    "L1 Autos",
+    "L1 with L2 Autos",
+    "L2 Autos with Vision"
   ],
-  "defaultMaxVel": 1.65,
-  "defaultMaxAccel": 3.0,
+  "defaultMaxVel": 6.5,
+  "defaultMaxAccel": 3.25,
   "defaultMaxAngVel": 5400.0,
   "defaultMaxAngAccel": 7200.0,
   "defaultNominalVoltage": 12.0,
