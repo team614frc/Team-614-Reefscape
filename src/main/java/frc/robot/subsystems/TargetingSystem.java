@@ -37,7 +37,6 @@ public class TargetingSystem extends SubsystemBase {
   private List<Pose2d> reefBranches = null;
   private List<Pose2d> allianceRelativeReefBranches = null;
   private Map<Pose2d, ReefBranch> reefPoseToBranchMap = null;
-  private SwerveSubsystem drivebase;
   private boolean updateSide = true;
 
   private void initializeBranchPoses() {
@@ -88,17 +87,21 @@ public class TargetingSystem extends SubsystemBase {
     if (targetReefBranchSide != null && targetBranch != null) {
       SmartDashboard.putString("Target Branch", targetReefBranchSide.toString());
       SmartDashboard.putNumber("Target Branch side", targetBranch.ordinal());
-      SmartDashboard.putBoolean("atTarget", atTarget(drivebase::getPose));
-      SmartDashboard.putBoolean("nearTarget", nearTarget(drivebase::getPose));
+      // SmartDashboard.putBoolean("atTarget", atTarget(drivebase::getPose));
+      // SmartDashboard.putBoolean("nearTarget", nearTarget(drivebase::getPose));
     }
-    if (drivebase.isOrbitingReef() && updateSide) {
-      autoTargetCommand(drivebase::getPose);
-    }
+    // if (drivebase.isOrbitingReef() && updateSide) {
+    //   autoTargetCommand(drivebase::getPose);
+    // }
   }
 
-  public TargetingSystem(SwerveSubsystem drivebase) {
+  public Pose2d getTargetShiftPose(Supplier<Pose2d> robotpose) {
+    Pose2d targetPose = getCoralTargetPose();
+    return targetPose.plus(AutoScoring.Reef.coralShiftOffset);
+  }
+
+  public TargetingSystem() {
     RobotModeTriggers.autonomous().onFalse(Commands.runOnce(this::initializeBranchPoses));
-    this.drivebase = drivebase;
   }
 
   public void setTarget(ReefBranch targetBranch, ReefBranchLevel targetBranchLevel) {
