@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2_pieceleft#1"
+            "pathName": "2_piecepushback"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2_pieceright#1"
           }
         },
         {
@@ -17,9 +23,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "2_pieceleft#2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2_pieceright#2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Prep Canal"
+                }
+              }
+            ]
           }
         },
         {
@@ -31,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2_pieceleft#3"
+            "pathName": "2_pieceright#3"
           }
         },
         {
@@ -44,6 +63,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "L1 with L2 Autos",
   "choreoAuto": false
 }

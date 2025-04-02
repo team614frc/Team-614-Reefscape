@@ -127,14 +127,14 @@ public class RobotContainer {
                   drivebase.driveFieldOriented(driveAngularVelocity),
                   drivebase::isFieldCentric));
 
-  private final Command toggleReefAim =
-      drivebase
-          .flipOrbitingReef()
-          .andThen(
-              Commands.either(
-                  drivebase.driveFieldOriented(driveReefAim),
-                  drivebase.driveFieldOriented(driveAngularVelocity),
-                  drivebase::isOrbitingReef));
+  //   private final Command toggleReefAim =
+  //       drivebase
+  //           .flipOrbitingReef()
+  //           .andThen(
+  //               Commands.either(
+  //                   drivebase.driveFieldOriented(driveReefAim),
+  //                   drivebase.driveFieldOriented(driveAngularVelocity),
+  //                   drivebase::isOrbitingReef));
 
   private final Command outtakeCoral =
       Commands.either(
@@ -180,6 +180,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
               canal.intake(),
               Commands.waitUntil(canal::gamePieceDetected),
+              Commands.waitUntil(canal::gamePieceGone),
               Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
               Commands.parallel(
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
@@ -197,6 +198,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
               canal.intake(),
               Commands.waitUntil(canal::gamePieceDetected),
+              Commands.waitUntil(canal::gamePieceGone),
               Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
               Commands.parallel(
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
@@ -253,7 +255,106 @@ public class RobotContainer {
           Commands.waitUntil(intakePivot::reachedSetpoint),
           intakePivot.pivotIdle());
 
+  private Command driveCoral =
+      Commands.parallel(drivebase.driveCoral(), autoIntakeDownAndIntake)
+          .until(canal::gamePieceDetected);
+
+  private final Command punchL3Algae =
+      Commands.sequence(
+          elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          endEffector.punchAlgae(),
+          elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3));
+
+  private final Command punchL2Algae =
+      Commands.sequence(
+          elevatorArm.setSetpoint(Setpoint.kElevatorL2),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          endEffector.punchAlgae(),
+          elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3));
+
   private final Command driveReefLeft =
+      Commands.sequence(
+          targetingSystem.autoTargetCommand(drivebase::getPose),
+          targetingSystem.setBranchSide(ReefBranchSide.LEFT),
+          Commands.either(
+              Commands.sequence(
+                  Commands.sequence(
+                          targetingSystem.setUpdateSide(false),
+                          targetingSystem.increaseBranch(),
+                          targetingSystem.setBranchSide(ReefBranchSide.RIGHT))
+                      .onlyIf(() -> targetingSystem.atTarget(drivebase::getPose)),
+                  Commands.runOnce(
+                      () -> {
+                        drivebase
+                            .getSwerveDrive()
+                            .field
+                            .getObject("target")
+                            .setPose(targetingSystem.getCoralTargetPose());
+                      }),
+                  Commands.defer(
+                      () -> drivebase.driveToSetpoint(targetingSystem.getCoralTargetPose()),
+                      Set.of(drivebase)),
+                  targetingSystem.setUpdateSide(true)),
+              Commands.sequence(
+                  Commands.runOnce(
+                      () -> {
+                        drivebase
+                            .getSwerveDrive()
+                            .field
+                            .getObject("target")
+                            .setPose(targetingSystem.getCoralTargetPose());
+                      }),
+                  Commands.defer(
+                      () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+                      Set.of(drivebase))), // .until(() ->
+              // targetingSystem.nearTarget(drivebase::getPose)
+              // Commands.defer(() ->  () ->
+              // drivebase.driveToSetpoint(targetingSystem.getCoralTargetPose()),Set.of(drivebase)),
+              () -> targetingSystem.nearTarget(drivebase::getPose)));
+
+  private final Command driveReefRight =
+      Commands
+          .sequence( // uses pathplanner and pid to get to target, might just use pid need to test
+              targetingSystem.autoTargetCommand(drivebase::getPose),
+              targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
+              Commands.either(
+                  Commands.sequence(
+                      Commands.sequence(
+                              targetingSystem.setUpdateSide(false),
+                              targetingSystem.decreaseBranch(),
+                              targetingSystem.setBranchSide(ReefBranchSide.LEFT))
+                          .onlyIf(() -> targetingSystem.atTarget(drivebase::getPose)),
+                      Commands.runOnce(
+                          () -> {
+                            drivebase
+                                .getSwerveDrive()
+                                .field
+                                .getObject("target")
+                                .setPose(targetingSystem.getCoralTargetPose());
+                          }),
+                      Commands.defer(
+                          () -> drivebase.driveToSetpoint(targetingSystem.getCoralTargetPose()),
+                          Set.of(drivebase)),
+                      targetingSystem.setUpdateSide(true)),
+                  Commands.sequence(
+                      Commands.runOnce(
+                          () -> {
+                            drivebase
+                                .getSwerveDrive()
+                                .field
+                                .getObject("target")
+                                .setPose(targetingSystem.getCoralTargetPose());
+                          }),
+                      Commands.defer(
+                          () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+                          Set.of(drivebase))), // .until(() ->
+                  // targetingSystem.nearTarget(drivebase::getPose)
+                  // Commands.defer(() ->  () ->
+                  // drivebase.driveToSetpoint(targetingSystem.getCoralTargetPose()),Set.of(drivebase)),
+                  () -> targetingSystem.nearTarget(drivebase::getPose)));
+
+  private final Command driveReefLeftAuto =
       Commands.sequence(
           targetingSystem.autoTargetCommand(drivebase::getPose),
           targetingSystem.setBranchSide(ReefBranchSide.LEFT),
@@ -268,7 +369,7 @@ public class RobotContainer {
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
           Commands.defer(
                   () ->
-                      drivebase.driveToPose(
+                      drivebase.driveToPoseAuto(
                           targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
                   Set.of(drivebase))
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
@@ -281,10 +382,10 @@ public class RobotContainer {
                     .setPose(targetingSystem.getCoralTargetPose());
               }),
           Commands.defer(
-              () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+              () -> drivebase.driveToPoseAuto(targetingSystem.getCoralTargetPose()),
               Set.of(drivebase)));
 
-  private final Command driveReefRight =
+  private final Command driveReefRightAuto =
       Commands.sequence(
           targetingSystem.autoTargetCommand(drivebase::getPose),
           targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
@@ -299,7 +400,7 @@ public class RobotContainer {
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
           Commands.defer(
                   () ->
-                      drivebase.driveToPose(
+                      drivebase.driveToPoseAuto(
                           targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
                   Set.of(drivebase))
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
@@ -312,12 +413,8 @@ public class RobotContainer {
                     .setPose(targetingSystem.getCoralTargetPose());
               }),
           Commands.defer(
-              () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+              () -> drivebase.driveToPoseAuto(targetingSystem.getCoralTargetPose()),
               Set.of(drivebase)));
-
-  private Command driveCoral =
-      Commands.parallel(drivebase.driveCoral(), autoIntakeDownAndIntake)
-          .until(canal::gamePieceDetected);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -330,8 +427,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
-    NamedCommands.registerCommand("driveReefLeft", driveReefLeft);
-    NamedCommands.registerCommand("driveReeRight", driveReefRight);
+    NamedCommands.registerCommand("driveReefLeft", driveReefLeftAuto);
+    NamedCommands.registerCommand("driveReefRight", driveReefRightAuto);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("Canal Intake", canalIntake);
     NamedCommands.registerCommand("Score Coral", outtakeCoral);
@@ -339,6 +436,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Down", autoIntakeDownAndIntake);
     NamedCommands.registerCommand("Intake Up", autoIntakeUp);
     NamedCommands.registerCommand("Prep Canal", prepCanal);
+    NamedCommands.registerCommand("Punch L3 Algae", punchL3Algae);
+    NamedCommands.registerCommand("Punch L2 Algae", punchL2Algae);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     // autoChooser = AutoBuilder.buildAutoChooser();
@@ -429,7 +528,7 @@ public class RobotContainer {
         .y()
         .onTrue(
             Commands.sequence(
-                elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+                elevatorArm.setSetpoint(Setpoint.kElevatorL3),
                 Commands.waitUntil(elevatorArm::reachedSetpoint),
                 endEffector.punchAlgae(),
                 elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));

@@ -16,6 +16,10 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,22 +29,28 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.AlignmentConstants.DriveToPose;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.DrivebaseConstants.DetectionMode;
 import frc.robot.Robot;
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import limelight.networktables.AngularVelocity3d;
 import limelight.networktables.LimelightResults;
 import limelight.networktables.Orientation3d;
 import limelight.networktables.PoseEstimate;
+import org.json.simple.parser.ParseException;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
@@ -83,10 +93,12 @@ public class SwerveSubsystem extends SubsystemBase {
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
       // angleConversionFactor, driveConversionFactor);
-      if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal())
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal()) {
         limelightFront = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_FRONT_NAME);
-      if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK && Robot.isReal())
+      }
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK && Robot.isReal()) {
         limelightBack = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_BACK_NAME);
+      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -120,6 +132,108 @@ public class SwerveSubsystem extends SubsystemBase {
             controllerCfg,
             Constants.MAX_SPEED.in(MetersPerSecond),
             new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
+  }
+
+  private Command driveWithSetpointGenerator(Supplier<ChassisSpeeds> robotRelativeChassisSpeed)
+      throws IOException, ParseException {
+    SwerveSetpointGenerator setpointGenerator =
+        new SwerveSetpointGenerator(
+            RobotConfig.fromGUISettings(), swerveDrive.getMaximumChassisAngularVelocity());
+
+    AtomicReference<SwerveSetpoint> prevSetpoint =
+        new AtomicReference<>(
+            new SwerveSetpoint(
+                swerveDrive.getRobotVelocity(),
+                swerveDrive.getStates(),
+                DriveFeedforwards.zeros(swerveDrive.getModules().length)));
+    AtomicReference<Double> previousTime = new AtomicReference<>();
+
+    return startRun(
+        () -> previousTime.set(Timer.getFPGATimestamp()),
+        () -> {
+          double newTime = Timer.getFPGATimestamp();
+          SwerveSetpoint newSetpoint =
+              setpointGenerator.generateSetpoint(
+                  prevSetpoint.get(),
+                  robotRelativeChassisSpeed.get(),
+                  newTime - previousTime.get());
+          swerveDrive.drive(
+              newSetpoint.robotRelativeSpeeds(),
+              newSetpoint.moduleStates(),
+              newSetpoint.feedforwards().linearForces());
+          prevSetpoint.set(newSetpoint);
+          previousTime.set(newTime);
+        });
+  }
+
+  public Command driveWithSetpointGeneratorFieldRelative(
+      Supplier<ChassisSpeeds> fieldRelativeSpeeds) {
+    try {
+      return driveWithSetpointGenerator(
+          () -> {
+            return ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds.get(), getHeading());
+          });
+    } catch (Exception e) {
+      DriverStation.reportError(e.toString(), true);
+    }
+    return Commands.none();
+  }
+
+  public void stopDriving() {
+    swerveDrive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+  }
+
+  public Command driveToSetpoint(Supplier<Pose2d> pose) {
+    return defer(() -> driveToPose(pose.get()));
+  }
+
+  public Command driveToSetpoint(Pose2d pose) {
+    stopDriving();
+    boolean useSetpointGenerator = false;
+    boolean useProfiledController = true;
+    boolean resetBeforehand = true;
+    Supplier<ChassisSpeeds> robotRelativeSpeeds;
+    BooleanSupplier atTargetPose;
+
+    if (resetBeforehand) {
+      DriveToPose.driveController.getXController().reset();
+      DriveToPose.driveController.getYController().reset();
+
+      DriveToPose.driveController.getThetaController().reset(getPose().getRotation().getRadians());
+
+      if (useProfiledController) {
+        DriveToPose.profiledDriveController.reset(getSwerveDrive().getPose());
+      }
+    }
+    if (useProfiledController) {
+      atTargetPose = DriveToPose.profiledDriveController::atReference;
+      robotRelativeSpeeds =
+          () ->
+              DriveToPose.profiledDriveController.calculate(getPose(), pose, 0, pose.getRotation());
+
+    } else {
+      atTargetPose = DriveToPose.driveController::atReference;
+      robotRelativeSpeeds =
+          () -> DriveToPose.driveController.calculate(getPose(), pose, 0, pose.getRotation());
+    }
+
+    if (useSetpointGenerator) {
+      try {
+
+        return driveWithSetpointGenerator(robotRelativeSpeeds)
+            .until(atTargetPose)
+            .finallyDo(this::stopDriving);
+      } catch (Exception ignored) {
+        DriverStation.reportWarning("Could not use setpoint generator with drive to pose.", false);
+      }
+    }
+
+    return run(() -> swerveDrive.drive(robotRelativeSpeeds.get()))
+        .until(atTargetPose)
+        .finallyDo(this::stopDriving);
+    /*
+    // Create the constraints to use while pathfinding
+        */
   }
 
   @Override
@@ -232,9 +346,23 @@ public class SwerveSubsystem extends SubsystemBase {
         );
   }
 
+  public Command driveToPoseAuto(Pose2d pose) {
+    // Create the constraints to use while pathfinding
+    PathConstraints constraints =
+        new PathConstraints(
+            Constants.DrivebaseConstants.MAX_ALIGNMENT_VELOCITY_AUTO,
+                Constants.DrivebaseConstants.MAX_ALIGNMENT_ACCELERATION_AUTO,
+            Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_VELOCITY_AUTO,
+                Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_ACCELERATION_AUTO);
+    // Since AutoBuilder is configured, we can use it to build pathfinding commands
+    return AutoBuilder.pathfindToPose(
+        pose,
+        constraints,
+        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
+        );
+  }
+
   public Command driveToPose(Supplier<Pose2d> pose) {
-    double tooCloseMeters =
-        0.5; // If the bot is too close by this much it needs to drive back a little bit.
     return defer(() -> driveToPose(pose.get()));
   }
 
@@ -270,6 +398,22 @@ public class SwerveSubsystem extends SubsystemBase {
     return run(
         () -> {
           swerveDrive.driveFieldOriented(velocity.get());
+        });
+  }
+
+  public Command driveReefAim(Supplier<ChassisSpeeds> velocity, Supplier<Pose2d> pose2d) {
+    return run(
+        () -> {
+          double angularVelocity =
+              swerveDrive.swerveController.headingCalculate(
+                  getPose().getRotation().getRadians(), pose2d.get().getRotation().getRadians());
+          SmartDashboard.putNumber("Target Angular Velocity", angularVelocity);
+          SmartDashboard.putNumber("Target Degrees", pose2d.get().getRotation().getDegrees());
+          swerveDrive.driveFieldOriented(
+              new ChassisSpeeds(
+                  velocity.get().vxMetersPerSecond,
+                  velocity.get().vyMetersPerSecond,
+                  angularVelocity));
         });
   }
 
@@ -421,6 +565,7 @@ public class SwerveSubsystem extends SubsystemBase {
       limelightBack.updateSettings(getOrientation3d());
       updatePosition(limelightBack.getResults(), limelightBack.getVisionEstimate());
     }
+    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
     swerveDrive.updateOdometry();
     SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
@@ -481,7 +626,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private boolean isOrbitingReef = false;
 
   public Command flipOrbitingReef() {
-    return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
+    return Commands.runOnce(() -> isOrbitingReef = !isOrbitingReef, this);
   }
 
   public boolean isOrbitingReef() {

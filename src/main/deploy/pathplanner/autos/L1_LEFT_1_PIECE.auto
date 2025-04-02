@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "FRONT_#1"
+            "pathName": "2_pieceleft#1"
           }
         },
         {
@@ -15,17 +15,11 @@
           "data": {
             "name": "L1"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "FRONT_#2"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "L1 Autos",
   "choreoAuto": false
 }

@@ -7,19 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2_piecepushback"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2_pieceright#1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L1"
+            "pathName": "branch_1_pieceright#1"
           }
         },
         {
@@ -27,30 +15,18 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "2_pieceright#2"
+                  "name": "L2"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Hover"
+                  "name": "Drive Reef Right"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Canal Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2_pieceright#3"
           }
         },
         {
@@ -63,6 +39,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Limelight Autos",
   "choreoAuto": false
 }
