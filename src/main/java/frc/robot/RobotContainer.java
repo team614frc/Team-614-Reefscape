@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -17,6 +18,15 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.CanalSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.ElevatorArmSubsystem;
+import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
+import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.CanalSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem;
 import frc.robot.subsystems.ElevatorArmSubsystem.Setpoint;
 import frc.robot.subsystems.EndEffectorSubsystem;
@@ -37,13 +47,13 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final IntakeSubsystem intake = new IntakeSubsystem();
-  private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
-  private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
-  private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
-  //   private final ClimberSubsystem climber = new ClimberSubsystem();
-  private final CanalSubsystem canal = new CanalSubsystem();
-  private final LEDSubsystem led = new LEDSubsystem();
+    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final IntakePivotSubsystem intakePivot = new IntakePivotSubsystem();
+    private final EndEffectorSubsystem endEffector = new EndEffectorSubsystem();
+    private final ElevatorArmSubsystem elevatorArm = new ElevatorArmSubsystem();
+    private final ClimberSubsystem climber = new ClimberSubsystem();
+    private final CanalSubsystem canal = new CanalSubsystem();
+    private final LEDSubsystem led = new LEDSubsystem();
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -123,249 +133,280 @@ public class RobotContainer {
                   drivebase.driveFieldOriented(driveAngularVelocity),
                   drivebase::isFieldCentric));
 
-  private final Command toggleReefAim =
-      drivebase
-          .flipOrbitingReef()
-          .andThen(
-              Commands.either(
-                  drivebase.driveReefAim(driveReefAim, targetingSystem::getCoralTargetPose),
-                  drivebase.driveFieldOriented(driveAngularVelocity),
-                  drivebase::isOrbitingReef));
+//   private final Command toggleReefAim =
+//       drivebase
+//           .flipOrbitingReef()
+//           .andThen(
+//               Commands.either(
+//                   Commands.runOnce(() -> drivebase.setDefaultCommand(driveFieldOrientedReef)),
+//                   Commands.runOnce(
+//                       () -> drivebase.setDefaultCommand(driveFieldOrientedAngularVelocitySim)),
+//                   drivebase::isOrbitingReef));
 
-  private final Command outtakeCoral =
-      Commands.either(
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kScoreL3Arm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              endEffector.outtake(),
-              elevatorArm.setSetpoint(Setpoint.kArmL3),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              endEffector.stop()),
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              endEffector.outtake(),
-              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              endEffector.stop()),
-          () -> elevatorArm.checkL3());
+    private final Command outtakeCoral =
+        Commands.either(
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kScoreL3Arm),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                endEffector.outtake(),
+                elevatorArm.setSetpoint(Setpoint.kArmL3),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                endEffector.stop()),
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                endEffector.outtake(),
+                elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmIdle),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                endEffector.stop()),
+            () -> elevatorArm.checkL3());
 
-  private final Command prepCanal =
-      Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kPushArm),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kArmIntake),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          elevatorArm.setSetpoint(Setpoint.kElevatorIntake));
+    private final Command prepCanal =
+        Commands.sequence(
+            elevatorArm.setSetpoint(Setpoint.kPushArm),
+            Commands.waitUntil(elevatorArm::reachedSetpoint),
+            elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+            Commands.waitUntil(elevatorArm::reachedSetpoint),
+            elevatorArm.setSetpoint(Setpoint.kArmIntake),
+            Commands.waitUntil(elevatorArm::reachedSetpoint),
+            elevatorArm.setSetpoint(Setpoint.kElevatorIntake));
 
-  private final Command canalIntake =
-      Commands.either(
-          Commands.sequence(
-              canal.intake(),
-              endEffector.intake(),
-              elevatorArm.setSetpoint(Setpoint.kArmIntake),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
-              canal.intake(),
-              Commands.waitUntil(canal::gamePieceDetected),
-              Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
-              Commands.parallel(
-                  rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                  canal.stop(),
-                  elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                  endEffector.stop())),
-          Commands.sequence(
-              endEffector.intake(),
-              elevatorArm.setSetpoint(Setpoint.kPushArm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmIntake),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
-              canal.intake(),
-              Commands.waitUntil(canal::gamePieceDetected),
-              Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
-              Commands.parallel(
-                  rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
-                  canal.stop(),
-                  elevatorArm.setSetpoint(Setpoint.kElevatorHover),
-                  endEffector.stop())),
-          () -> elevatorArm.isBelowHorizontal());
+    private final Command canalIntake =
+        Commands.either(
+            Commands.sequence(
+                canal.intake(),
+                endEffector.intake(),
+                elevatorArm.setSetpoint(Setpoint.kArmIntake),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
+                canal.intake(),
+                Commands.waitUntil(canal::gamePieceDetected),
+                Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
+                Commands.parallel(
+                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
+                    canal.stop(),
+                    elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                    endEffector.stop())),
+            Commands.sequence(
+                endEffector.intake(),
+                elevatorArm.setSetpoint(Setpoint.kPushArm),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmIntake),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
+                canal.intake(),
+                Commands.waitUntil(canal::gamePieceDetected),
+                Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
+                Commands.parallel(
+                    rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
+                    canal.stop(),
+                    elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                    endEffector.stop())),
+            () -> elevatorArm.isBelowHorizontal());
 
-  private final Command autoL1 =
-      Commands.sequence(
-          intake.autoOuttakeGamepiece(), Commands.waitSeconds(0.2), intake.stopIntake());
+    private final Command autoL1 =
+        Commands.sequence(
+            intake.autoOuttakeGamepiece(), Commands.waitSeconds(0.2), intake.stopIntake());
 
-  private final Command autoL2 =
-      Commands.either(
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL2)),
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kPushArm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorL2),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL2)),
-          () -> !elevatorArm.isBelowHorizontal());
+    private final Command autoL2 =
+        Commands.either(
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kElevatorL2),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmL2)),
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kPushArm),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorL2),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmL2)),
+            () -> !elevatorArm.isBelowHorizontal());
 
-  private final Command autoL3 =
-      Commands.either(
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL3)),
-          Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kPushArm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorL3),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kArmL3)),
-          () -> !elevatorArm.isBelowHorizontal());
+    private final Command autoL3 =
+        Commands.either(
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kElevatorL3),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmL3)),
+            Commands.sequence(
+                elevatorArm.setSetpoint(Setpoint.kPushArm),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kElevatorL3),
+                Commands.waitUntil(elevatorArm::reachedSetpoint),
+                elevatorArm.setSetpoint(Setpoint.kArmL3)),
+            () -> !elevatorArm.isBelowHorizontal());
 
-  private final Command elevatorArmIdle =
-      Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kArmIdle),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          endEffector.stop(),
-          elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
+    private final Command elevatorArmIdle =
+        Commands.sequence(
+            elevatorArm.setSetpoint(Setpoint.kArmIdle),
+            Commands.waitUntil(elevatorArm::reachedSetpoint),
+            endEffector.stop(),
+            elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
 
-  private final Command autoIntakeDownAndIntake =
-      Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece());
+    private final Command autoIntakeDownAndIntake =
+        Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece());
 
-  private final Command autoIntakeUp =
-      Commands.sequence(
-          intakePivot.pivotIntakeAlgae(),
-          Commands.waitUntil(intakePivot::reachedSetpoint),
-          intakePivot.pivotIdle());
+    private final Command autoIntakeUp =
+        Commands.sequence(
+            intakePivot.pivotIntakeAlgae(),
+            Commands.waitUntil(intakePivot::reachedSetpoint),
+            intakePivot.pivotIdle());
 
   private final Command driveReefLeft =
-      Commands.sequence(
-          targetingSystem.autoTargetCommand(drivebase::getPose),
-          targetingSystem.setBranchSide(ReefBranchSide.LEFT),
-          Commands.either(
-              Commands.sequence(
-                  Commands.runOnce(() -> targetingSystem.increaseBranch()),
-                  targetingSystem.setBranchSide(ReefBranchSide.RIGHT)),
-              Commands.sequence(
-                  targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
-                  Commands.either(
-                      drivebase.shiftLeft(),
+      Commands
+          .sequence( // uses pathplanner and pid to get to target, might just use pid need to test
+              targetingSystem.autoTargetCommand(drivebase::getPose),
+              targetingSystem.setBranchSide(ReefBranchSide.LEFT),
+              Commands.either(
+                  Commands.sequence(
                       Commands.sequence(
-                          targetingSystem.setBranchSide(ReefBranchSide.LEFT),
-                          Commands.sequence(
-                                  Commands.runOnce(
-                                      () -> {
-                                        drivebase
-                                            .getSwerveDrive()
-                                            .field
-                                            .getObject("target")
-                                            .setPose(targetingSystem.getTargetShiftPose());
-                                      }),
-                                  Commands.defer(
-                                      () ->
-                                          drivebase.driveToPose(
-                                              targetingSystem.getTargetShiftPose()),
-                                      Set.of(drivebase)))
-                              .onlyIf(() -> targetingSystem.nearTarget(drivebase::getPose)),
-                          Commands.runOnce(
-                              () -> {
-                                drivebase
-                                    .getSwerveDrive()
-                                    .field
-                                    .getObject("target")
-                                    .setPose(targetingSystem.getCoralTargetPose());
-                              }),
-                          Commands.defer(
-                              () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
-                              Set.of(drivebase))),
-                      () -> targetingSystem.atTarget(drivebase::getPose))),
-              () -> targetingSystem.atTarget(drivebase::getPose)));
+                              targetingSystem.setUpdateSide(false),
+                              targetingSystem.increaseBranch(),
+                              targetingSystem.setBranchSide(ReefBranchSide.RIGHT))
+                          .onlyIf(() -> targetingSystem.atTarget(drivebase::getPose)),
+                      Commands.runOnce(
+                          () -> {
+                            drivebase
+                                .getSwerveDrive()
+                                .field
+                                .getObject("target")
+                                .setPose(targetingSystem.getCoralTargetPose());
+                          }),
+                      Commands.defer(
+                          () -> drivebase.driveToSetpoint(targetingSystem.getCoralTargetPose()),
+                          Set.of(drivebase)),
+                      targetingSystem.setUpdateSide(true)),
+                  Commands.sequence(
+                      Commands.runOnce(
+                          () -> {
+                            drivebase
+                                .getSwerveDrive()
+                                .field
+                                .getObject("target")
+                                .setPose(targetingSystem.getCoralTargetPose());
+                          }),
+                      Commands.defer(
+                          () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+                          Set.of(drivebase))),
+                  () -> targetingSystem.nearTarget(drivebase::getPose)));
+
+  // private final Command driveReefLeft = Commands.sequence(
+  //     targetingSystem.autoTargetCommand(drivebase::getPose),
+  //     targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
+  //     Commands.sequence(
+  //         targetingSystem.increaseBranch(),
+  //         targetingSystem.setBranchSide(ReefBranchSide.RIGHT)
+  //     ).onlyIf(() -> targetingSystem.atTarget(drivebase::getPose)),
+  //         Commands.runOnce(
+  //             () -> {
+  //               drivebase
+  //                   .getSwerveDrive()
+  //                   .field
+  //                   .getObject("target")
+  //                   .setPose(targetingSystem.getCoralTargetPose());
+  //             }),
+  //         Commands.defer(
+  //             () -> drivebase.driveToSetpoint(targetingSystem.getCoralTargetPose()),
+  //             Set.of(drivebase))
+  // );
 
   private final Command driveReefRight =
-      Commands.sequence(
-          targetingSystem.autoTargetCommand(drivebase::getPose),
-          targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
-          Commands.either(
-              Commands.sequence(
-                  Commands.runOnce(() -> targetingSystem.increaseBranch()),
-                  targetingSystem.setBranchSide(ReefBranchSide.LEFT)),
-              Commands.sequence(
-                  targetingSystem.setBranchSide(ReefBranchSide.LEFT),
-                  Commands.either(
-                      drivebase.shiftRight(),
+      Commands
+          .sequence( // uses pathplanner and pid to get to target, might just use pid need to test
+              targetingSystem.autoTargetCommand(drivebase::getPose),
+              targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
+              Commands.either(
+                  Commands.sequence(
                       Commands.sequence(
-                          targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
-                          Commands.sequence(
-                                  Commands.runOnce(
-                                      () -> {
-                                        drivebase
-                                            .getSwerveDrive()
-                                            .field
-                                            .getObject("target")
-                                            .setPose(targetingSystem.getTargetShiftPose());
-                                      }),
-                                  Commands.defer(
-                                      () ->
-                                          drivebase.driveToPose(
-                                              targetingSystem.getTargetShiftPose()),
-                                      Set.of(drivebase)))
-                              .onlyIf(() -> targetingSystem.nearTarget(drivebase::getPose)),
-                          Commands.runOnce(
-                              () -> {
-                                drivebase
-                                    .getSwerveDrive()
-                                    .field
-                                    .getObject("target")
-                                    .setPose(targetingSystem.getCoralTargetPose());
-                              }),
-                          Commands.defer(
-                              () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
-                              Set.of(drivebase))),
-                      () -> targetingSystem.atTarget(drivebase::getPose))),
-              () -> targetingSystem.atTarget(drivebase::getPose)));
+                              targetingSystem.setUpdateSide(false),
+                              targetingSystem.decreaseBranch(),
+                              targetingSystem.setBranchSide(ReefBranchSide.LEFT))
+                          .onlyIf(() -> targetingSystem.atTarget(drivebase::getPose)),
+                      Commands.runOnce(
+                          () -> {
+                            drivebase
+                                .getSwerveDrive()
+                                .field
+                                .getObject("target")
+                                .setPose(targetingSystem.getCoralTargetPose());
+                          }),
+                      Commands.defer(
+                          () -> drivebase.driveToSetpoint(targetingSystem.getCoralTargetPose()),
+                          Set.of(drivebase)),
+                      targetingSystem.setUpdateSide(true)),
+                  Commands.sequence(
+                      Commands.runOnce(
+                          () -> {
+                            drivebase
+                                .getSwerveDrive()
+                                .field
+                                .getObject("target")
+                                .setPose(targetingSystem.getCoralTargetPose());
+                          }),
+                      Commands.defer(
+                          () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+                          Set.of(drivebase))),
+                  () -> targetingSystem.nearTarget(drivebase::getPose)));
 
-  private Command driveCoral =
-      Commands.parallel(drivebase.driveCoral(), autoIntakeDownAndIntake)
-          .until(canal::gamePieceDetected);
+  // private final Command driveReefRight = Commands.sequence(
+  //     targetingSystem.autoTargetCommand(drivebase::getPose),
+  //     targetingSystem.setBranchSide(ReefBranchSide.RIGHT),
+  //     Commands.sequence(
+  //         targetingSystem.increaseBranch(),
+  //         targetingSystem.setBranchSide(ReefBranchSide.LEFT)
+  //     ).onlyIf(() -> targetingSystem.atTarget(drivebase::getPose)),
+  //         Commands.runOnce(
+  //             () -> {
+  //               drivebase
+  //                   .getSwerveDrive()
+  //                   .field
+  //                   .getObject("target")
+  //                   .setPose(targetingSystem.getCoralTargetPose());
+  //             }),
+  //         Commands.defer(
+  //             () -> drivebase.driveToSetpoint(targetingSystem.getCoralTargetPose()),
+  //             Set.of(drivebase))
+  // );
 
-  private Command punchAlgaeL3 =
-      Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          endEffector.punchAlgae(),
-          elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3));
+  //   private Command driveCoral =
+  //       Commands.parallel(drivebase.driveCoral(), autoIntakeDownAndIntake)
+  //           .until(canal::gamePieceDetected);
 
-  private Command punchAlgaeL2 =
-      Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          endEffector.punchAlgae(),
-          elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL2));
+    private Command punchAlgaeL3 =
+        Commands.sequence(
+            elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+            Commands.waitUntil(elevatorArm::reachedSetpoint),
+            endEffector.punchAlgae(),
+            elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3));
+
+    private Command punchAlgaeL2 =
+        Commands.sequence(
+            elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+            Commands.waitUntil(elevatorArm::reachedSetpoint),
+            endEffector.punchAlgae(),
+            elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL2));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
 
-    // canal.setDefaultCommand(canal.intake());
+    canal.setDefaultCommand(canal.intake());
 
     NamedCommands.registerCommand("L1", autoL1);
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
-    NamedCommands.registerCommand("Drive Reef Left", driveReefLeft);
-    NamedCommands.registerCommand("Drive Reef Right", driveReefRight);
+    // NamedCommands.registerCommand("Drive Reef Left", driveReefLeft);
+    // NamedCommands.registerCommand("Drive Reef Right", driveReefRight);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("Punch Algae L3", punchAlgaeL3);
     NamedCommands.registerCommand("Punch Algae L2", punchAlgaeL2);
@@ -377,10 +418,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Prep Canal", prepCanal);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
-    // autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = AutoBuilder.buildAutoChooser();
 
     // Another option that allows you to specify the default auto by its name
-    autoChooser = AutoBuilder.buildAutoChooser("Forward");
+    // autoChooser = AutoBuilder.buildAutoChooser("Forward");
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putNumber("Git Revision", BuildConstants.GIT_REVISION);
     SmartDashboard.putString("Git Sha", BuildConstants.GIT_SHA);
@@ -403,18 +444,19 @@ public class RobotContainer {
     driverXbox.x().whileTrue(driveReefLeft);
     driverXbox.b().whileTrue(driveReefRight);
     driverXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
-    driverXbox.back().onTrue(toggleReefAim);
-    // driverXbox.back().onTrue(toggleDriveMode);
+    // driverXbox.y().onTrue(toggleReefAim);
+    driverXbox.back().onTrue(toggleDriveMode);
     driverXbox.leftBumper().whileTrue(intake.passthrough());
-    // driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
-    // driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
+    driverXbox.a().whileTrue(Commands.parallel(intakePivot.pivotDown(), climber.reverseClimb()));
+    driverXbox.y().whileTrue(Commands.parallel(climber.climb(), intakePivot.pivotDown()));
     driverXbox
         .leftTrigger()
         .whileTrue(Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece()))
         .onFalse(Commands.sequence(intakePivot.pivotOuttakeAlgae()));
     driverXbox
         .rightTrigger()
-        .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.outtakeGamepiece()));
+        .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(),
+    intake.outtakeGamepiece()));
     driverXbox
         .a()
         .whileTrue(Commands.parallel(intakePivot.pivotIntakeAlgae(), intake.intakeAlgae()))
@@ -523,7 +565,6 @@ public class RobotContainer {
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL3)),
                 () -> elevatorArm.isBelowHorizontal()));
-
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation()
             ? driveFieldOrientedAnglularVelocity

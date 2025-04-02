@@ -52,8 +52,8 @@ public final class Constants {
     public static final double AUTO_ROTATION_kP = 6;
     public static final double AUTO_ROTATION_kI = 0.0;
     public static final double AUTO_ROTATION_kD = 0.0;
-    public static final Boolean USE_LIMELIGHT_FRONT = true;
-    public static final Boolean USE_LIMELIGHT_BACK = false;
+    public static final Boolean USE_LIMELIGHT_FRONT = false;
+    public static final Boolean USE_LIMELIGHT_BACK = true;
     public static final String LIMELIGHT_FRONT_NAME = "limelight-front";
     public static final String LIMELIGHT_BACK_NAME = "limelight-back";
     public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(1.3);
@@ -62,10 +62,10 @@ public final class Constants {
     public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
     public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
         DegreesPerSecondPerSecond.of(45);
-    public static final Distance CLOSE_ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.2);
+    public static final Distance CLOSE_ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.1);
     public static final Distance FAR_ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.6);
-    public static final Distance ALIGNMENT_SHIFT = Meters.of(.6);
-    public static final Angle LOCK_ANGLE_TOLERANCE = Degrees.of(2);
+    public static final Distance ALIGNMENT_SHIFT = Meters.of(.7);
+    public static final Angle LOCK_ANGLE_TOLERANCE = Degrees.of(4);
     public static final ChassisSpeeds CORAL_DRIVE_SPEED = new ChassisSpeeds(-1, 0, 0);
     public static final List<Double> APRIL_TAGS =
         List.of(17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0);
