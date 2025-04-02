@@ -346,6 +346,22 @@ public class SwerveSubsystem extends SubsystemBase {
         );
   }
 
+  public Command driveToPoseAuto(Pose2d pose) {
+    // Create the constraints to use while pathfinding
+    PathConstraints constraints =
+        new PathConstraints(
+            Constants.DrivebaseConstants.MAX_ALIGNMENT_VELOCITY_AUTO,
+                Constants.DrivebaseConstants.MAX_ALIGNMENT_ACCELERATION_AUTO,
+            Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_VELOCITY_AUTO,
+                Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_ACCELERATION_AUTO);
+    // Since AutoBuilder is configured, we can use it to build pathfinding commands
+    return AutoBuilder.pathfindToPose(
+        pose,
+        constraints,
+        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
+        );
+  }
+
   public Command driveToPose(Supplier<Pose2d> pose) {
     return defer(() -> driveToPose(pose.get()));
   }

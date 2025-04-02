@@ -62,6 +62,13 @@ public final class Constants {
     public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
     public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
         DegreesPerSecondPerSecond.of(45);
+    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY_AUTO = MetersPerSecond.of(3);
+    public static final LinearAcceleration MAX_ALIGNMENT_ACCELERATION_AUTO =
+        MetersPerSecondPerSecond.of(2);
+    public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY_AUTO =
+        DegreesPerSecond.of(45);
+    public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION_AUTO =
+        DegreesPerSecondPerSecond.of(45);
     public static final Distance CLOSE_ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.1);
     public static final Distance FAR_ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.6);
     public static final Distance ALIGNMENT_SHIFT = Meters.of(.7);

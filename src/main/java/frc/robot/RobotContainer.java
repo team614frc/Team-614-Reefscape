@@ -281,7 +281,7 @@ public class RobotContainer {
               Commands.sequence(
                   Commands.sequence(
                           targetingSystem.setUpdateSide(false),
-                          targetingSystem.decreaseBranch(),
+                          targetingSystem.increaseBranch(),
                           targetingSystem.setBranchSide(ReefBranchSide.RIGHT))
                       .onlyIf(() -> targetingSystem.atTarget(drivebase::getPose)),
                   Commands.runOnce(
@@ -307,7 +307,10 @@ public class RobotContainer {
                       }),
                   Commands.defer(
                       () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
-                      Set.of(drivebase))),
+                      Set.of(drivebase))), // .until(() ->
+              // targetingSystem.nearTarget(drivebase::getPose)
+              // Commands.defer(() ->  () ->
+              // drivebase.driveToSetpoint(targetingSystem.getCoralTargetPose()),Set.of(drivebase)),
               () -> targetingSystem.nearTarget(drivebase::getPose)));
 
   private final Command driveReefRight =
@@ -345,7 +348,10 @@ public class RobotContainer {
                           }),
                       Commands.defer(
                           () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
-                          Set.of(drivebase))),
+                          Set.of(drivebase))), // .until(() ->
+                  // targetingSystem.nearTarget(drivebase::getPose)
+                  // Commands.defer(() ->  () ->
+                  // drivebase.driveToSetpoint(targetingSystem.getCoralTargetPose()),Set.of(drivebase)),
                   () -> targetingSystem.nearTarget(drivebase::getPose)));
 
   private final Command driveReefLeftAuto =
@@ -363,7 +369,7 @@ public class RobotContainer {
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
           Commands.defer(
                   () ->
-                      drivebase.driveToPose(
+                      drivebase.driveToPoseAuto(
                           targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
                   Set.of(drivebase))
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
@@ -376,7 +382,7 @@ public class RobotContainer {
                     .setPose(targetingSystem.getCoralTargetPose());
               }),
           Commands.defer(
-              () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+              () -> drivebase.driveToPoseAuto(targetingSystem.getCoralTargetPose()),
               Set.of(drivebase)));
 
   private final Command driveReefRightAuto =
@@ -394,7 +400,7 @@ public class RobotContainer {
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
           Commands.defer(
                   () ->
-                      drivebase.driveToPose(
+                      drivebase.driveToPoseAuto(
                           targetingSystem.getTargetShiftPose(() -> drivebase.getPose())),
                   Set.of(drivebase))
               .onlyIf(() -> targetingSystem.nearTarget(() -> drivebase.getPose())),
@@ -407,7 +413,7 @@ public class RobotContainer {
                     .setPose(targetingSystem.getCoralTargetPose());
               }),
           Commands.defer(
-              () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
+              () -> drivebase.driveToPoseAuto(targetingSystem.getCoralTargetPose()),
               Set.of(drivebase)));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
