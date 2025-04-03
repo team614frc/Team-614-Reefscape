@@ -26,7 +26,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 1.25
           }
         },
         {
@@ -48,9 +48,15 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "FRONT_#3"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "driveReefRight"
+            "name": "driveReefLeft"
           }
         },
         {
