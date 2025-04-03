@@ -1,0 +1,94 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "driveReefRight"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "l2right#1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Prep Canal"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Canal Intake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "l2right#2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveReefRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "L2 Autos with Vision",
+  "choreoAuto": false
+}

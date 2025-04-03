@@ -139,24 +139,26 @@ public class RobotContainer {
   private final Command outtakeCoral =
       Commands.either(
           Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kScoreL3Arm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              endEffector.outtake(),
               elevatorArm.setSetpoint(Setpoint.kArmL3),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              endEffector.outtake(),
+              Commands.waitSeconds(0.2),
               elevatorArm.setSetpoint(Setpoint.kArmIdle),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              rumble(0, 0),
               endEffector.stop()),
           Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              //   elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
+              //   Commands.waitUntil(elevatorArm::reachedSetpoint),
               endEffector.outtake(),
-              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              Commands.waitSeconds(0.2),
               elevatorArm.setSetpoint(Setpoint.kArmIdle),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              rumble(0, 0),
               endEffector.stop()),
           () -> elevatorArm.checkL3());
 
@@ -180,6 +182,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
               canal.intake(),
               Commands.waitUntil(canal::gamePieceDetected),
+              Commands.waitUntil(canal::gamePieceGone),
               Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
               Commands.parallel(
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
@@ -197,6 +200,7 @@ public class RobotContainer {
               elevatorArm.setSetpoint(Setpoint.kElevatorIntake),
               canal.intake(),
               Commands.waitUntil(canal::gamePieceDetected),
+              Commands.waitUntil(canal::gamePieceGone),
               Commands.waitUntil(() -> canal.gamePieceGone() && endEffector.hasGamePiece()),
               Commands.parallel(
                   rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION),
@@ -238,11 +242,19 @@ public class RobotContainer {
           () -> !elevatorArm.isBelowHorizontal());
 
   private final Command elevatorArmIdle =
-      Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kArmIdle),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          endEffector.stop(),
-          elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
+      Commands.either(
+          Commands.sequence(
+              elevatorArm.setSetpoint(Setpoint.kArmIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              endEffector.stop(),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
+          Commands.sequence(
+              elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+              elevatorArm.setSetpoint(Setpoint.kArmIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              endEffector.stop(),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
+          () -> !elevatorArm.isBelowHorizontal());
 
   private final Command autoIntakeDownAndIntake =
       Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece());
@@ -319,6 +331,20 @@ public class RobotContainer {
       Commands.parallel(drivebase.driveCoral(), autoIntakeDownAndIntake)
           .until(canal::gamePieceDetected);
 
+  private final Command punchL3Algae =
+      Commands.sequence(
+          elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          endEffector.punchAlgae(),
+          elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3));
+
+  private final Command punchL2Algae =
+      Commands.sequence(
+          elevatorArm.setSetpoint(Setpoint.kElevatorL2),
+          Commands.waitUntil(elevatorArm::reachedSetpoint),
+          endEffector.punchAlgae(),
+          elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3));
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -331,7 +357,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("driveReefLeft", driveReefLeft);
-    NamedCommands.registerCommand("driveReeRight", driveReefRight);
+    NamedCommands.registerCommand("driveReefRight", driveReefRight);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("Canal Intake", canalIntake);
     NamedCommands.registerCommand("Score Coral", outtakeCoral);
@@ -339,6 +365,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Down", autoIntakeDownAndIntake);
     NamedCommands.registerCommand("Intake Up", autoIntakeUp);
     NamedCommands.registerCommand("Prep Canal", prepCanal);
+    NamedCommands.registerCommand("Punch L3 Algae", punchL3Algae);
+    NamedCommands.registerCommand("Punch L2 Algae", punchL2Algae);
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     // autoChooser = AutoBuilder.buildAutoChooser();
@@ -429,7 +457,7 @@ public class RobotContainer {
         .y()
         .onTrue(
             Commands.sequence(
-                elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
+                elevatorArm.setSetpoint(Setpoint.kElevatorL3),
                 Commands.waitUntil(elevatorArm::reachedSetpoint),
                 endEffector.punchAlgae(),
                 elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));

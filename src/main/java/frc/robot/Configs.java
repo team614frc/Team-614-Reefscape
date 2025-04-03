@@ -31,7 +31,7 @@ public final class Configs {
     static {
       END_EFFECTOR_CONFIG
           .idleMode(IdleMode.kBrake)
-          .inverted(true)
+          .inverted(false)
           .smartCurrentLimit(
               (int) Constants.EndEffectorConstants.END_EFFECTOR_CURRENT_LIMIT.in(Amp));
     }
@@ -55,11 +55,11 @@ public final class Configs {
     static {
       INTAKE_PIVOT_CONFIG_LEFT
           .idleMode(IdleMode.kBrake)
-          .inverted(false)
+          .inverted(true)
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_PIVOT_CURRENT_LIMIT.in(Amp));
       INTAKE_PIVOT_CONFIG_RIGHT
           .idleMode(IdleMode.kBrake)
-          .inverted(true)
+          .inverted(false)
           .smartCurrentLimit((int) Constants.IntakeConstants.INTAKE_PIVOT_CURRENT_LIMIT.in(Amp))
           .absoluteEncoder
           .inverted(true);
