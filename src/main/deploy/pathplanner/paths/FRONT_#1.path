@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.833830479213169,
+        "x": 5.754837328767123,
         "y": 4.049534824916294
       },
       "prevControl": {
-        "x": 6.911823937860925,
+        "x": 6.832830787414879,
         "y": 4.024576480544986
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "FRONT1"
     }
   ],
   "rotationTargets": [],
