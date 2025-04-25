@@ -31,7 +31,7 @@ public final class Configs {
     static {
       END_EFFECTOR_CONFIG
           .idleMode(IdleMode.kBrake)
-          .inverted(true)
+          .inverted(false)
           .smartCurrentLimit(
               (int) Constants.EndEffectorConstants.END_EFFECTOR_CURRENT_LIMIT.in(Amp));
     }

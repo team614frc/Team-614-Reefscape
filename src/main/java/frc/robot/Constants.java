@@ -52,8 +52,8 @@ public final class Constants {
     public static final double AUTO_ROTATION_kP = 6;
     public static final double AUTO_ROTATION_kI = 0.0;
     public static final double AUTO_ROTATION_kD = 0.0;
-    public static final Boolean USE_LIMELIGHT_FRONT = false;
-    public static final Boolean USE_LIMELIGHT_BACK = true;
+    public static final Boolean USE_LIMELIGHT_FRONT = true;
+    public static final Boolean USE_LIMELIGHT_BACK = false;
     public static final String LIMELIGHT_FRONT_NAME = "limelight-front";
     public static final String LIMELIGHT_BACK_NAME = "limelight-back";
     public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(3);
@@ -109,8 +109,8 @@ public final class Constants {
 
     public static final double GEAR_RATIO = 60;
     public static final double PIVOT_UP = -1.5;
-    public static final double PIVOT_DOWN = 0.31;
-    public static final double RIGHT_PIVOT_DOWN = PIVOT_DOWN + 0.02;
+    public static final double PIVOT_DOWN = 0.295;
+    public static final double RIGHT_PIVOT_DOWN = PIVOT_DOWN + 0.03;
     public static final double PIVOT_INTAKE_ALGAE = 0.195;
     public static final double PIVOT_OUTTAKE_ALGAE = 0.117;
     public static final double PIVOT_MOTOR_SPEED = 0.1;
@@ -124,7 +124,7 @@ public final class Constants {
   public static class EndEffectorConstants {
     public static final int END_EFFECTOR_MOTOR = 25;
     public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(80);
-    public static final double OUTTAKE_SPEED = -0.45;
+    public static final double OUTTAKE_SPEED = -0.6;
     public static final double INTAKE_SPEED = 0.365;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;

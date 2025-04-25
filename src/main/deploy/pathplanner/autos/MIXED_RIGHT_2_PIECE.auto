@@ -5,21 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "2_piecepushback"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2_pieceright#1"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "driveReefRight"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L1"
+            "name": "Score Coral"
           }
         },
         {
@@ -29,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2_pieceright#2"
+                  "pathName": "l2right#1"
                 }
               },
               {
@@ -48,9 +55,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "2_pieceright#3"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "l2right#2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveReefRight"
           }
         },
         {
@@ -63,6 +89,10 @@
     }
   },
   "resetOdom": true,
+<<<<<<<< HEAD:src/main/deploy/pathplanner/autos/MIXED_RIGHT_2_PIECE.auto
   "folder": "L1 with L2 Autos",
+========
+  "folder": "L2 Autos with Vision",
+>>>>>>>> 8a19b516bfec81a484aacb6ffdb29021c433541a:src/main/deploy/pathplanner/autos/RIGHT_L2_2PIECE.auto
   "choreoAuto": false
 }

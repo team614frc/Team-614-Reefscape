@@ -139,24 +139,26 @@ public class RobotContainer {
   private final Command outtakeCoral =
       Commands.either(
           Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kScoreL3Arm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
-              endEffector.outtake(),
               elevatorArm.setSetpoint(Setpoint.kArmL3),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
-              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              endEffector.outtake(),
+              Commands.waitSeconds(0.2),
               elevatorArm.setSetpoint(Setpoint.kArmIdle),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              rumble(0, 0),
               endEffector.stop()),
           Commands.sequence(
-              elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              //   elevatorArm.setSetpoint(Setpoint.kScoreL2Arm),
+              //   Commands.waitUntil(elevatorArm::reachedSetpoint),
               endEffector.outtake(),
-              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
-              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              Commands.waitSeconds(0.2),
               elevatorArm.setSetpoint(Setpoint.kArmIdle),
               Commands.waitUntil(elevatorArm::reachedSetpoint),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              rumble(0, 0),
               endEffector.stop()),
           () -> elevatorArm.checkL3());
 
@@ -240,11 +242,19 @@ public class RobotContainer {
           () -> !elevatorArm.isBelowHorizontal());
 
   private final Command elevatorArmIdle =
-      Commands.sequence(
-          elevatorArm.setSetpoint(Setpoint.kArmIdle),
-          Commands.waitUntil(elevatorArm::reachedSetpoint),
-          endEffector.stop(),
-          elevatorArm.setSetpoint(Setpoint.kElevatorIdle));
+      Commands.either(
+          Commands.sequence(
+              elevatorArm.setSetpoint(Setpoint.kArmIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              endEffector.stop(),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
+          Commands.sequence(
+              elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+              elevatorArm.setSetpoint(Setpoint.kArmIdle),
+              Commands.waitUntil(elevatorArm::reachedSetpoint),
+              endEffector.stop(),
+              elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
+          () -> !elevatorArm.isBelowHorizontal());
 
   private final Command autoIntakeDownAndIntake =
       Commands.parallel(intakePivot.pivotDown(), intake.intakeGamepiece());
@@ -427,8 +437,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Ground Intake", intake.stopIntake());
     NamedCommands.registerCommand("L2", autoL2);
     NamedCommands.registerCommand("L3", autoL3);
-    NamedCommands.registerCommand("driveReefLeft", driveReefLeftAuto);
-    NamedCommands.registerCommand("driveReefRight", driveReefRightAuto);
+    NamedCommands.registerCommand("driveReefLeft", driveReefLeft);
+    NamedCommands.registerCommand("driveReefRight", driveReefRight);
     NamedCommands.registerCommand("L3", autoL3);
     NamedCommands.registerCommand("Canal Intake", canalIntake);
     NamedCommands.registerCommand("Score Coral", outtakeCoral);
