@@ -56,9 +56,9 @@ public final class Constants {
     public static final Boolean USE_LIMELIGHT_BACK = false;
     public static final String LIMELIGHT_FRONT_NAME = "limelight-front";
     public static final String LIMELIGHT_BACK_NAME = "limelight-back";
-    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(3);
+    public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(3.5);
     public static final LinearAcceleration MAX_ALIGNMENT_ACCELERATION =
-        MetersPerSecondPerSecond.of(2);
+        MetersPerSecondPerSecond.of(2.5);
     public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
     public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
         DegreesPerSecondPerSecond.of(45);
@@ -92,16 +92,19 @@ public final class Constants {
     public static final double OUTTAKE_SPEED = -0.2;
     public static final double PASSTHROUGH_SPEED = 0.7;
     public static final double FAST_OUTTAKE_SPEED = -0.3;
-    public static final double INTAKE_SPEED = 0.25;
+    public static final double INTAKE_SPEED = 0.235;
     public static final double ALGAE_INTAKE_SPEED = -0.3;
     public static final double ALGAE_OUTTAKE_SPEED = 0.3;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
     public static final double PIVOT_GEAR_RATIO = 60;
 
-    public static final double PIVOT_kP = 6.5;
+    public static final double PIVOT_kP = 5.75;
     public static final double PIVOT_kI = 0;
     public static final double PIVOT_kD = 0;
+    public static final double RIGHT_PIVOT_kP = 4.75;
+    public static final double RIGHT_PIVOT_kI = 0;
+    public static final double RIGHT_PIVOT_kD = 0;
     public static final double PIVOT_kS = 0;
     public static final double PIVOT_kG = 0.4;
     public static final double PIVOT_kV = 0;
@@ -109,14 +112,16 @@ public final class Constants {
 
     public static final double GEAR_RATIO = 60;
     public static final double PIVOT_UP = -1.5;
-    public static final double PIVOT_DOWN = 0.295;
-    public static final double RIGHT_PIVOT_DOWN = PIVOT_DOWN + 0.03;
+    public static final double PIVOT_DOWN = 0.305;
+    public static final double RIGHT_PIVOT_DOWN = PIVOT_DOWN + 0.019;
     public static final double PIVOT_INTAKE_ALGAE = 0.195;
+    // public static final double RIGHT_PIVOT_INTAKE_ALGAE = PIVOT_INTAKE_ALGAE + 0.05;
     public static final double PIVOT_OUTTAKE_ALGAE = 0.117;
+    // public static final double RIGHT_PIVOT_OUTTAKE_ALGAE = PIVOT_OUTTAKE_ALGAE + 0.05;
     public static final double PIVOT_MOTOR_SPEED = 0.1;
     public static final double PIVOT_REST_SPEED = 0;
-    public static final double PIVOT_MAX_VELOCITY = 2;
-    public static final double PIVOT_MAX_ACCELERATION = 2;
+    public static final double PIVOT_MAX_VELOCITY = 2.65;
+    public static final double PIVOT_MAX_ACCELERATION = 2.3;
     public static final double PIVOT_FEEDFORWARD_OFFSET = 0.32;
     public static final double PIVOT_TOLERANCE = 0.75;
   }
@@ -124,7 +129,7 @@ public final class Constants {
   public static class EndEffectorConstants {
     public static final int END_EFFECTOR_MOTOR = 25;
     public static final Current END_EFFECTOR_CURRENT_LIMIT = Amp.of(80);
-    public static final double OUTTAKE_SPEED = -0.6;
+    public static final double OUTTAKE_SPEED = -0.55;
     public static final double INTAKE_SPEED = 0.365;
     public static final double INTAKE_REST_SPEED = 0;
     public static final double OUTTAKE_REST_SPEED = 0;
@@ -167,8 +172,8 @@ public final class Constants {
     public static final double ELEVATOR_L4_SETPOINT = 0;
     public static final double ELEVATOR_OUTTAKE_SETPOINT = 1.75;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
-    public static final double ELEVATOR_MAX_VELOCITY = 23;
-    public static final double ELEVATOR_MAX_ACCELERATION = 50;
+    public static final double ELEVATOR_MAX_VELOCITY = 55; // 85
+    public static final double ELEVATOR_MAX_ACCELERATION = 80; // 100
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
     public static final Angle ELEVATOR_SIM_STARTING_ANGLE = Degrees.of(180);
     public static final double ELEVATOR_TOLERANCE = 0.1;
@@ -187,22 +192,21 @@ public final class Constants {
     public static final double kG = 0.85;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double ARM_HOVER_SETPOINT = 0.03;
-    public static final double ARM_INTAKE_SETPOINT = 0.0285;
-    public static final double ARM_PUSH_SETPOINT = 0.465;
-    public static final double ARM_ALGAE_PUNCH = 0.4345;
-    public static final double ARM_IDLE_SETPOINT = 0.49;
-    public static final double ARM_START_SETPOINT = 0.5;
-    public static final double ARM_L2_SETPOINT = 0.465;
-    public static final double ARM_L3_SETPOINT = 0.475;
+    public static final double ARM_HOVER_SETPOINT = 0.13; // 0.03
+    public static final double ARM_INTAKE_SETPOINT = 0.1285; // 0.0285
+    public static final double ARM_PUSH_SETPOINT = 0.565; // 0.465
+    public static final double ARM_ALGAE_PUNCH = 0.5365; // 0.4345;
+    public static final double ARM_IDLE_SETPOINT = 0.59; // 0.49;
+    public static final double ARM_START_SETPOINT = 0.6; // 0.5
+    public static final double ARM_L2_SETPOINT = 0.565; // 0.465
+    public static final double ARM_L3_SETPOINT = 0.575; // 0.475
     public static final double ARM_L4_SETPOINT = 0;
-    public static final double ARM_L3_SCORE_SETPOINT = 0.385;
-    public static final double ARM_L2_SCORE_SETPOINT = 0.371;
-    public static final double ARM_FEEDFORWARD_OFFSET = 0.278;
-    public static final double ARM_PUKE_SETPOINT = 0.175;
-    public static final int ARM_ZERO_ENCODER = 0;
-    public static final double ARM_MAX_VELOCITY = 4;
-    public static final double ARM_MAX_ACCELERATION = 1.25;
+    public static final double ARM_L3_SCORE_SETPOINT = 0.485; // 0.385
+    public static final double ARM_L2_SCORE_SETPOINT = 0.471; // 0.371
+    public static final double ARM_FEEDFORWARD_OFFSET = 0.378; // 0.278
+    public static final double ARM_PUKE_SETPOINT = 0.275; // 0.175
+    public static final double ARM_MAX_VELOCITY = 5;
+    public static final double ARM_MAX_ACCELERATION = 3;
     public static final double ARM_MIN_RANGE = -1;
     public static final double ARM_MAX_RANGE = 1;
     public static final double ARM_LOOP_ERROR = 0.25;

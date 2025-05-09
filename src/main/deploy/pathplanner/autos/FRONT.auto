@@ -26,11 +26,7 @@
         {
           "type": "wait",
           "data": {
-<<<<<<< HEAD
-            "waitTime": 1.5
-=======
             "waitTime": 1.25
->>>>>>> 8a19b516bfec81a484aacb6ffdb29021c433541a
           }
         },
         {
@@ -52,11 +48,6 @@
           }
         },
         {
-<<<<<<< HEAD
-          "type": "named",
-          "data": {
-            "name": "driveReefRight"
-=======
           "type": "path",
           "data": {
             "pathName": "FRONT_#3"
@@ -66,7 +57,6 @@
           "type": "named",
           "data": {
             "name": "driveReefLeft"
->>>>>>> 8a19b516bfec81a484aacb6ffdb29021c433541a
           }
         },
         {
