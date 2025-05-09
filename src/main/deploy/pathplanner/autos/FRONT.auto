@@ -5,15 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "2_pieceleft#1"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "L1"
+            "name": "Punch L2 Algae"
           }
         },
         {
@@ -23,16 +17,22 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2_pieceleft#2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Hover"
+                  "pathName": "FRONT_#1"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.25
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FRONT_#2"
           }
         },
         {
@@ -42,9 +42,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "L3"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "2_pieceleft#3"
+            "pathName": "FRONT_#3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveReefLeft"
           }
         },
         {
@@ -52,23 +64,11 @@
           "data": {
             "name": "Score Coral"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "3_pieceleft#4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "3_pieceleft#5"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "L2 Autos with Vision",
   "choreoAuto": false
 }

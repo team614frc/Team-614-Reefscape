@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
@@ -15,30 +16,35 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.AllianceFlipUtil;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivebaseConstants;
-import frc.robot.FieldConstants;
-import frc.robot.FieldConstants.Direction;
+import frc.robot.Constants.DrivebaseConstants.DetectionMode;
+import frc.robot.Robot;
 import java.io.File;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import limelight.networktables.AngularVelocity3d;
+import limelight.networktables.LimelightResults;
+import limelight.networktables.Orientation3d;
 import limelight.networktables.PoseEstimate;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
+import swervelib.parser.SwerveControllerConfiguration;
+import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
@@ -48,7 +54,15 @@ public class SwerveSubsystem extends SubsystemBase {
   /** Swerve drive object. */
   private final SwerveDrive swerveDrive;
 
-  // private final LimelightSubsystem limelight;
+  private LimelightSubsystem limelightFront;
+
+  private LimelightSubsystem limelightBack;
+
+  private Field2d field = new Field2d();
+
+  private int outofAreaReading = 0;
+
+  private boolean initialReading = false;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -69,6 +83,10 @@ public class SwerveSubsystem extends SubsystemBase {
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
       // angleConversionFactor, driveConversionFactor);
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal())
+        limelightFront = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_FRONT_NAME);
+      if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK && Robot.isReal())
+        limelightBack = new LimelightSubsystem(Constants.DrivebaseConstants.LIMELIGHT_BACK_NAME);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -86,8 +104,22 @@ public class SwerveSubsystem extends SubsystemBase {
     // periodically when they are not moving.
     swerveDrive.setChassisDiscretization(true, 0.02);
     setupPathPlanner();
-    // limelight = new LimelightSubsystem();
-    // RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
+  }
+
+  /**
+   * Construct the swerve drive.
+   *
+   * @param driveCfg SwerveDriveConfiguration for the swerve.
+   * @param controllerCfg Swerve Controller.
+   */
+  public SwerveSubsystem(
+      SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
+    swerveDrive =
+        new SwerveDrive(
+            driveCfg,
+            controllerCfg,
+            Constants.MAX_SPEED.in(MetersPerSecond),
+            new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
   }
 
   @Override
@@ -179,21 +211,31 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param pose Target {@link Pose2d} to go to.
    * @return PathFinding command
    */
+  public Command printCurrentPose() {
+    return Commands.none(); // dCommands.deferredProxy(()->Commands.print("Current Pose:
+    // "+getPose().toString()));
+  }
+
   public Command driveToPose(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints =
         new PathConstraints(
-            swerveDrive.getMaximumChassisVelocity(),
-            4.0,
-            swerveDrive.getMaximumChassisAngularVelocity(),
-            Units.degreesToRadians(720));
-
+            Constants.DrivebaseConstants.MAX_ALIGNMENT_VELOCITY,
+                Constants.DrivebaseConstants.MAX_ALIGNMENT_ACCELERATION,
+            Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_VELOCITY,
+                Constants.DrivebaseConstants.MAX_ALIGNMENT_ANGULAR_ACCELERATION);
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return AutoBuilder.pathfindToPose(
         pose,
         constraints,
         edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
         );
+  }
+
+  public Command driveToPose(Supplier<Pose2d> pose) {
+    double tooCloseMeters =
+        0.5; // If the bot is too close by this much it needs to drive back a little bit.
+    return defer(() -> driveToPose(pose.get()));
   }
 
   /**
@@ -294,6 +336,19 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setMotorIdleMode(brake);
   }
 
+  public Command driveCoral() {
+    return runEnd(
+        () -> {
+          if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal())
+            limelightFront.setPipeline(DetectionMode.CORAL);
+          if (limelightFront.hasTarget())
+            swerveDrive.drive(Constants.DrivebaseConstants.CORAL_DRIVE_SPEED);
+        },
+        () -> {
+          limelightFront.setPipeline(DetectionMode.APRILTAG);
+        });
+  }
+
   /**
    * Gets the current yaw angle of the robot, as reported by the swerve pose estimator in the
    * underlying drivebase. Note, this is not the raw gyro reading, this may be corrected from calls
@@ -345,62 +400,92 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive.getRobotVelocity();
   }
 
-  public void addVisionReading(Pose2d pose2d) {
-    swerveDrive.addVisionMeasurement(pose2d, Timer.getFPGATimestamp());
+  public Orientation3d getOrientation3d() {
+    return new Orientation3d(
+        new Rotation3d(swerveDrive.getOdometryHeading().rotateBy(Rotation2d.kZero)),
+        new AngularVelocity3d(
+            DegreesPerSecond.of(0), DegreesPerSecond.of(0), DegreesPerSecond.of(0)));
+  }
+
+  public void addVisionReading(PoseEstimate pose) {
+    swerveDrive.addVisionMeasurement(pose.pose.toPose2d(), pose.timestampSeconds);
   }
 
   @Override
   public void periodic() {
-    // limelight.updateSettings(getOrientation3d());
-    // updatePosition(limelight.getVisionEstimate());
-    // SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
-    // SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
-    SmartDashboard.putBoolean("Field-Centric", isFieldCentric);
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_FRONT && Robot.isReal()) {
+      limelightFront.updateSettings(getOrientation3d());
+      updatePosition(limelightFront.getResults(), limelightFront.getVisionEstimate());
+    }
+    if (Constants.DrivebaseConstants.USE_LIMELIGHT_BACK && Robot.isReal()) {
+      limelightBack.updateSettings(getOrientation3d());
+      updatePosition(limelightBack.getResults(), limelightBack.getVisionEstimate());
+    }
+    swerveDrive.updateOdometry();
+    SmartDashboard.putNumber("Robot Rotation", getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Robot X Coordinates", getPose().getX());
+    SmartDashboard.putNumber("Robot Y Coordinates", getPose().getY());
+    field.setRobotPose(getPose());
+    SmartDashboard.putData(field);
   }
 
-  public void updatePosition(Optional<PoseEstimate> visionEstimate) {
-    visionEstimate.ifPresent(
-        (PoseEstimate poseEstimate) -> {
-          // If the average tag distance is less than 4 meters,
-          // there are more than 0 tags in view,
-          // and the average ambiguity between tags is less than 30% then we update the pose
-          // estimation.
-          if (poseEstimate.avgTagDist < 4
-              && poseEstimate.tagCount > 0
-              && poseEstimate.getMinTagAmbiguity() < 0.3) {
-            addVisionReading(poseEstimate.pose.toPose2d());
+  public void updatePosition(
+      Optional<LimelightResults> results, Optional<PoseEstimate> poseEstimates) {
+
+    if (results.isPresent() && poseEstimates.isPresent()) {
+      LimelightResults result = results.get();
+      PoseEstimate poseEstimate = poseEstimates.get();
+      SmartDashboard.putNumber("Avg Tag Ambiguity", poseEstimate.getAvgTagAmbiguity());
+      SmartDashboard.putNumber("Min Tag Ambiguity", poseEstimate.getMinTagAmbiguity());
+      SmartDashboard.putNumber("Max Tag Ambiguity", poseEstimate.getMaxTagAmbiguity());
+      SmartDashboard.putNumber("Avg Distance", poseEstimate.avgTagDist);
+      SmartDashboard.putNumber("Avg Tag Area", poseEstimate.avgTagArea);
+      SmartDashboard.putNumber("Odom Pose/x", swerveDrive.getPose().getX());
+      SmartDashboard.putNumber("Odom Pose/y", swerveDrive.getPose().getY());
+      SmartDashboard.putNumber(
+          "Odom Pose/degrees", swerveDrive.getPose().getRotation().getDegrees());
+      SmartDashboard.putNumber("Limelight Pose/x", poseEstimate.pose.getX());
+      SmartDashboard.putNumber("Limelight Pose/y", poseEstimate.pose.getY());
+      SmartDashboard.putNumber(
+          "Limelight Pose/degrees", poseEstimate.pose.toPose2d().getRotation().getDegrees());
+      if (result.valid) {
+        Pose2d usefulPose = result.getBotPose2d(Alliance.Blue);
+        double distanceToPose =
+            usefulPose.getTranslation().getDistance(swerveDrive.getPose().getTranslation());
+        if (distanceToPose < 0.5
+            || (outofAreaReading > 10)
+            || (outofAreaReading > 10 && !initialReading)) {
+          if (!initialReading) {
+            initialReading = true;
           }
-        });
-  }
-
-  public int findReefID() {
-    int index =
-        FieldConstants.Reef.CENTER_FACES.indexOf(
-            swerveDrive.getPose().nearest(FieldConstants.Reef.CENTER_FACES));
-    Optional<Alliance> ally = DriverStation.getAlliance();
-    List<Integer> apriltags =
-        (ally.get() == Alliance.Red)
-            ? FieldConstants.Reef.CENTER_FACES_RED_IDS
-            : FieldConstants.Reef.CENTER_FACES_BLUE_IDS;
-    int AprilTagID = apriltags.get(index);
-    return AprilTagID;
-  }
-
-  public Command driveReef(Direction direction) {
-    int position = FieldConstants.Reef.POSITION_MAP.get(findReefID()).get(direction);
-    Pose2d path =
-        FieldConstants.Reef.BRANCH_POSITIONS
-            .get(position)
-            .get(FieldConstants.ReefLevel.L1)
-            .toPose2d();
-    path = AllianceFlipUtil.apply(path);
-    return driveToPose(path);
+          outofAreaReading = 0;
+          swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(0.05, 0.05, 0.022));
+          swerveDrive.addVisionMeasurement(usefulPose, Timer.getTimestamp());
+        } else {
+          outofAreaReading += 1;
+        }
+      }
+    }
   }
 
   public boolean isFieldCentric = true;
 
+  public boolean isFieldCentric() {
+    return isFieldCentric;
+  }
+
   public Command flipFieldAndRobotRelative() {
     return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
+  }
+
+  private boolean isOrbitingReef = false;
+
+  public Command flipOrbitingReef() {
+    return Commands.runOnce(() -> isFieldCentric = !isFieldCentric, this);
+  }
+
+  public boolean isOrbitingReef() {
+    return isOrbitingReef;
   }
 
   /**
