@@ -27,11 +27,20 @@ public class IntakePivotSubsystem extends SubsystemBase {
       new SparkFlex(IntakeConstants.LEFT_INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
   private AbsoluteEncoder intakePivotEncoderLeft = intakePivotMotorLeft.getAbsoluteEncoder();
 
-  private final ProfiledPIDController pid =
+  private final ProfiledPIDController leftPid =
       new ProfiledPIDController(
           IntakeConstants.PIVOT_kP,
           IntakeConstants.PIVOT_kI,
           IntakeConstants.PIVOT_kD,
+          new TrapezoidProfile.Constraints(
+              Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_VELOCITY),
+              Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_ACCELERATION)));
+
+  private final ProfiledPIDController rightPid =
+      new ProfiledPIDController(
+          IntakeConstants.RIGHT_PIVOT_kP,
+          IntakeConstants.RIGHT_PIVOT_kI,
+          IntakeConstants.RIGHT_PIVOT_kD,
           new TrapezoidProfile.Constraints(
               Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_VELOCITY),
               Units.rotationsToRadians(IntakeConstants.PIVOT_MAX_ACCELERATION)));
@@ -69,20 +78,20 @@ public class IntakePivotSubsystem extends SubsystemBase {
   private void pivotPIDControl() {
     double leftArmFeedforwardVoltage =
         feedforward.calculate(
-            pid.getSetpoint().position
+            leftPid.getSetpoint().position
                 - Units.rotationsToRadians(IntakeConstants.PIVOT_FEEDFORWARD_OFFSET),
-            pid.getSetpoint().velocity);
+            leftPid.getSetpoint().velocity);
 
     double rightArmFeedforwardVoltage =
         feedforward.calculate(
-            pid.getSetpoint().position
+            rightPid.getSetpoint().position
                 - Units.rotationsToRadians(IntakeConstants.PIVOT_FEEDFORWARD_OFFSET),
-            pid.getSetpoint().velocity);
+            rightPid.getSetpoint().velocity);
 
     double leftArmPidOutput =
-        pid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(leftPivotSetpoint));
+        leftPid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(leftPivotSetpoint));
     double rightArmPidOutput =
-        pid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(rightPivotSetpoint));
+        rightPid.calculate(getPivotAngleRadians(), Units.rotationsToRadians(rightPivotSetpoint));
 
     intakePivotMotorLeft.setVoltage(leftArmPidOutput + leftArmFeedforwardVoltage);
     intakePivotMotorRight.setVoltage(rightArmPidOutput + rightArmFeedforwardVoltage);
@@ -91,8 +100,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     pivotPIDControl();
-    SmartDashboard.putData(pid);
-    SmartDashboard.putNumber("Left Pivot Goal", pid.getGoal().position);
+    SmartDashboard.putData(leftPid);
+    SmartDashboard.putData(rightPid);
+    SmartDashboard.putNumber("Left Pivot Goal", leftPid.getGoal().position);
     SmartDashboard.putNumber("Left Pivot Position", intakePivotEncoderLeft.getPosition());
     SmartDashboard.putNumber("Right Pivot Position", intakePivotEncoderRight.getPosition());
   }

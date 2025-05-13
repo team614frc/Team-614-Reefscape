@@ -445,14 +445,7 @@ public class RobotContainer {
                     elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
                 () -> elevatorArm.checkPuke()));
 
-    codriverXbox
-        .a()
-        .onTrue(
-            Commands.sequence(
-                elevatorArm.setSetpoint(Setpoint.kOuttakeElevatorAlgae),
-                Commands.waitUntil(elevatorArm::reachedSetpoint),
-                endEffector.punchAlgae(),
-                elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL2)));
+    codriverXbox.a().onTrue(punchL2Algae);
     codriverXbox
         .y()
         .onTrue(
@@ -489,6 +482,8 @@ public class RobotContainer {
                     elevatorArm.setSetpoint(Setpoint.kArmL2)),
                 Commands.sequence(
                     endEffector.stop(),
+                    elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kPushArm),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kElevatorL2),
@@ -501,6 +496,8 @@ public class RobotContainer {
             Commands.either(
                 Commands.sequence(
                     endEffector.stop(),
+                    elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                    Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kPushArm),
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kElevatorL3),
