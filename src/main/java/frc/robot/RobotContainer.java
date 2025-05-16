@@ -6,8 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -30,6 +28,7 @@ import frc.robot.subsystems.TargetingSystem;
 import frc.robot.subsystems.TargetingSystem.ReefBranchSide;
 import java.io.File;
 import java.util.Set;
+import java.util.function.DoubleSupplier;
 import swervelib.SwerveInputStream;
 
 /**
@@ -54,34 +53,28 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.DRIVER_PORT);
   private final CommandXboxController codriverXbox =
       new CommandXboxController(OperatorConstants.CODRIVER_PORT);
+  private final CommandXboxController outreachXbox = new CommandXboxController(2);
 
   // The robot's subsystems and commands are defined here...
   final SwerveSubsystem drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
+  private double getAxisOrFallback(DoubleSupplier primary, DoubleSupplier fallback) {
+    return (Math.abs(primary.getAsDouble()) > 0.05)
+        ? primary.getAsDouble()
+        : fallback.getAsDouble();
+  }
+
   private final SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
               drivebase.getSwerveDrive(),
-              () -> -driverXbox.getLeftY(),
-              () -> -driverXbox.getLeftX())
-          .withControllerRotationAxis(() -> -driverXbox.getRightX())
+              () -> -getAxisOrFallback(driverXbox::getLeftY, outreachXbox::getLeftY),
+              () -> -getAxisOrFallback(driverXbox::getLeftX, outreachXbox::getLeftX))
+          .withControllerRotationAxis(
+              () -> -getAxisOrFallback(driverXbox::getRightX, outreachXbox::getRightX))
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(1)
           .allianceRelativeControl(true);
-
-  private final SwerveInputStream driveReefAim =
-      SwerveInputStream.of(
-              drivebase.getSwerveDrive(),
-              () -> -driverXbox.getLeftY(),
-              () -> -driverXbox.getLeftX())
-          .withControllerRotationAxis(() -> -driverXbox.getRightX())
-          .deadband(OperatorConstants.DEADBAND)
-          .scaleTranslation(1)
-          .aim(new Pose2d(AllianceFlipUtil.apply(FieldConstants.Reef.CENTER), new Rotation2d(0)))
-          .aimWhile(true)
-          .allianceRelativeControl(true);
-
-  private final Command driveFieldOrientedReef = drivebase.driveFieldOriented(driveReefAim);
 
   private final Command driveFieldOrientedAnglularVelocity =
       drivebase.driveFieldOriented(driveAngularVelocity);
@@ -126,15 +119,6 @@ public class RobotContainer {
                   drivebase.driveFieldOriented(driveRobotOriented),
                   drivebase.driveFieldOriented(driveAngularVelocity),
                   drivebase::isFieldCentric));
-
-  private final Command toggleReefAim =
-      drivebase
-          .flipOrbitingReef()
-          .andThen(
-              Commands.either(
-                  drivebase.driveFieldOriented(driveReefAim),
-                  drivebase.driveFieldOriented(driveAngularVelocity),
-                  drivebase::isOrbitingReef));
 
   private final Command outtakeCoral =
       Commands.either(
@@ -265,6 +249,25 @@ public class RobotContainer {
           Commands.waitUntil(intakePivot::reachedSetpoint),
           intakePivot.pivotIdle());
 
+  private boolean isSlowMode = false;
+  private static double SLOW_SPEED = 1.0; // m/s
+  private static double NORMAL_SPEED = 17.5;
+
+  public Command toggleSpeedModeCommand() {
+    return Commands.runOnce(
+        () -> {
+          System.out.println("runOnce executed");
+
+          // Toggle speed mode
+          isSlowMode = !isSlowMode;
+          double speed = isSlowMode ? SLOW_SPEED : NORMAL_SPEED;
+          drivebase.getSwerveDrive().setMaximumAllowableSpeeds(speed, speed);
+
+          System.out.println(
+              "[Drive] Speed set to " + speed + " m/s (" + (isSlowMode ? "SLOW" : "FULL") + ")");
+        });
+  }
+
   private final Command driveReefLeft =
       Commands.sequence(
           targetingSystem.autoTargetCommand(drivebase::getPose),
@@ -326,10 +329,6 @@ public class RobotContainer {
           Commands.defer(
               () -> drivebase.driveToPose(targetingSystem.getCoralTargetPose()),
               Set.of(drivebase)));
-
-  private Command driveCoral =
-      Commands.parallel(drivebase.driveCoral(), autoIntakeDownAndIntake)
-          .until(canal::gamePieceDetected);
 
   private final Command punchL3Algae =
       Commands.sequence(
@@ -511,6 +510,8 @@ public class RobotContainer {
                     Commands.waitUntil(elevatorArm::reachedSetpoint),
                     elevatorArm.setSetpoint(Setpoint.kArmL3)),
                 () -> elevatorArm.isBelowHorizontal()));
+
+    outreachXbox.b().onTrue(toggleSpeedModeCommand());
 
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation()
