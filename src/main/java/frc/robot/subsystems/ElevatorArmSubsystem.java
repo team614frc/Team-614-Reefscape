@@ -215,6 +215,19 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     return (a || b) && (c || d);
   }
 
+  public boolean checkL2() {
+    boolean a = armSetpoint == ArmConstants.ARM_L2_SETPOINT;
+    boolean b =
+        Math.abs(armEncoder.getPosition() - ArmConstants.ARM_L2_SETPOINT)
+            <= ArmConstants.ARM_TOLERANCE;
+    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_L2_SETPOINT;
+    boolean d =
+        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_L2_SETPOINT)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE;
+
+    return (a || b) && (c || d);
+  }
+
   public boolean checkPuke() {
     return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT
         || Math.abs(armEncoder.getPosition() - ArmConstants.ARM_PUKE_SETPOINT)
