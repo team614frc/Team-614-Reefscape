@@ -228,6 +228,15 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     return (a || b) && (c || d);
   }
 
+  public boolean checkL2Algae() {
+    boolean c = elevatorSetpoint == ElevatorConstants.ELEVATOR_L2_SETPOINT;
+    boolean d =
+        Math.abs(elevatorEncoder.getPosition() - ElevatorConstants.ELEVATOR_L2_SETPOINT)
+            <= ElevatorConstants.ELEVATOR_TOLERANCE;
+
+    return (c || d);
+  }
+
   public boolean checkPuke() {
     return armSetpoint == ArmConstants.ARM_PUKE_SETPOINT
         || Math.abs(armEncoder.getPosition() - ArmConstants.ARM_PUKE_SETPOINT)

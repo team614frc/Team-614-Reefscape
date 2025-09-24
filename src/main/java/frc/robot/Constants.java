@@ -163,7 +163,7 @@ public final class Constants {
     public static final double ELEVATOR_L4_SETPOINT = 0;
     public static final double ELEVATOR_OUTTAKE_SETPOINT = 1.75;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
-    public static final double ELEVATOR_MAX_VELOCITY = 55; // 85
+    public static final double ELEVATOR_MAX_VELOCITY = 60; // 85
     public static final double ELEVATOR_MAX_ACCELERATION = 80; // 100
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
     public static final Angle ELEVATOR_SIM_STARTING_ANGLE = Degrees.of(180);

@@ -515,7 +515,7 @@ public class RobotContainer {
         .a()
         .whileTrue(Commands.parallel(intakePivot.pivotIntakeAlgae(), intake.intakeAlgae()))
         .onFalse(intakePivot.pivotOuttakeAlgae());
-    outreachXbox.b().onTrue(toggleSpeedModeCommand());
+    // outreachXbox.b().onTrue(toggleSpeedModeCommand());
     outreachXbox
         .y()
         .whileTrue(Commands.parallel(intakePivot.pivotOuttakeAlgae(), intake.outtakeAlgae()))
@@ -559,6 +559,50 @@ public class RobotContainer {
                         elevatorArm.setSetpoint(Setpoint.kArmL2)),
                     () -> !elevatorArm.isBelowHorizontal()),
                 () -> elevatorArm.checkL2()));
+    outreachXbox
+        .b()
+        .onTrue(
+            Commands.either(
+                Commands.either(
+                    Commands.sequence(
+                        endEffector.stop(),
+                        elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                        Commands.waitUntil(elevatorArm::reachedSetpoint),
+                        elevatorArm.setSetpoint(Setpoint.kPushArm),
+                        Commands.waitUntil(elevatorArm::reachedSetpoint),
+                        elevatorArm.setSetpoint(Setpoint.kElevatorL3),
+                        Commands.waitUntil(elevatorArm::reachedSetpoint),
+                        endEffector.punchAlgae(),
+                        elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)),
+                    Commands.sequence(
+                        endEffector.stop(),
+                        elevatorArm.setSetpoint(Setpoint.kPushArm),
+                        Commands.waitUntil(elevatorArm::reachedSetpoint),
+                        elevatorArm.setSetpoint(Setpoint.kElevatorL3),
+                        Commands.waitUntil(elevatorArm::reachedSetpoint),
+                        endEffector.punchAlgae(),
+                        elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)),
+                    () -> elevatorArm.isBelowHorizontal()),
+                Commands.either(
+                    Commands.sequence(
+                        endEffector.stop(),
+                        elevatorArm.setSetpoint(Setpoint.kElevatorL2),
+                        Commands.waitUntil(elevatorArm::reachedSetpoint),
+                        endEffector.punchAlgae(),
+                        elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)),
+                    Commands.sequence(
+                        endEffector.stop(),
+                        elevatorArm.setSetpoint(Setpoint.kElevatorHover),
+                        Commands.waitUntil(elevatorArm::reachedSetpoint),
+                        elevatorArm.setSetpoint(Setpoint.kPushArm),
+                        Commands.waitUntil(elevatorArm::reachedSetpoint),
+                        elevatorArm.setSetpoint(Setpoint.kElevatorL2),
+                        Commands.waitUntil(elevatorArm::reachedSetpoint),
+                        endEffector.punchAlgae(),
+                        elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)),
+                    () -> !elevatorArm.isBelowHorizontal()),
+                () -> elevatorArm.checkL2Algae()));
+
     outreachXbox.leftBumper().whileTrue(intake.passthrough());
     outreachXbox
         .rightBumper()
@@ -600,8 +644,8 @@ public class RobotContainer {
                     elevatorArm.setSetpoint(Setpoint.kElevatorIdle)),
                 () -> elevatorArm.checkPuke()));
     outreachXbox.povDown().onTrue(elevatorArmIdle);
-    // outreachXbox.povLeft().whileTrue(driveReefLeft);
-    // outreachXbox.povRight().whileTrue(driveReefRight);
+    outreachXbox.povLeft().whileTrue(driveReefLeft);
+    outreachXbox.povRight().whileTrue(driveReefRight);
     outreachXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
 
     drivebase.setDefaultCommand(
