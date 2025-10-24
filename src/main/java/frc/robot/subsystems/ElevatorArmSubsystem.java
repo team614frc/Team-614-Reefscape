@@ -59,6 +59,13 @@ public class ElevatorArmSubsystem extends SubsystemBase {
     kPuke;
   }
 
+  // Manual override state
+  // Arm manual override state
+  // private boolean armManualOverrideEnabled = false;
+  // private double manualArmPower = 0.0; // -1.0 to 1.0
+  // private boolean elevatorManualOverrideEnabled = false;
+  // private double manualElevatorPower = 0.0;
+
   // Elevator Motor
   private SparkFlex elevatorMotor =
       new SparkFlex(ElevatorConstants.ELEVATOR_MOTOR, MotorType.kBrushless);
@@ -344,6 +351,23 @@ public class ElevatorArmSubsystem extends SubsystemBase {
   public void periodic() {
     moveToSetpoint();
 
+    // if (!armManualOverrideEnabled) {
+    //   // Normal PID control for both arm & elevator
+    //   moveToSetpoint();
+    // } else {
+    //   // Manual arm control
+    //   armMotor.set(manualArmPower); // scale for safety
+    // }
+
+    // if (!elevatorManualOverrideEnabled) {
+    //   // Normal PID control for both arm & elevator
+    //   moveToSetpoint();
+    // } else {
+    //   elevatorMotor.set(manualElevatorPower);
+    // }
+
+    // SmartDashboard.putBoolean("Arm Manual Override", armManualOverrideEnabled);
+    // SmartDashboard.putNumber("Manual Arm Power", manualArmPower);
     // Display subsystem values
     SmartDashboard.putNumber("Arm Target Position", armSetpoint);
     SmartDashboard.putNumber("Arm Actual Position", armEncoder.getPosition());
@@ -373,6 +397,44 @@ public class ElevatorArmSubsystem extends SubsystemBase {
           );
     }
   }
+
+  // /** Enables or disables manual override mode for the arm */
+  // public void setArmManualOverride(boolean enabled) {
+  //   armManualOverrideEnabled = enabled;
+  //   if (!enabled) {
+  //     // Reset PID so it won’t jump when re-enabled
+  //     armPid.reset(getArmAngleRadians());
+  //     armMotor.set(0);
+  //   }
+  // }
+
+  // public boolean isArmManualOverrideEnabled() {
+  //   return armManualOverrideEnabled;
+  // }
+
+  // /** Sets the manual arm motor power */
+  // public void setManualElevatorPower(double power) {
+  //   manualElevatorPower = Math.max(-1.0, Math.min(1.0, power)); // clamp -1..1
+  // }
+
+  // /** Enables or disables manual override mode for the arm */
+  // public void setElevatorManualOverride(boolean enabled) {
+  //   elevatorManualOverrideEnabled = enabled;
+  //   if (!enabled) {
+  //     // Reset PID so it won’t jump when re-enabled
+  //     elevatorPid.reset(getElevatorPosition());
+  //     elevatorMotor.set(0);
+  //   }
+  // }
+
+  // public boolean isElevatorManualOverrideEnabled() {
+  //   return elevatorManualOverrideEnabled;
+  // }
+
+  // /** Sets the manual arm motor power */
+  // public void setManualArmPower(double power) {
+  //   manualArmPower = Math.max(-1.0, Math.min(1.0, power)); // clamp -1..1
+  // }
 
   /** Get the current drawn by each simulation physics model */
   public double getSimulationCurrentDraw() {

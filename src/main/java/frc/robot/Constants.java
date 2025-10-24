@@ -59,9 +59,9 @@ public final class Constants {
     public static final LinearVelocity MAX_ALIGNMENT_VELOCITY = MetersPerSecond.of(1.3);
     public static final LinearAcceleration MAX_ALIGNMENT_ACCELERATION =
         MetersPerSecondPerSecond.of(1);
-    public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(45);
+    public static final AngularVelocity MAX_ALIGNMENT_ANGULAR_VELOCITY = DegreesPerSecond.of(55);
     public static final AngularAcceleration MAX_ALIGNMENT_ANGULAR_ACCELERATION =
-        DegreesPerSecondPerSecond.of(45);
+        DegreesPerSecondPerSecond.of(60);
     public static final Distance ALIGNMENT_TOLERANCE = Meters.of(.25);
     public static final Distance ALIGNMENT_SHIFT_TOLERANCE = Meters.of(.6);
     public static final ChassisSpeeds CORAL_DRIVE_SPEED = new ChassisSpeeds(-1, 0, 0);
@@ -163,8 +163,8 @@ public final class Constants {
     public static final double ELEVATOR_L4_SETPOINT = 0;
     public static final double ELEVATOR_OUTTAKE_SETPOINT = 1.75;
     public static final int ELEVATOR_ZERO_ENCODER = 0;
-    public static final double ELEVATOR_MAX_VELOCITY = 60; // 85
-    public static final double ELEVATOR_MAX_ACCELERATION = 80; // 100
+    public static final double ELEVATOR_MAX_VELOCITY = 80; // 85
+    public static final double ELEVATOR_MAX_ACCELERATION = 95; // 100
     public static final Angle ELEVATOR_SIM_ANGLE = Degrees.of(90);
     public static final Angle ELEVATOR_SIM_STARTING_ANGLE = Degrees.of(180);
     public static final double ELEVATOR_TOLERANCE = 0.1;

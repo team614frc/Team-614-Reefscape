@@ -454,16 +454,16 @@ public class RobotContainer {
                 endEffector.punchAlgae(),
                 elevatorArm.setSetpoint(Setpoint.kOuttakeArmAlgaeL3)));
     codriverXbox.x().onTrue(canalIntake);
-    codriverXbox
-        .start()
-        .whileTrue(
-            Commands.sequence(
-                elevatorArm.setElevatorResetSpeed(),
-                Commands.waitSeconds(1),
-                Commands.waitUntil(elevatorArm::elevatorStalled),
-                Commands.waitSeconds(0.25),
-                elevatorArm.resetElevatorEncoder(),
-                rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION)));
+    // codriverXbox
+    //     .start()
+    //     .whileTrue(
+    //         Commands.sequence(
+    //             elevatorArm.setElevatorResetSpeed(),
+    //             Commands.waitSeconds(1),
+    //             Commands.waitUntil(elevatorArm::elevatorStalled),
+    //             Commands.waitSeconds(0.25),
+    //             elevatorArm.resetElevatorEncoder(),
+    //             rumble(OperatorConstants.RUMBLE_SPEED, OperatorConstants.RUMBLE_DURATION)));
     codriverXbox.back().onTrue(Commands.none());
     codriverXbox.leftBumper().onTrue(elevatorArmIdle);
     codriverXbox
@@ -647,6 +647,47 @@ public class RobotContainer {
     outreachXbox.povLeft().whileTrue(driveReefLeft);
     outreachXbox.povRight().whileTrue(driveReefRight);
     outreachXbox.start().onTrue(Commands.runOnce(drivebase::zeroGyro));
+
+    // // Toggle manual override with codriver 'start' button
+    // // Start -> enable manual arm override (kill arm PID)
+    // codriverXbox.start().onTrue(Commands.runOnce(() -> elevatorArm.setArmManualOverride(true)));
+
+    // // Back/Select -> disable manual arm override (re-enable PID)
+    // codriverXbox.back().onTrue(Commands.runOnce(() -> elevatorArm.setArmManualOverride(false)));
+
+    // // Toggle manual override with codriver 'start' button
+    // // Start -> enable manual arm override (kill arm PID)
+    // codriverXbox
+    //     .rightBumper()
+    //     .onTrue(Commands.runOnce(() -> elevatorArm.setElevatorManualOverride(true)));
+
+    // // Back/Select -> disable manual arm override (re-enable PID)
+    // codriverXbox
+    //     .leftBumper()
+    //     .onTrue(Commands.runOnce(() -> elevatorArm.setElevatorManualOverride(false)));
+
+    // // Manual arm control with buttons while in override
+    // codriverXbox.x().whileTrue(Commands.run(() -> elevatorArm.setManualArmPower(0.1),
+    // elevatorArm));
+    // codriverXbox
+    //     .b()
+    //     .whileTrue(Commands.run(() -> elevatorArm.setManualArmPower(-0.05), elevatorArm));
+
+    // // Stop arm when buttons are released
+    // codriverXbox.x().onFalse(Commands.runOnce(() -> elevatorArm.setManualArmPower(0)));
+    // codriverXbox.b().onFalse(Commands.runOnce(() -> elevatorArm.setManualArmPower(0)));
+
+    // // Manual arm control with buttons while in override
+    // codriverXbox
+    //     .y()
+    //     .whileTrue(Commands.run(() -> elevatorArm.setManualElevatorPower(0.1), elevatorArm));
+    // codriverXbox
+    //     .a()
+    //     .whileTrue(Commands.run(() -> elevatorArm.setManualElevatorPower(-0.05), elevatorArm));
+
+    // // Stop arm when buttons are released
+    // codriverXbox.y().onFalse(Commands.runOnce(() -> elevatorArm.setManualElevatorPower(0)));
+    // codriverXbox.a().onFalse(Commands.runOnce(() -> elevatorArm.setManualElevatorPower(0)));
 
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation()
